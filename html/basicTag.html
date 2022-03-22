@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>asfd</title>
+        <link rel="stylesheet" href="container.css">
+        <style>
+                #container {
+                        height: 500px;
+                }
+
+                img {
+                        border-radius: 10px;
+                }
+        </style>
+</head>
+
+<body id="container">
+        <table>
+                <tr>
+                        <td>ㅇ</td>
+                        <td>ㅇ</td>
+                        <td rowspan="5">ㅁ</td>
+                        <td>ㅇ</td>
+                        <td>ㅇ</td>
+                </tr>
+                <tr>
+                        <td>ㅇ</td>
+                        <td>ㅇ</td>
+                        <td>ㅇ</td>
+                        <td>ㅇ</td>
+                </tr>
+                <tr>
+                        <td colspan="2">ㅁ</td>
+                        <td colspan="2">ㅁ</td>
+                </tr>
+                <tr>
+                        <td>ㅇ</td>
+                        <td>ㅇ</td>
+                        <td>ㅇ</td>
+                        <td>ㅇ</td>
+                </tr>
+                <tr>
+                        <td>ㅇ</td>
+                        <td>ㅇ</td>
+                        <td>ㅇ</td>
+                        <td>ㅇ</td>
+                </tr>
+        </table>
+        <img src="04/images/tangerines.jpg" alt="귤">
+        <script>
+                const elements = document.querySelectorAll("tr");
+                for (let i = 0; i < elements.length; i++) {
+                        const children = elements[i].querySelectorAll("td");
+                        for (let j = 0; j < children.length; j++) {
+                                children[j].addEventListener("click", function () {
+                                        changeBackground(event);
+                                });
+                        }
+                }
+
+                function changeBackground(event) {
+                        event.target.style = "background-color: gray;";
+                }
+        </script>
+</body>
+
+</html>
