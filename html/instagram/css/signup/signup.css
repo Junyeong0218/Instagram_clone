@@ -1,0 +1,335 @@
+.container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 803px;
+}
+
+main {
+        margin-top: 12px;
+        max-width: 350px;
+        height: 686px;
+}
+
+.hidden {
+        display: none;
+}
+
+.form-wrapper {
+        margin-bottom: 10px;
+        padding: 10px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 494px;
+        border: 1px solid rgb(219, 219, 219);
+        background-color: white;
+}
+
+.logo {
+        margin: 22px 0 12px;
+        width: 175px;
+        height: 55px;
+        background-image: url("/images/logo.png");
+        background-size: cover;
+}
+
+.logo+span {
+        margin-bottom: 10px;
+        width: 268px;
+        height: 40px;
+        font-size: 18px;
+        font-weight: 400;
+        line-height: 20px;
+        text-align: center;
+        color: rgb(142, 142, 142);
+}
+
+.facebook-signin {
+        margin: 8px 0;
+        padding: 5px 9px;
+        width: 268px;
+        height: 32px;
+        border: none;
+        background-color: rgb(0, 149, 246);
+        border-radius: 4px;
+}
+
+.facebook-signin img {
+        margin-right: 8px;
+        position: relative;
+        top: 3px;
+        width: 16px;
+        height: 16px;
+}
+
+.facebook-signin span {
+        font-weight: 400;
+        text-align: center;
+        color: white;
+        line-height: 18px;
+}
+
+.separator {
+        margin: 10px 0 18px;
+        display: flex;
+        justify-content: center;
+        width: 268px;
+        height: 15px;
+}
+
+.line {
+        position: relative;
+        top: 7px;
+        width: 103px;
+        height: 1px;
+        background-color: rgb(219, 219, 219);
+}
+
+.or {
+        margin: 0 18px;
+        width: 26px;
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 15px;
+        color: rgb(142, 142, 142);
+}
+
+form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 268px;
+}
+
+form>button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 8px 0;
+        width: 100%;
+        height: 30px;
+        border: none;
+        border-radius: 4px;
+        background-color: rgba(0, 149, 246, 0.3);
+        cursor: pointer;
+}
+
+form button span {
+        color: white;
+}
+
+label {
+        display: flex;
+        position: relative;
+        margin-bottom: 6px;
+        width: 100%;
+        height: 38px;
+        border: 1px solid rgb(219, 219, 219);
+        border-radius: 3px;
+        background-color: rgb(250, 250, 250);
+}
+
+label>span {
+        position: absolute;
+        top: 9px;
+        left: 8px;
+        font-size: 12px;
+        width: 220px;
+        height: 36px;
+        color: rgb(142, 142, 142);
+        pointer-events: none;
+}
+
+label input {
+        padding: 9px 0 7px 8px;
+        min-width: 0;
+        width: 258px;
+        height: 100%;
+        border: none;
+        background: none;
+}
+
+.no-value-span {
+        transform: none;
+        transition: .1s;
+}
+
+.typed-span {
+        transform: scale(0.83333) translateY(-10px) translateX(-23px);
+        transition: .1s;
+}
+
+.typed-input {
+        padding: 14px 0 2px 8px !important;
+        transition: .1s;
+        font-size: 12px;
+}
+
+.active-button {
+        background-color: rgb(0, 149, 246);
+}
+
+.input-indicator {
+        position: relative;
+        display: flex;
+        align-items: center;
+        padding-right: 8px;
+        width: auto;
+        height: 100%;
+}
+
+.wrong-input,
+.right-input {
+        margin-left: 8px;
+        width: 22px;
+        height: 22px;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+}
+
+.wrong-input {
+        background-image: url("/images/wrong-input.png");
+}
+
+.right-input {
+        background-image: url("/images/right-input.png");
+}
+
+.default-toggle {
+        width: 0;
+}
+
+.toggle-password-button {
+        position: relative;
+        display: inline-block;
+        margin-left: 8px;
+        width: auto;
+        max-width: 350px;
+        border: none;
+        background: none;
+        font-weight: 500;
+        line-height: 18px;
+        white-space: nowrap;
+        cursor: pointer;
+}
+
+label input:focus {
+        outline: none;
+}
+
+.has-account {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 10px;
+        padding: 10px 0;
+        width: 100%;
+        height: 70px;
+        border: 1px solid rgb(219, 219, 219);
+        background-color: white;
+}
+
+.has-account span a {
+        color: rgb(0, 149, 246);
+        font-weight: 600;
+}
+
+.download {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 102px;
+}
+
+.download p {
+        margin: 10px 18px;
+        width: 310px;
+        height: 18px;
+        line-height: 18px;
+        text-align: center;
+}
+
+.download-buttons {
+        margin: 10px 0;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        height: 44px;
+}
+
+.download-buttons img {
+        width: 136px;
+        height: 40px;
+}
+
+.download-buttons a:first-child {
+        margin-right: 8px;
+}
+
+footer {
+        position: relative;
+        margin-bottom: 52px;
+        padding: 0px 16px;
+        width: 100%;
+        height: 82px;
+}
+
+.links {
+        margin-top: 24px;
+}
+
+.link-lines {
+        display: flex;
+        justify-content: center;
+}
+
+.link {
+        margin: 0 8px 12px;
+        height: 11px;
+}
+
+.link>a {
+        position: relative;
+        top: -2px;
+        color: rgb(142, 142, 142);
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 16px;
+}
+
+.company-info {
+        margin: 12px 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 11px;
+}
+
+.language-selector {
+        width: 50px;
+        height: 14px;
+}
+
+.language-selector select {
+        position: relative;
+        top: -4px;
+        border: none;
+        height: 16px;
+}
+
+.company-info span,
+.language-selector select {
+        font-size: 12px;
+        font-weight: 400;
+        color: rgb(142, 142, 142);
+        line-height: 16px;
+        background-color: rgb(250, 250, 250);
+}
+
+.company-info span {
+        margin: -2px 0 -3px 16px;
+}

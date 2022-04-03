@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Instagram</title>
+        <link rel="stylesheet" href="css/container.css">
+        <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+        <div>
+                <main class="container">
+                        <div class="main-image">
+                                <div class="img-positioner">
+                                        <img src="images/main1.png" class="inner-img" alt="기능 이미지">
+                                        <img src="images/main2.png" class="inner-img" alt="기능 이미지">
+                                        <img src="images/main3.png" class="inner-img" alt="기능 이미지">
+                                        <img src="images/main4.png" class="inner-img" alt="기능 이미지">
+                                </div>
+                        </div>
+                        <div class="main-form">
+                                <div class="login">
+                                        <h1 class="logo"></h1>
+                                        <form action="main.html" method="get">
+                                                <div>
+                                                        <span>전화번호, 사용자 이름 또는 이메일</span>
+                                                        <input type="text" name="username" required>
+                                                        <div class="input-indicator">
+                                                                <span></span>
+                                                        </div>
+                                                </div>
+                                                <div>
+                                                        <span>비밀번호</span>
+                                                        <input type="password" name="password" required>
+                                                        <div class="input-indicator">
+                                                                <span></span>
+                                                        </div>
+                                                </div>
+                                                <button type="submit" disabled>로그인</button>
+                                        </form>
+                                        <div class="separator">
+                                                <span class="liner"></span>
+                                                <span class="or">또는</span>
+                                                <span class="liner"></span>
+                                        </div>
+                                        <button type="button" class="facebook-signin">
+                                                <img src="images/login_facebook.png" alt="페이스북 로그인 로고">
+                                                <span>Facebook으로 로그인</span>
+                                        </button>
+                                        <div class="forget-password">
+                                                <a href="#">비밀번호를 잊으셨나요?</a>
+                                        </div>
+                                </div>
+                                <div class="to-signup">
+                                        <span>계정이 없으신가요? <a href="signup.html">가입하기</a></span>
+                                </div>
+                                <div class="download">
+                                        <span>앱을 다운로드하세요.</span>
+                                        <div class="download-buttons">
+                                                <a href="#">
+                                                        <img src="images/download_applestore.png" alt="앱스토어 다운로드">
+                                                </a>
+                                                <a href="#">
+                                                        <img src="images/download_playstore.png" alt="플레이스토어 다운로드">
+                                                </a>
+                                        </div>
+                                </div>
+                        </div>
+                </main>
+        </div>
+        <footer>
+                <div class="footer-wraper">
+                        <div class="links">
+                                <div class="link-lines">
+                                        <div class="link"><a href="#">Meta</a></div>
+                                        <div class="link"><a href="#">소개</a></div>
+                                        <div class="link"><a href="#">블로그</a></div>
+                                        <div class="link"><a href="#">채용 정보</a></div>
+                                        <div class="link"><a href="#">도움말</a></div>
+                                        <div class="link"><a href="#">API</a></div>
+                                        <div class="link"><a href="#">개인정보처리방침</a></div>
+                                        <div class="link"><a href="#">약관</a></div>
+                                        <div class="link"><a href="#">인기 계정</a></div>
+                                        <div class="link"><a href="#">해시태그</a></div>
+                                        <div class="link"><a href="#">위치</a></div>
+                                        <div class="link"><a href="#">Instagram List</a></div>
+                                </div>
+                                <div class="link-lines">
+                                        <div class="link"><a href="#">댄스</a></div>
+                                        <div class="link"><a href="#">식음료</a></div>
+                                        <div class="link"><a href="#">집 및 정원</a></div>
+                                        <div class="link"><a href="#">음악</a></div>
+                                        <div class="link"><a href="#">시각 예술</a></div>
+                                </div>
+                        </div>
+                        <div class="company-info">
+                                <div class="language-selector">
+                                        <select name="language" id="language">
+                                                <option value="korean">한국어</option>
+                                                <option value="english">영어</option>
+                                        </select>
+                                </div>
+                                <span>© 2022 Instagram from Meta</span>
+                        </div>
+                </div>
+        </footer>
+        <script src="js/inputEvent.js"></script>
+        <script src="js/imageEvent.js"></script>
+</body>
+
+</html>

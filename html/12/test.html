@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>test</title>
+        <style>
+                * {
+                        margin: 0;
+                        padding: 0;
+                        box-sizing: border-box;
+                        font-size: 16px;
+                }
+
+                .container {
+                        margin: 0 auto;
+                        width: 1200px;
+                }
+
+                header,
+                nav {
+                        display: flex;
+                        justify-content: center;
+                }
+
+                nav {
+                        justify-content: space-between;
+                        max-width: 800px;
+                        min-width: 500px;
+                }
+
+                ul {
+                        display: flex;
+                        justify-content: space-between;
+                        list-style-type: none;
+
+                        max-width: 760px;
+                        min-width: 400px;
+                }
+        </style>
+</head>
+<!-- align-items : 요소가 한 줄일 때 정렬하는 속성
+        align-content : 요소가 여러 줄일 때 정렬하는 속성  ( justify-content와 비슷함 )
+        flex-wrap : 플렉스 항목을 한 줄 또는 여러 줄로 배치
+        wrap : 컨테이너의 크기가 모든 요소의 가로보다 작아지는 경우 flex 요소들을 여러 줄로 나누어 표시
+        nowrap : 내부 요소의 줄바꿈이 일어나지 않음
+        -----
+        flex-flow : row / column [wrap / nowrap] 한번에 사용 가능
+        -----
+        grid : 자바 swing의 grid와 같음
+        grid-template-columns : 각 열의 width를 설정하는 속성 / 값의 수 많큼의 열이 생성됨
+                                repeat(갯수, 너비) : "너비"가 서로 같은 요소를 "갯수"만큼 배치 ex) repeat(3, 200px) == 200px을 width로 하는 요소 3개를 배치
+        grid-template-rows : 각 행의 height를 설정하는 속성
+                                minmax(min, max) : 각 행의 min-height 와 max-height 를 한 번에 설정
+        grid-gap : 그리드 내 각 요소들의 간격을 설정하는 속성
+        grid-gap : column, row
+        grid-column-gap / grid-row-gap -->
+
+<body>
+        <div class="container">
+                <header>
+                        <nav>
+                                <div>
+                                        <h1>회사로고</h1>
+                                </div>
+                                <ul>
+                                        <li>회사소개</li>
+                                        <li>제품소개</li>
+                                        <li>게시글</li>
+                                        <li>공지사항</li>
+                                        <li>회사소개</li>
+                                </ul>
+                        </nav>
+                </header>
+        </div>
+</body>
+
+</html>
