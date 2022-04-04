@@ -8,15 +8,22 @@ function toggleProfileMenu(event) {
                 const home_button_image = document.querySelector(".home img");
                 const menu_box = makeProfileFloating();
                 event.target.className = "clicked-nav-profile";
-                home_button_image.src = "images/menu_home_clicked.png";
+                home_button_image.src = "/images/menu_home_clicked.png";
                 profile_menu_wrapper.appendChild(menu_box);
+                const logout_button = menu_box.querySelectorAll(".profile-menu-button")[1];
+                logout_button.onclick = toLogout;
         } else {
                 const home_button_image = document.querySelector(".home img");
                 const menu_box = document.querySelector(".profile-menu-box");
                 event.target.className = "nonclicked-nav-profile";
-                home_button_image.src = "images/menu_home.png";
+                home_button_image.src = "/images/menu_home.png";
                 menu_box.remove();
         }
+}
+
+function toLogout(event) {
+        console.log(event);
+        location.href = "http://192.168.7.54:5500/index.html";
 }
 
 function makeProfileFloating() {
@@ -24,7 +31,7 @@ function makeProfileFloating() {
         menu_box.className = "profile-menu-box";
         menu_box.innerHTML = `<div class="profile-menu-arrow"></div>
                                                 <div class="profile-menu">
-                                                        <a href="#" class="profile-menu-link">
+                                                        <a href="/userinfo/userinfo.html" class="profile-menu-link">
                                                                 <span class="profile-menu-icon"></span>
                                                                 <span class="profile-menu-text">프로필</span>
                                                         </a>
