@@ -1,0 +1,545 @@
+main {
+        margin: 90px auto 0;
+        display: flex;
+        max-width: 935px;
+        width: 100%;
+        height: auto;
+        border-radius: 3px;
+        border: 1px solid rgb(219, 219, 219);
+        background-color: white;
+        color: rgb(38, 38, 38);
+}
+
+.userinfo-menus {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        width: 237px;
+        height: auto;
+        list-style: none;
+        border-right: 1px solid rgb(219, 219, 219);
+}
+
+.userinfo-menu {
+        padding: 16px 16px 16px 30px;
+        display: block;
+        width: 100%;
+        height: 52px;
+        font-size: 16px;
+        line-height: 20px;
+        border-left: 2px solid transparent;
+        background-color: white;
+        cursor: pointer;
+}
+
+.userinfo-menu button {
+        font: inherit;
+        border: none;
+        cursor: pointer;
+        background: none;
+        pointer-events: none;
+}
+
+.userinfo-menu:hover {
+        border-left: 2px solid rgb(219, 219, 219);
+        background-color: rgb(250, 250, 250);
+}
+
+.selected-menu,
+.selected-menu:hover {
+        border-left: 2px solid rgb(38, 38, 38);
+        font-weight: 500;
+}
+
+.selected-menu:focus:active,
+.selected-menu:hover:active,
+.userinfo-menu:hover:active,
+.userinfo-menu:active {
+        opacity: 0.7;
+}
+
+.change-professional {
+        display: flex;
+        flex: 1 1 auto;
+        justify-content: flex-start;
+        align-items: stretch;
+        width: 100%;
+        background-color: white;
+}
+
+.change-professional button {
+        padding: 16px 16px 16px 32px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        height: 45px;
+        border: none;
+        background: none;
+        cursor: pointer;
+}
+
+.change-professional button span {
+        text-align: left;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 24px;
+        color: rgb(0, 149, 246);
+}
+
+.menu-footer {
+        padding: 28px 20px 28px 32px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        background-color: white;
+}
+
+.menu-footer-separator {
+        background-color: rgb(219, 219, 219);
+        border: none;
+        width: 100%;
+        height: 1px;
+}
+
+.menu-footer-image {
+        width: 60px;
+        height: 12px;
+        background-image: url("/static/images/userinfo-menu-footer.png");
+        background-size: contain;
+        background-repeat: no-repeat;
+}
+
+.menu-footer-title {
+        margin-top: 16px;
+        font-size: 16px;
+        font-weight: 500;
+        color: rgb(0, 149, 246);
+        line-height: 24px;
+}
+
+.menu-fotter-text {
+        margin-top: 16px;
+        font-size: 12px;
+        font-weight: 400;
+        color: rgb(142, 142, 142);
+        line-height: 16px;
+}
+
+.userinfo-wrapper {
+        flex: 1 1 400px;
+        min-width: 50px;
+}
+
+form {
+        padding-top: 32px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        width: 100%;
+}
+
+.userinfo-profile-image {
+        display: flex;
+        align-items: center;
+        height: 42px;
+}
+
+.userinfo-profile-image>img {
+        margin: 0 32px 0 124px;
+        width: 38px;
+        height: 38px;
+        background-repeat: no-repeat;
+        background-size: contain;
+        border-radius: 50%;
+}
+
+.profile-image-input-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+}
+
+.profile-image-input-wrapper span {
+        font-size: 19px;
+        font-weight: 400;
+        line-height: 22px;
+        margin-bottom: 2px;
+        white-space: nowrap;
+}
+
+.profile-image-input-wrapper label {
+        text-align: left;
+        font-weight: 500;
+        color: rgb(0, 149, 246);
+        cursor: pointer;
+}
+
+.userinfo-input-wrapper {
+        margin-top: 16px;
+        display: flex;
+        align-items: flex-start;
+}
+
+.userinfo-input-wrapper:last-child {
+        height: 46px;
+        margin-bottom: 32px;
+}
+
+.field-name {
+        margin-top: 6px;
+        padding-right: 32px;
+        width: 194px;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 18px;
+        text-align: right;
+}
+
+.description-wrapper {
+        display: flex;
+        flex-direction: column;
+        width: 355px;
+}
+
+.description-wrapper>input {
+        padding: 0 10px;
+        width: 100%;
+        height: 32px;
+        font-size: 16px;
+        border: 1px solid rgb(219, 219, 219);
+        border-radius: 3px;
+}
+
+.description,
+.no-input-description-wrapper {
+        margin: 12px 0 8px;
+        max-width: 355px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+}
+
+.no-input-description-wrapper {
+        margin-bottom: 0 !important;
+}
+
+.description>p,
+.no-input-description>span {
+        font-size: 12px;
+        line-height: 16px;
+        color: rgb(142, 142, 142);
+}
+
+.description>p:first-child {
+        margin-bottom: 12px;
+}
+
+.description-wrapper>textarea {
+        padding: 6px 10px;
+        width: 100%;
+        height: 60px;
+        border: 1px solid rgb(219, 219, 219);
+        border-radius: 3px;
+        font-size: 16px;
+        resize: vertical;
+        outline: none;
+}
+
+.no-input-description {
+        margin: 0 !important;
+}
+
+.no-input-description>h2 {
+        font-weight: 500;
+        color: rgb(142, 142, 142);
+}
+
+.check-wrapper {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+}
+
+.check-wrapper>input {
+        width: 16px;
+        height: 16px;
+        border: 1px solid rgb(219, 219, 219);
+        border-radius: 3px;
+        margin: 0 8px 0 3px;
+}
+
+.check-wrapper>span {
+        width: 40%;
+        font-size: 13px;
+}
+
+.form-buttons {
+        display: flex;
+        align-items: flex-end;
+        width: 502px;
+        height: 100%;
+}
+
+.submit-button {
+        width: 48px;
+}
+
+.submit-button,
+.password-submit-button {
+        padding: 5px 9px;
+        border: none;
+        border-radius: 4px;
+        background-color: rgb(0, 149, 246);
+        font-weight: 500;
+        text-align: center;
+        color: white;
+}
+
+.form-buttons>button:last-child {
+        margin-left: 105px;
+        border: none;
+        background: none;
+        color: rgb(0, 149, 246);
+        font-weight: 500;
+}
+
+/* change-password-form */
+
+.password-form .profile-image-input-wrapper>span {
+        font-size: 24px;
+        line-height: 38px;
+}
+
+.password-form .description-wrapper {
+        padding-right: 60px;
+        width: 502px;
+        height: 100%;
+}
+
+.password-form>.userinfo-input-wrapper:nth-child(2) {
+        margin-top: 32px;
+}
+
+.password-form>.userinfo-input-wrapper:last-child {
+        margin-top: 32px;
+        margin-bottom: 0;
+}
+
+.password-form input {
+        padding: 4px 12px;
+        height: 40px;
+        font-size: 14px;
+        line-height: 30px;
+        border: 1px solid rgb(219, 219, 219);
+        border-radius: 6px;
+        background-color: rgb(250, 250, 250);
+        outline: none;
+}
+
+.password-form .form-buttons {
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+}
+
+.password-submit-button {
+        background-color: rgb(0, 149, 246);
+}
+
+.disabled {
+        background-color: rgba(0, 149, 246, 0.3);
+}
+
+.password-form .form-buttons>button:last-child {
+        margin-top: 32px;
+        margin-left: 0;
+}
+
+/* footer */
+
+footer {
+        position: relative;
+        margin-bottom: 30px;
+        padding: 0px 16px;
+        width: 100%;
+        height: 82px;
+}
+
+.links {
+        margin-top: 24px;
+}
+
+.link-lines {
+        display: flex;
+        justify-content: center;
+}
+
+.link {
+        margin: 0 8px 12px;
+        height: 11px;
+}
+
+.link>a {
+        position: relative;
+        top: -2px;
+        color: rgb(142, 142, 142);
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 16px;
+}
+
+.company-info {
+        margin: 12px 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 11px;
+}
+
+.language-selector {
+        width: 50px;
+        height: 14px;
+}
+
+.language-selector select {
+        position: relative;
+        top: -4px;
+        border: none;
+        height: 16px;
+}
+
+.company-info span,
+.language-selector select {
+        font-size: 12px;
+        font-weight: 400;
+        color: rgb(142, 142, 142);
+        line-height: 16px;
+        background-color: rgb(250, 250, 250);
+}
+
+.company-info span {
+        margin: -2px 0 -3px 16px;
+}
+
+.pop-up {
+        position: absolute;
+        top: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.65);
+        z-index: -1;
+        opacity: 0;
+}
+
+.to-show {
+        opacity: 1;
+        z-index: 10;
+        transition: opacity 0.2s ease-in;
+}
+
+.to-hidden {
+        opacity: 0;
+        z-index: -1;
+        transition: opacity 0.2s ease-out;
+}
+
+.gender-control {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        width: 548px;
+        height: 235px;
+        border-radius: 12px;
+        background-color: white;
+}
+
+.popup-header {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 42px;
+        border-bottom: 1px solid rgb(219, 219, 219);
+}
+
+.popup-header span {
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 24px;
+}
+
+.popup-header button {
+        position: absolute;
+        top: 13px;
+        right: 16px;
+        width: 16px;
+        height: 16px;
+        border: none;
+        background-image: url("/static/images/gender-popup-closer.png");
+        background-repeat: no-repeat;
+        cursor: pointer;
+}
+
+.radio-buttons {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        height: 116px;
+}
+
+.radio-buttons>label {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 21px;
+}
+
+.radio-buttons>label:first-child {
+        margin-top: 4px;
+}
+
+.radio-buttons>label>input {
+        margin: 3px 8px 0 5px;
+        width: 18px;
+        height: 18px;
+        appearance: none;
+        border: 2px solid rgb(219, 219, 219);
+        border-radius: 50%;
+        background-color: white;
+}
+
+.radio-buttons>label>input:checked {
+        appearance: none;
+        border: 5px solid rgb(0, 149, 246);
+}
+
+.radio-buttons>label>span {
+        line-height: 18px;
+        font-weight: 500;
+}
+
+.gender-control>button {
+        margin: 16px;
+        padding: 12px 18px;
+        width: 516px;
+        height: 44px;
+        border: none;
+        border-radius: 4px;
+        background-color: rgb(0, 149, 246);
+        font-weight: 500;
+        color: white;
+        cursor: pointer;
+}
