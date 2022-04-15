@@ -2,6 +2,8 @@ package viewController;
 
 import java.io.IOException;
 
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -9,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import entity.User;
+import repository.UserDao;
 import service.AuthService;
 import service.AuthServiceImpl;
 
@@ -18,8 +21,9 @@ public class SignupController extends HttpServlet{
 	
 	private AuthService authService;
 	
-	public SignupController() {
-		authService = new AuthServiceImpl();
+	public void init(FilterConfig filterConfig) throws ServletException {
+		ServletContext servletContext = filterConfig.getServletContext();
+		authService = new AuthServiceImpl((UserDao) servletContext.getAttribute("userDao"));
 	}
 
 	@Override

@@ -13,6 +13,7 @@
 	<link rel="stylesheet" href="/static/css/container.css">
 	<link rel="stylesheet" href="/static/css/main/header.css">
 	<link rel="stylesheet" href="/static/css/main/main.css">
+	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 
 <body>
@@ -24,51 +25,7 @@
 			<div class="main-wrapper">
 				<div class="article-area">
 					<ul class="story-area">
-						<li class="story">
-							<button type="button" class="story-image">
-								<img src="/static/images/profile_image.png" alt="스토리 프로필 이미지">
-							</button> <span class="story-username">its_ssam</span>
-						</li>
-						<li class="story">
-							<button type="button" class="story-image">
-								<img src="/static/images/profile_image.png" alt="스토리 프로필 이미지">
-							</button> <span class="story-username">mindolll_s</span>
-						</li>
-						<li class="story">
-							<button type="button" class="story-image">
-								<img src="/static/images/profile_image.png" alt="스토리 프로필 이미지">
-							</button> <span class="story-username">s__hyekk</span>
-						</li>
-						<li class="story">
-							<button type="button" class="story-image">
-								<img src="/static/images/profile_image.png" alt="스토리 프로필 이미지">
-							</button> <span class="story-username">dd0ng_o</span>
-						</li>
-						<li class="story">
-							<button type="button" class="story-image">
-								<img src="/static/images/profile_image.png" alt="스토리 프로필 이미지">
-							</button> <span class="story-username">dd0ng_o</span>
-						</li>
-						<li class="story">
-							<button type="button" class="story-image">
-								<img src="/static/images/profile_image.png" alt="스토리 프로필 이미지">
-							</button> <span class="story-username">dd0ng_o</span>
-						</li>
-						<li class="story">
-							<button type="button" class="story-image">
-								<img src="/static/images/profile_image.png" alt="스토리 프로필 이미지">
-							</button> <span class="story-username">dd0ng_o</span>
-						</li>
-						<li class="story">
-							<button type="button" class="story-image">
-								<img src="/static/images/profile_image.png" alt="스토리 프로필 이미지">
-							</button> <span class="story-username">dd0ng_o</span>
-						</li>
-						<li class="story">
-							<button type="button" class="story-image">
-								<img src="/static/images/profile_image.png" alt="스토리 프로필 이미지">
-							</button> <span class="story-username">dd0ng_o</span>
-						</li>
+						
 					</ul>
 					<div class="articles">
 						<article>
@@ -182,10 +139,12 @@
 			</button>
 		</div>
 	</div>
-	<script src="/static/js/main/main.js"></script>
 	<script src="/static/js/main/searcher_control.js"></script>
 	<script src="/static/js/main/profile_menu_control.js"></script>
 	<script src="/static/js/main/pop_up_and_window.js"></script>
+	<script src="/static/js/main/load_aside_recommend.js"></script>
+	<script src="/static/js/main/load_recent_stories.js"></script>
+	<script src="/static/js/main/main.js"></script>
 </body>
 
 </html>

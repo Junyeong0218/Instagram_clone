@@ -2,12 +2,15 @@ package apiController;
 
 import java.io.IOException;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import repository.UserDao;
 import service.AuthService;
 import service.AuthServiceImpl;
 
@@ -17,8 +20,11 @@ public class CheckUsername extends HttpServlet{
 	
 	private AuthService authService;
 	
-	public CheckUsername() {
-		authService = new AuthServiceImpl();
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		super.init(getServletConfig());
+		ServletContext servletContext = config.getServletContext();
+		authService = new AuthServiceImpl((UserDao) servletContext.getAttribute("userDao"));
 	}
 	
 	@Override

@@ -1,13 +1,21 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <aside>
 	<div class="profile-description">
 		<div class="profile-description-image">
-			<img src="/static/images/profile_image.png" alt="프로필 이미지">
+		
+			<c:if test="${sessionScope.user.has_profile_image == true}">
+				<img src="/static/images/user_profile_images/${sessionScope.user.username}.png" alt="프로필">					
+			</c:if>
+			<c:if test="${sessionScope.user.has_profile_image == false}">
+				<img src="/static/images/basic_profile_image.jpg" alt="프로필">
+			</c:if>
+			
 		</div>
 		<div class="profile-texts">
-			<span class="principal-username">jy960218</span> <span
-				class="principal-nickname">준영</span>
+			<span class="principal-username">${sessionScope.user.username}</span>
+			<span class="principal-nickname">${sessionScope.user.name}</span>
 		</div>
 		<div>
 			<button type="button">전환</button>
@@ -17,56 +25,6 @@
 		<div class="recommend-title">
 			<span>회원님을 위한 추천</span>
 			<button type="button">모두 보기</button>
-		</div>
-		<div class="recommend-user">
-			<div class="user-image">
-				<img src="/static/images/profile_image.png" alt="추천 유저 프로필 이미지">
-			</div>
-			<div class="user-description">
-				<span class="recommend-username">sweet.bbom</span> <span
-					class="recommend-info">Instagram 신규 가입</span>
-			</div>
-			<button type="button">팔로우</button>
-		</div>
-		<div class="recommend-user">
-			<div class="user-image">
-				<img src="/static/images/profile_image.png" alt="추천 유저 프로필 이미지">
-			</div>
-			<div class="user-description">
-				<span class="recommend-username">sweet.bbom</span> <span
-					class="recommend-info">Instagram 신규 가입</span>
-			</div>
-			<button type="button">팔로우</button>
-		</div>
-		<div class="recommend-user">
-			<div class="user-image">
-				<img src="/static/images/profile_image.png" alt="추천 유저 프로필 이미지">
-			</div>
-			<div class="user-description">
-				<span class="recommend-username">sweet.bbom</span> <span
-					class="recommend-info">Instagram 신규 가입</span>
-			</div>
-			<button type="button">팔로우</button>
-		</div>
-		<div class="recommend-user">
-			<div class="user-image">
-				<img src="/static/images/profile_image.png" alt="추천 유저 프로필 이미지">
-			</div>
-			<div class="user-description">
-				<span class="recommend-username">sweet.bbom</span> <span
-					class="recommend-info">Instagram 신규 가입</span>
-			</div>
-			<button type="button">팔로우</button>
-		</div>
-		<div class="recommend-user">
-			<div class="user-image">
-				<img src="/static/images/profile_image.png" alt="추천 유저 프로필 이미지">
-			</div>
-			<div class="user-description">
-				<span class="recommend-username">sweet.bbom</span> <span
-					class="recommend-info">Instagram 신규 가입</span>
-			</div>
-			<button type="button">팔로우</button>
 		</div>
 	</div>
 	<div class="aside-footer">

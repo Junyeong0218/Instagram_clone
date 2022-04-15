@@ -22,7 +22,7 @@ function toggleProfileMenu(event) {
 }
 
 function toLogout() {
-        location.href = "/index";
+        location.href = "/logout";
 }
 
 function makeProfileFloating() {

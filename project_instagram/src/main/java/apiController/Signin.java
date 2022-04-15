@@ -2,6 +2,9 @@ package apiController;
 
 import java.io.IOException;
 
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -9,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import entity.User;
+import repository.UserDao;
 import service.AuthService;
 import service.AuthServiceImpl;
 
@@ -18,15 +22,18 @@ public class Signin extends HttpServlet{
 	
 	private AuthService authService;
 	
-	public Signin() {
-		authService = new AuthServiceImpl();
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		super.init(getServletConfig());
+		ServletContext servletContext = config.getServletContext();
+		authService = new AuthServiceImpl((UserDao) servletContext.getAttribute("userDao"));
 	}
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		User user = User.builder().username(request.getParameter("username"))
 					  			  .password(request.getParameter("password")).build();
-		
+		System.out.println(user);
 		User userDetail = authService.signin(user);
 		if(userDetail == null) {
 			response.setCharacterEncoding("UTF-8");

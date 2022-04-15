@@ -298,6 +298,7 @@ form {
         font-weight: 500;
         text-align: center;
         color: white;
+        cursor: pointer;
 }
 
 .form-buttons>button:last-child {
@@ -353,6 +354,7 @@ form {
 
 .disabled {
         background-color: rgba(0, 149, 246, 0.3);
+        cursor: default;
 }
 
 .password-form .form-buttons>button:last-child {

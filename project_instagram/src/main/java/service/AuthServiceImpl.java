@@ -8,13 +8,18 @@ public class AuthServiceImpl implements AuthService {
 	
 	private UserDao userDao;
 	
-	public AuthServiceImpl() {
-		userDao = new UserDaoImpl();
+	public AuthServiceImpl(UserDao userDao) {
+		this.userDao = userDao;
 	}
 	
 	@Override
 	public int checkUsername(String username) {
 		return userDao.checkUsername(username);
+	}
+	
+	@Override
+	public int checkOriginPassword(User user) {
+		return userDao.checkOriginPassword(user);
 	}
 
 	@Override
@@ -36,5 +41,28 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public int signup(User user) {
 		return userDao.signup(user);
+	}
+	
+	@Override
+	public int updateUserinfo(User sessionUser, User user) {
+		int result = 0;
+		if(user.getFile_name() != null) {
+			user.setHas_profile_image(true);
+			result += updateUserProfile(user);
+		}
+		else user.setHas_profile_image(false);
+
+		result += userDao.updateUserinfo(user);
+		
+		return result;
+	}
+	
+	private int updateUserProfile(User user) {
+		return userDao.updateUserProfile(user);
+	}
+	
+	@Override
+	public int updatePassword(User user) {
+		return userDao.updatePassword(user);
 	}
 }

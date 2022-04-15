@@ -22,7 +22,14 @@ public class User {
 	private String password;
 	private String name;
 	private String email;
+	private String phone;
+	private String website;
+	private String description;
+	private int gender;
 	private boolean has_profile_image;
+	private LocalDateTime last_username_update_date;
 	private LocalDateTime create_date;
 	private LocalDateTime update_date;
+	
+	private String file_name;
 }

@@ -2,7 +2,6 @@ const article_menu = document.querySelector(".article-menu");
 const pop_up = document.querySelector(".pop-up");
 const aside = document.querySelector("aside");
 
-window.onload = resizeAsideLeft;
 window.onresize = resizeAsideLeft;
 article_menu.onclick = showArticleMenu;
 

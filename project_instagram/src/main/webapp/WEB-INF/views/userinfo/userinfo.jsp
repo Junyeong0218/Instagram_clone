@@ -1,16 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 
 <head>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Instagram</title>
-<link rel="stylesheet" href="/static/css/container.css">
-<link rel="stylesheet" href="/static/css/main/header.css">
-<link rel="stylesheet" href="/static/css/userinfo/userinfo.css">
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Instagram</title>
+	<link rel="stylesheet" href="/static/css/container.css">
+	<link rel="stylesheet" href="/static/css/main/header.css">
+	<link rel="stylesheet" href="/static/css/userinfo/userinfo.css">
+	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 
 <body>
@@ -64,20 +66,27 @@
 				</div>
 			</ul>
 			<div class="userinfo-wrapper">
-				<form class="userinfo-form" action="" method="get">
+				<form class="userinfo-form" action="/update-userinfo" method="post" enctype="multipart/form-data">
 					<div class="userinfo-profile-image">
-						<img src="/static/images/profile_image.png" class="profile-image-preview"></span>
+						
+						<c:if test="${sessionScope.user.has_profile_image == true}">
+							<img src="/static/images/user_profile_images/${sessionScope.user.username}.png" alt="프로필">					
+						</c:if>
+						<c:if test="${sessionScope.user.has_profile_image == false}">
+							<img src="/static/images/basic_profile_image.jpg" alt="프로필">
+						</c:if>
+
 						<div class="profile-image-input-wrapper">
-							<span>jy960218</span> <label class="" for="profile-image">프로필
-								사진 바꾸기</label> <input class="hidden" id="profile-image" name="file"
-								type="file" accept="image/*">
+							<span>${sessionScope.user.username}</span>
+							<label class="" for="profile-image">프로필 사진 바꾸기</label>
+							<input class="hidden" id="profile-image" name="file" type="file" accept="image/*">
 						</div>
 					</div>
 					<div class="userinfo-input-wrapper">
 						<span class="field-name">이름</span>
 						<div class="description-wrapper">
-							<input type="text" name="nickname" value="준영"> <span
-								class="description">
+							<input type="text" name="name" value="${sessionScope.user.name}">
+							<span class="description">
 								<p>사람들이 이름, 별명 또는 비즈니스 이름 등 회원님의 알려진 이름을 사용하여 회원님의 계정을 찾을 수
 									있도록 도와주세요.</p>
 								<p>이름은 14일 안에 두 번만 변경할 수 있습니다.</p>
@@ -87,10 +96,11 @@
 					<div class="userinfo-input-wrapper">
 						<span class="field-name">사용자 이름</span>
 						<div class="description-wrapper">
-							<input type="text" name="username" value="jy960218"> <span
-								class="description">
+						
+							<input type="text" name="username" value="${sessionScope.user.username}">
+							<span class="description">
 								<p>In most cases, you'll be able to change your username
-									back to jy960218 for another 14 days.</p>
+									back to ${sessionScope.user.username} for another 14 days.</p>
 							</span>
 						</div>
 					</div>
@@ -103,7 +113,7 @@
 					<div class="userinfo-input-wrapper">
 						<span class="field-name">소개</span>
 						<div class="description-wrapper">
-							<textarea name="description"></textarea>
+							<textarea name="description" value="${sessionScope.user.description != null ? sessionScope.user.description : ''}"></textarea>
 						</div>
 					</div>
 					<div class="userinfo-input-wrapper">
@@ -121,19 +131,32 @@
 					<div class="userinfo-input-wrapper">
 						<span class="field-name">이메일</span>
 						<div class="description-wrapper">
-							<input type="email" name="email" value="hippo2003@naver.com">
+							<input type="email" name="email" value="${sessionScope.user.email != null ? sessionScope.user.email : ''}">
 						</div>
 					</div>
 					<div class="userinfo-input-wrapper">
-						<span class="field-name">웹 사이트</span>
+						<span class="field-name">전화번호</span>
 						<div class="description-wrapper">
-							<input type="tel" name="phone" value="+82 10-3594-7111">
+							<input type="tel" name="phone" value="${sessionScope.user.phone != null ? sessionScope.user.phone : ''}">
 						</div>
 					</div>
 					<div class="userinfo-input-wrapper">
 						<span class="field-name">성별</span>
 						<div class="description-wrapper">
-							<input type="text" name="gender" value="남성" readonly>
+							<c:set var="gender" value="" />
+							<c:if test="${sessionScope.user.gender == 0}">
+								<c:set var="gender" value="남성" />
+							</c:if>
+							<c:if test="${sessionScope.user.gender == 1}">
+								<c:set var="gender" value="여성" />
+							</c:if>
+							<c:if test="${sessionScope.user.gender == 2}">
+								<c:set var="gender" value="맞춤 성별" />
+							</c:if>
+							<c:if test="${sessionScope.user.gender == 3}">
+								<c:set var="gender" value="밝히고 싶지 않음" />
+							</c:if>
+							<input type="text" name="gender" value="${gender}" readonly>
 						</div>
 					</div>
 					<div class="userinfo-input-wrapper">
@@ -146,16 +169,23 @@
 					<div class="userinfo-input-wrapper">
 						<span class="field-name"></span>
 						<div class="form-buttons">
-							<button class="submit-button disabled" type="submit">제출</button>
+							<button class="submit-button disabled" type="button" disabled>제출</button>
 							<button type="button">계정을 일시적으로 비활성화</button>
 						</div>
 					</div>
 				</form>
-				<form class="password-form hidden">
+				<form class="password-form hidden" action="/update-password" method="post">
 					<div class="userinfo-profile-image">
-						<img src="/static/images/profile_image.png" class="profile-image-preview"></span>
+					
+						<c:if test="${sessionScope.user.has_profile_image == true}">
+							<img src="/static/images/user_profile_images/${sessionScope.user.username}.png" alt="프로필">					
+						</c:if>
+						<c:if test="${sessionScope.user.has_profile_image == false}">
+							<img src="/static/images/basic_profile_image.jpg" alt="프로필">
+						</c:if>
+						
 						<div class="profile-image-input-wrapper">
-							<span>jy960218</span>
+							<span>${sessionScope.user.username}</span>
 						</div>
 					</div>
 					<div class="userinfo-input-wrapper">
