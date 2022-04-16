@@ -1,4 +1,4 @@
-package apiController;
+package apiController.userinfo;
 
 import java.io.IOException;
 import java.io.PrintWriter;

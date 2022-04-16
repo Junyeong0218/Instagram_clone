@@ -1,8 +1,7 @@
-package apiController;
+package apiController.signup;
 
 import java.io.IOException;
 
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -16,8 +15,8 @@ import repository.UserDao;
 import service.AuthService;
 import service.AuthServiceImpl;
 
-@WebServlet("/signin")
-public class Signin extends HttpServlet{
+@WebServlet("/check-origin-password")
+public class CheckOriginPassword extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	
 	private AuthService authService;
@@ -30,17 +29,18 @@ public class Signin extends HttpServlet{
 	}
 	
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		User user = User.builder().username(request.getParameter("username"))
-					  			  .password(request.getParameter("password")).build();
-		System.out.println(user);
-		User userDetail = authService.signin(user);
-		if(userDetail == null) {
-			response.setCharacterEncoding("UTF-8");
-			response.getWriter().print("<script>alert(\"아이디 혹은 비밀번호가 틀렸습니다.\"); location.href = \"/index\";</script>");
-		} else {
-			request.getSession().setAttribute("user", userDetail);
-			response.sendRedirect("/main");
-		}
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		User sessionUser = (User) request.getSession().getAttribute("user");
+		String targetPassword = request.getParameter("password");
+		
+		User user = User.builder()
+						.id(sessionUser.getId())
+						.password(targetPassword)
+						.build();
+		
+		int result = authService.checkOriginPassword(user);
+		
+		response.getWriter().print(result);
+		System.out.println(result);
 	}
 }

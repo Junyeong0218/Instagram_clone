@@ -11,6 +11,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 
+import repository.ArticleDao;
+import repository.ArticleDaoImpl;
 import repository.UserDao;
 import repository.UserDaoImpl;
 
@@ -21,7 +23,9 @@ public class CharsetEncodingFilter implements Filter {
 	public void init(FilterConfig filterConfig) throws ServletException {
 		ServletContext servletContext = filterConfig.getServletContext();
 		UserDao userDao = new UserDaoImpl();
+		ArticleDao articleDao = new ArticleDaoImpl();
 		servletContext.setAttribute("userDao", userDao);
+		servletContext.setAttribute("articleDao", articleDao);
 	}
 
 	@Override

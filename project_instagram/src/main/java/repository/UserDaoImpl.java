@@ -309,10 +309,12 @@ public class UserDaoImpl implements UserDao {
 					+ "user_mst um "
 					+ "left outer join user_profile_image `up` on(um.id = `up`.user_id) "
 				+ "where "
-					+ "um.id != ? and um.disable_flag = 0 "
+					+ "um.id != ? and um.disable_flag = 0 and "
+					+ "um.id != (select fm.partner_user_id from follow_mst fm where fm.user_id = ?) "
 				+ "limit 5;";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, user_id);
+			pstmt.setInt(2, user_id);
 			
 			rs = pstmt.executeQuery();
 			

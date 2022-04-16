@@ -403,6 +403,8 @@ article {
         position: relative;
         width: 100%;
         height: 100%;
+        min-height: 614px;
+        max-height: 766.5px;
 }
 
 .picture img {
@@ -436,7 +438,6 @@ article {
 
 .article-description {
         width: 100%;
-        height: 161px;
         background-color: white;
 }
 
@@ -480,17 +481,22 @@ article {
         height: 100%;
         background-repeat: no-repeat;
         background-size: contain;
+        pointer-events: none;
 }
 
-.left-button>button:first-child>span {
+.like-button {
         background-image: url("/static/images/menu_activity.png");
+}
+
+.like-button.pressed {
+        background-image: url("/static/images/reaction_like_pressed.png");
 }
 
 .left-button>button:first-child>span:hover {
         background-image: url("/static/images/menu_activity_hover.png");
 }
 
-.left-button>button:nth-child(2)>span {
+.comment-button {
         background-image: url("/static/images/reaction_comment.png");
 }
 
@@ -498,7 +504,7 @@ article {
         background-image: url("/static/images/reaction_comment_hover.png");
 }
 
-.left-button>button:last-child>span {
+.share-button {
         background-image: url("/static/images/menu_message.png");
 }
 
@@ -506,7 +512,7 @@ article {
         background-image: url("/static/images/menu_message_hover.png");
 }
 
-.right-button>button>span {
+.save-to-collection {
         background-image: url("/static/images/reaction_collect.png");
 }
 
@@ -579,6 +585,17 @@ article {
         font-weight: 400;
 }
 
+.show-comments-button {
+	border: none;
+	background: none;
+	font-size: 14px;
+	font-weight: 400;
+	color: rgb(142,142,142);
+	line-height: 18px;
+	white-space: nowrap;
+	cursor: pointer;
+}
+
 .upload-time-wrapper {
         margin-bottom: 16px;
         padding-left: 16px;
@@ -607,6 +624,7 @@ article {
         padding: 8px 16px 8px 0;
         width: 40px;
         height: 40px;
+        cursor: pointer;
 }
 
 .emoji-wrapper img {
@@ -634,6 +652,13 @@ article {
         line-height: 18px;
         border: none;
         background: none;
+        cursor: pointer;
+        opacity: 1;
+}
+
+.comment-submit-button.disabled {
+	cursor: default;
+	opacity: 0.3;
 }
 
 .pop-up {

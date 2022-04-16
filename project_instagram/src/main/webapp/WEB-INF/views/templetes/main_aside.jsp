@@ -6,7 +6,7 @@
 		<div class="profile-description-image">
 		
 			<c:if test="${sessionScope.user.has_profile_image == true}">
-				<img src="/static/images/user_profile_images/${sessionScope.user.username}.png" alt="프로필">					
+				<img src="/static/images/user_profile_images/${sessionScope.user.file_name}" alt="프로필">					
 			</c:if>
 			<c:if test="${sessionScope.user.has_profile_image == false}">
 				<img src="/static/images/basic_profile_image.jpg" alt="프로필">

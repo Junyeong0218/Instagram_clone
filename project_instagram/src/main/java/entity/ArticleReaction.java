@@ -15,14 +15,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Article {
+public class ArticleReaction {
 
 	private int id;
-	private int user_id;
-	private String feature;
-	private String media_type;
-	private String contents;
-	private boolean is_stored;
+	private int article_id;
+	private int like_user_id;
 	private LocalDateTime create_date;
 	private LocalDateTime update_date;
 	

@@ -7,7 +7,6 @@ function loadRecommendUsers() {
 		dataType: "text",
 		success: function (data) {
 			data = JSON.parse(data);
-			console.log(data);
 			for(let i=0; i < data.length; i++) {
 				const tag = makeRecommendUserTag(data[i]);
 				recommend_users.appendChild(tag);
