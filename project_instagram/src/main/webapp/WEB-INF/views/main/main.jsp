@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -13,27 +13,28 @@
 	<link rel="stylesheet" href="/static/css/container.css">
 	<link rel="stylesheet" href="/static/css/main/header.css">
 	<link rel="stylesheet" href="/static/css/main/main.css">
+	<link rel="stylesheet" href="/static/css/popup.css">
 	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 
 <body>
 	<div class="container">
-		
+
 		<jsp:include page="/WEB-INF/views/templetes/header.jsp" />
-		
+
 		<main>
 			<div class="main-wrapper">
 				<div class="article-area">
 					<ul class="story-area">
-						
+
 					</ul>
 					<div class="articles">
-						
+					
 					</div>
 				</div>
-				
+
 				<jsp:include page="/WEB-INF/views/templetes/main_aside.jsp" />
-				
+
 			</div>
 		</main>
 	</div>
@@ -68,6 +69,7 @@
 	<script src="/static/js/main/load_aside_recommend.js"></script>
 	<script src="/static/js/main/load_recent_stories.js"></script>
 	<script src="/static/js/main/load_article_list.js"></script>
+	<script src="/static/js/main/article_detail_control.js"></script>
 	<script src="/static/js/main/main.js"></script>
 </body>
 

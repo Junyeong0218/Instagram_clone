@@ -28,6 +28,10 @@ let is_password_pair_equal = false;
 // --------------------------------------------------
 // eventListeners
 
+window.onload = (event) => {
+	focusFormWithQueryString();
+}
+
 for(let i = 0; i < userinfo_inputs.length; i++) {
 	userinfo_inputs[i].oninput = evaluateChange;	
 }
@@ -49,6 +53,15 @@ password_inputs[2].onblur = checkPasswordEquality;
 
 // --------------------------------------------------
 // functions
+
+function focusFormWithQueryString() {
+	const uri = location.href;
+	const array = uri.split("?");
+	if(array.length > 1 && array[1].includes("change-password")) {
+		userinfo_form.classList.add("hidden");
+		password_form.classList.remove("hidden");
+	}
+}
 
 function isEmpty(inputTag) {
 	if(inputTag.value == null || inputTag.value == "" || typeof inputTag.value == "undefined") {

@@ -1,6 +1,8 @@
-let article_load_count = 0;
+const container = document.querySelector(".container");
 const article_wrapper = document.querySelector(".articles");
 let origin_article_list = new Array();
+
+let article_load_count = 0;
 
 function loadArticleList() {
 	$.ajax({
@@ -26,6 +28,9 @@ function loadArticleList() {
 				const comment_submit_button = articleTag.querySelector(".comment-submit-button");
 				comment_submit_button.onclick = submitComment;
 				
+				const show_comments_button = articleTag.querySelector(".show-comments-button");
+				show_comments_button.onclick = showArticleDetail;
+				
 				console.log(origin_article_list);
 			}
 		},
@@ -45,15 +50,15 @@ function makeArticleTag(articleData) {
 	const header = document.createElement("div");
 	header.className = "article-header";
 	header.innerHTML = `<div class="writer-image">
-							<img src="/static/images/${articleData.has_profile_image == "true" ? articleData.file_name : 'basic_profile_image.jpg'}" alt="게시글 작성자 프로필 이미지">
-						</div>
-						<div class="writer-info">
-							<a href="#" class="writer-username">${articleData.username}</a>
-							${articleData.feature == "true" ? '<span class="remark">' + articleData.feature + '</span>' : ''}
-						</div>
-						<button type="button" class="article-menu">
-							<img src="/static/images/article_menu.png" alt="옵션 더 보기">
-						</button>`;
+												<img src="/static/images/${articleData.has_profile_image == "true" ? articleData.file_name : 'basic_profile_image.jpg'}" alt="게시글 작성자 프로필 이미지">
+											</div>
+											<div class="writer-info">
+												<a href="#" class="writer-username">${articleData.username}</a>
+												${articleData.feature == "true" ? '<span class="remark">' + articleData.feature + '</span>' : ''}
+											</div>
+											<button type="button" class="article-menu">
+												<img src="/static/images/article_menu.png" alt="옵션 더 보기">
+											</button>`;
 	// ------------------------------------
 	// make article header
 						
@@ -118,10 +123,10 @@ function makeArticleTag(articleData) {
 														<span class="description-username">${articleData.username}</span>
 														<span class="description-text">${articleData.contents}</span>
 													</div>
-${articleData.article_comment_list.length > 2 ? `<div class="article-texts">
-																								<button type="button" class="show-comments-button">댓글 ` + articleData.article_comment_list.length + `개 모두 보기</span>
+${articleData.total_commented_user_count > 2 ? `<div class="article-texts">
+																								<button type="button" class="show-comments-button">댓글 ` + articleData.total_commented_user_count + `개 모두 보기</span>
 																							</div>` : 
-	articleData.article_comment_list.length == 1 && articleData.article_comment_list[0].id != 0 ? `<div class="article-texts">
+	articleData.total_commented_user_count == 1 ? `<div class="article-texts">
 																								<button type="button" class="show-comments-button">댓글 1개 모두 보기</span>
 																							</div>` : ''}
 													<div class="upload-time-wrapper">
@@ -273,9 +278,36 @@ function submitComment(event) {
 			}
 		},
 		error: function (xhr, status, error) {
-					console.log(xhr);
-					console.log(status);
-					console.log(error);
+			console.log(xhr);
+			console.log(status);
+			console.log(error);
 		} 
 	});
+}
+
+function showArticleDetail(event) {
+	const article_index = getArticleIndex(event.path[3]);
+	const article_id = origin_article_list[article_index].id;
+	$.ajax({
+		type: "get",
+		url: "/article/select-article-detail",
+		data: { "article_id": article_id },
+		dataType: "text",
+		async: "false",
+		success: function (data) {
+			data = JSON.parse(data);
+			console.log(data);
+			
+			const article_detail_tag = makeArticleDetail(data);
+		},
+		error: function (xhr, status, error) {
+			console.log(xhr);
+			console.log(status);
+			console.log(error);
+		}
+	});
+}
+
+function makeArticleDetail(article_data) {
+	const detail_container = document.createElement("div");
 }

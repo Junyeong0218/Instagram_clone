@@ -1,0 +1,253 @@
+main {
+    width: 975px;
+}
+
+.main-wrapper {
+    margin: 60px auto 0;
+    padding: 30px 20px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    max-width: 975px;
+}
+
+.user-summary {
+    position: relative;
+    margin-bottom: 44px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 150px;
+}
+
+.profile-background {
+    position: absolute;
+    top: -8px;
+    margin-left: 62px;
+}
+
+.profile-image {
+    margin: 0 70px 0 70px;
+    width: 150px;
+    height: 100%;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.userinfo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    height: 100%;
+}
+
+.menu-buttons,
+.follow-info {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.menu-buttons>span {
+    font-size: 28px;
+    font-weight: 300;
+    color: rgb(38, 38, 38);
+    line-height: 32px;
+}
+
+.menu-buttons>a {
+    margin-left: 20px;
+    padding: 5px 9px;
+    height: 30px;
+    border: 1px solid rgb(219, 219, 219);
+    border-radius: 4px;
+    background: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgb(38, 38, 38);
+    text-align: center;
+    cursor: pointer;
+}
+
+.account-menu-button {
+    margin-left: 5px;
+    padding: 8px;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.account-menu-button>img {
+    width: 24px;
+    height: 24px;
+    background-color: rgba(0, 0, 0, 0);
+    pointer-events: none;
+}
+
+.follow-info>span,
+.follow-info>button,
+.user-name {
+    margin-right: 40px;
+    color: rgb(38, 38, 38);
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 24px;
+}
+
+.follow-info>button {
+    border: none;
+    background: none;
+}
+
+.article-quantity,
+.follower,
+.following,
+.user-name {
+    font-weight: 500;
+}
+
+.tab-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 53px;
+    border-top: 1px solid rgb(219, 219, 219);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.tab-buttons>button:not(:last-child) {
+    margin-right: 60px;
+}
+
+.tab-buttons>button {
+    margin-top: -1px;
+    display: flex;
+    align-items: center;
+    width: 57px;
+    height: 53px;
+    border: none;
+    background: none;
+    font: inherit;
+    color: #8e8e8e;
+    cursor: pointer;
+}
+
+.tab-buttons>button.active {
+    border-top: 1px solid rgb(38, 38, 38);
+    color: rgb(38, 38, 38);
+}
+
+.tab-buttons>button>* {
+    pointer-events: none;
+}
+
+.button-image {
+    display: block;
+    width: 12px;
+    height: 12px;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.article-tab>.button-image {
+    background-image: url("/static/images/profile_tab_button_articles_disabled.png");
+}
+
+.article-tab.active>.button-image {
+    background-image: url("/static/images/profile_tab_button_articles.png");
+}
+
+.collected-tab>.button-image {
+    background-image: url("/static/images/profile_tab_button_collected_disabled.png");
+}
+
+.collected-tab.active>.button-image {
+    background-image: url("/static/images/profile_tab_button_collected.png");
+}
+
+.tagged-tab>.button-image {
+    background-image: url("/static/images/profile_tab_button_tagged_disabled.png");
+}
+
+.tagged-tab.active>.button-image {
+    background-image: url("/static/images/profile_tab_button_tagged.png");
+}
+
+.tab-button-text {
+    margin-left: 6px;
+    font: inherit;
+    line-height: 18px;
+}
+
+.articles,
+.collected,
+.tagged {
+    display: none;
+    width: 100%;
+    flex-wrap: row wrap;
+    background-color: white;
+}
+
+.articles.active,
+.collected.active,
+.tagged.active {
+    display: flex;
+}
+
+.no-contents {
+    display: flex;
+    width: 100%;
+    height: 380px;
+}
+
+.no-contents>img {
+    height: 380px;
+}
+
+.recommend-to-add {
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-basis: 400px;
+    flex-grow: 1;
+}
+
+.recommend-to-add>.bold-text {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.recommend-to-add>.common-text {
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+.download-app-buttons {
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 40px;
+}
+
+.download-app-buttons>a {
+    height: 40px;
+    background-size: auto 100%;
+}
+
+.download-app-buttons>a>img {
+    width: auto;
+    height: 100%;
+}
+
+.appstore-download {
+    margin-right: 8px;
+}

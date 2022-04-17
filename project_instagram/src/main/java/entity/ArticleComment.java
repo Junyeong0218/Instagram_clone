@@ -19,8 +19,10 @@ public class ArticleComment {
 	
 	private int id;
 	private int article_id;
-	private int commented_user_id;
-	private String commented_username;
+	private int user_id;
+	private String username;
+	private boolean has_profile_image;
+	private String file_name;
 	private String contents;
 	private LocalDateTime create_date;
 	private LocalDateTime update_date;
@@ -29,6 +31,7 @@ public class ArticleComment {
 	private boolean related_flag;
 	private int related_comment_id;
 	
+	private int related_comment_count;
 	private int comment_like_user_count;
 	
 	@Override

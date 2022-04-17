@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `article_comment` (
   CONSTRAINT `related_comment_id` FOREIGN KEY (`related_comment_id`) REFERENCES `article_comment` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
 
--- 테이블 데이터 project_instagram.article_comment:~0 rows (대략적) 내보내기
+-- 테이블 데이터 project_instagram.article_comment:~1 rows (대략적) 내보내기
 DELETE FROM `article_comment`;
 /*!40000 ALTER TABLE `article_comment` DISABLE KEYS */;
 INSERT INTO `article_comment` (`id`, `article_id`, `commented_user_id`, `contents`, `create_date`, `update_date`, `deleted_flag`, `deleted_date`, `related_flag`, `related_comment_id`) VALUES
@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS `article_reaction` (
   CONSTRAINT `like_user_id` FOREIGN KEY (`like_user_id`) REFERENCES `user_mst` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
 
--- 테이블 데이터 project_instagram.article_reaction:~0 rows (대략적) 내보내기
+-- 테이블 데이터 project_instagram.article_reaction:~1 rows (대략적) 내보내기
 DELETE FROM `article_reaction`;
 /*!40000 ALTER TABLE `article_reaction` DISABLE KEYS */;
 INSERT INTO `article_reaction` (`id`, `article_id`, `like_user_id`, `create_date`, `update_date`) VALUES
@@ -238,6 +238,23 @@ CREATE TABLE IF NOT EXISTS `user_story_mst` (
 DELETE FROM `user_story_mst`;
 /*!40000 ALTER TABLE `user_story_mst` DISABLE KEYS */;
 /*!40000 ALTER TABLE `user_story_mst` ENABLE KEYS */;
+
+-- 트리거 project_instagram.default_profile_image_insert 구조 내보내기
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE TRIGGER `default_profile_image_insert` AFTER INSERT ON `user_mst` FOR EACH ROW BEGIN
+	INSERT INTO 
+		user_profile_image
+	VALUES(
+		0, 
+		NEW.id, 
+		NULL, 
+		NOW(), 
+		NOW()
+	);
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;

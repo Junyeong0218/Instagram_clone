@@ -3,6 +3,7 @@ package response_dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import entity.ArticleComment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +17,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ArticleResDto {
+public class ArticleDetailResDto {
 
 	private int id;
 	private int user_id;
@@ -26,12 +27,9 @@ public class ArticleResDto {
 	private String feature;
 	private String media_type;
 	private String contents;
-	private boolean stored;
 	private LocalDateTime article_create_date;
 	private List<String> media_name_list;
 	
 	private boolean like_flag;
-	private int total_like_count;
-	private int total_commented_user_count;
-	
+	private List<ArticleComment> article_comment_list;
 }

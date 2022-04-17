@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import entity.ArticleComment;
 import entity.User;
 import repository.ArticleDao;
 import response_dto.ArticleResDto;
@@ -60,19 +59,7 @@ public class LoadArticles extends HttpServlet {
 			sb.replace(sb.lastIndexOf(","), sb.length(), "");
 			
 			sb.append("], \"total_like_count\": \"" + dto.getTotal_like_count() + "\"" + 
-						", \"total_commented_user_count\": \"" + dto.getTotal_commented_user_count() + "\", \"article_comment_list\": [ ");
-			
-			List<ArticleComment> commentList = dto.getArticle_comment_list();
-			for(ArticleComment comment : commentList) {
-				sb.append(" { \"id\": \"" + comment.getId() + "\"" + 
-							", \"article_id\": \"" + comment.getArticle_id() + "\"" + 
-							", \"commented_user_id\": \"" + comment.getCommented_user_id() + "\"" + 
-							", \"commented_username\": \"" + comment.getCommented_username() + "\"" + 
-							", \"contents\": \"" + comment.getContents() + "\"" + 
-							", \"comment_like_user_count\": \"" + comment.getComment_like_user_count() + "\" }, ");
-			}
-			sb.replace(sb.lastIndexOf(","), sb.length(), "");
-			sb.append("] }, ");
+						", \"total_commented_user_count\": \"" + dto.getTotal_commented_user_count() + "\" }, ");
 			
 		}
 		sb.replace(sb.lastIndexOf(","), sb.length(), "");

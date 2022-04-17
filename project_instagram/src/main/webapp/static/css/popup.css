@@ -1,0 +1,75 @@
+.pop-up {
+    position: absolute;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.65);
+    z-index: -1;
+    opacity: 0;
+}
+
+.to-show {
+    opacity: 1;
+    z-index: 10;
+    transition: opacity 0.2s ease-in;
+}
+
+.to-hidden {
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.2s ease-out;
+}
+
+.article-control,
+.account-control {
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 400px;
+    height: 336px;
+}
+
+.article-control-button,
+.account-control-button {
+    padding: 4px 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 48px;
+    border: none;
+    background-color: white;
+    cursor: pointer;
+}
+
+.article-control-button>span,
+.account-control-button>span {
+    pointer-events: none;
+}
+
+.article-control-button:not(:first-child),
+.account-control-button:not(:first-child) {
+    border-top: 1px solid rgb(219, 219, 219);
+}
+
+.article-control-button:first-child,
+.account-control-button:first-child {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.article-control-button:last-child,
+.account-control-button:last-child {
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.red-text {
+    color: rgb(237, 73, 83);
+    font-weight: 600;
+}

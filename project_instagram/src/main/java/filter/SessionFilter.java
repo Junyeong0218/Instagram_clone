@@ -31,7 +31,6 @@ public class SessionFilter implements Filter {
 				resp.sendRedirect("/index");
 			} else {
 				chain.doFilter(request, response);
-				System.out.println(user);
 			}
 		} else {
 			chain.doFilter(request, response);

@@ -70,7 +70,7 @@
 					<div class="userinfo-profile-image">
 						
 						<c:if test="${sessionScope.user.has_profile_image == true}">
-							<img src="/static/images/user_profile_images/${sessionScope.user.username}.png" alt="프로필">					
+							<img src="/static/images/user_profile_images/${sessionScope.user.file_name}" alt="프로필">					
 						</c:if>
 						<c:if test="${sessionScope.user.has_profile_image == false}">
 							<img src="/static/images/basic_profile_image.jpg" alt="프로필">
@@ -107,7 +107,7 @@
 					<div class="userinfo-input-wrapper">
 						<span class="field-name">웹 사이트</span>
 						<div class="description-wrapper">
-							<input type="text" name="website" placeholder="웹사이트">
+							<input type="text" name="website" placeholder="웹사이트" value="${sessionScope.user.website != null ? sessionScope.user.website : ''}">
 						</div>
 					</div>
 					<div class="userinfo-input-wrapper">
@@ -178,7 +178,7 @@
 					<div class="userinfo-profile-image">
 					
 						<c:if test="${sessionScope.user.has_profile_image == true}">
-							<img src="/static/images/user_profile_images/${sessionScope.user.username}.png" alt="프로필">					
+							<img src="/static/images/user_profile_images/${sessionScope.user.file_name}" alt="프로필">					
 						</c:if>
 						<c:if test="${sessionScope.user.has_profile_image == false}">
 							<img src="/static/images/basic_profile_image.jpg" alt="프로필">
