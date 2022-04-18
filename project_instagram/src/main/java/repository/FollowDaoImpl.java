@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import db.DBConnectionMgr;
+import response_dto.FollowSummaryResDto;
 import response_dto.UserRecommendResDto;
 
 public class FollowDaoImpl implements FollowDao {
@@ -119,5 +120,46 @@ public class FollowDaoImpl implements FollowDao {
 		}
 		
 		return result;
+	}
+	
+	@Override
+	public FollowSummaryResDto selectFollowSummary(int user_id) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		FollowSummaryResDto resDto = null; 
+		
+		try {
+			conn = db.getConnection();
+			sql = "select "
+						+ "count(fm.partner_user_id) as following, "
+						+ "count(fm2.user_id) as follower "
+					+ "from "
+						+ "follow_mst fm "
+						+ "left outer join follow_mst fm2 on(fm2.partner_user_id = ?) "
+					+ "where "
+						+ "fm.user_id = ?;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, user_id);
+			pstmt.setInt(2, user_id);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				resDto = new FollowSummaryResDto();
+				
+				resDto.setFollower(rs.getInt("follower"));
+				resDto.setFollowing(rs.getInt("following"));
+			}
+		} catch(SQLDataException e1) {
+			System.out.println("no row!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt);
+		}
+		
+		return resDto;
 	}
 }

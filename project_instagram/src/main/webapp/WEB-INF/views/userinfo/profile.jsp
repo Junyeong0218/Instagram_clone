@@ -42,8 +42,8 @@
                         </div>
                         <div class="follow-info">
                             <span>게시물 <span class="article-quantity">0</span></span>
-                            <button type="button">팔로워 <span class="follower">222</span></button>
-                            <button type="button">팔로우 <span class="following">127</span></button>
+                            <button type="button">팔로워 <span class="follower"></span></button>
+                            <button type="button">팔로우 <span class="following"></span></button>
                         </div>
                         <span class="user-name">박준영</span>
                     </div>
@@ -153,6 +153,7 @@
 	<script src="/static/js/main/profile_menu_control.js"></script>
     <script src="/static/js/userinfo/profile/tab_control.js"></script>
     <script src="/static/js/userinfo/profile/pop_up_control.js"></script>
+    <script src="/static/js/userinfo/profile/load_follow_info.js"></script>
 </body>
 
 </html>

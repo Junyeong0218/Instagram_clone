@@ -3,6 +3,7 @@ package service;
 import java.util.List;
 
 import repository.FollowDao;
+import response_dto.FollowSummaryResDto;
 import response_dto.UserRecommendResDto;
 
 public class FollowServiceImpl implements FollowService {
@@ -26,5 +27,10 @@ public class FollowServiceImpl implements FollowService {
 	@Override
 	public int deleteFollowUser(int partner_user_id, int user_id) {
 		return followDao.deleteFollowUser(partner_user_id, user_id);
+	}
+	
+	@Override
+	public FollowSummaryResDto selectFollowSummary(int user_id) {
+		return followDao.selectFollowSummary(user_id);
 	}
 }
