@@ -20,7 +20,7 @@
 		<nav>
 			<div class="nav-wrapper">
 				<div class="home">
-					<a href=""><img src="/static/images/menu_home.png" alt="홈"></a>
+					<a href="/main"><img src="/static/images/menu_home.png" alt="홈"></a>
 				</div>
 				<div class="direct-message">
 					<a href="#"><img src="/static/images/menu_message.png"

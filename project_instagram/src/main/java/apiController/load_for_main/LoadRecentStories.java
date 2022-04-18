@@ -12,29 +12,29 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import entity.User;
-import repository.UserDao;
+import repository.StoryDao;
 import response_dto.RecentStoryResDto;
-import service.FollowService;
-import service.FollowServiceImpl;
+import service.StoryService;
+import service.StoryServiceImpl;
 
 @WebServlet("/load-recent-stories")
 public class LoadRecentStories extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	
-private FollowService followService;
+	private StoryService storyService;
 	
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(getServletConfig());
 		ServletContext servletContext = config.getServletContext();
-		followService = new FollowServiceImpl((UserDao) servletContext.getAttribute("userDao"));
+		storyService = new StoryServiceImpl((StoryDao) servletContext.getAttribute("storyDao"));
 	}
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		User sessionUser = (User) request.getSession().getAttribute("user");
 		
-		List<RecentStoryResDto> storyList = followService.selectRecentStories(sessionUser.getId());
+		List<RecentStoryResDto> storyList = storyService.selectRecentStories(sessionUser.getId());
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append("[ ");

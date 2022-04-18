@@ -56,7 +56,7 @@ public class ArticleDaoImpl implements ArticleDao {
 					+ "left outer join article_comment ac on(am.id = ac.article_id) "
 				+ "where "
 					+ "am.user_id != ? and "
-					+ "am.user_id = (select fm.partner_user_id from follow_mst fm where fm.user_id = ?) "
+					+ "am.user_id in(select fm.partner_user_id from follow_mst fm where fm.user_id = ?) "
 				+ "order by "
 					+ "am.create_date desc;";
 

@@ -4,13 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLDataException;
-import java.util.ArrayList;
-import java.util.List;
 
 import db.DBConnectionMgr;
 import entity.User;
-import response_dto.RecentStoryResDto;
-import response_dto.UserRecommendResDto;
 
 public class UserDaoImpl implements UserDao {
 
@@ -287,101 +283,6 @@ public class UserDaoImpl implements UserDao {
 		}
 		
 		return result;
-	}
-	
-	@Override
-	public List<UserRecommendResDto> selectRecommendUsers(int user_id) {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String sql = "";
-		List<UserRecommendResDto> userList = new ArrayList<UserRecommendResDto>();
-		
-		try {
-			conn = db.getConnection();
-			sql = "select "
-					+ "um.id ,"
-					+ "um.username, "
-					+ "um.name, "
-					+ "um.has_profile_image, "
-					+ "`up`.file_name "
-				+ "from "
-					+ "user_mst um "
-					+ "left outer join user_profile_image `up` on(um.id = `up`.user_id) "
-				+ "where "
-					+ "um.id != ? and um.disable_flag = 0 and "
-					+ "um.id != (select fm.partner_user_id from follow_mst fm where fm.user_id = ?) "
-				+ "limit 5;";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, user_id);
-			pstmt.setInt(2, user_id);
-			
-			rs = pstmt.executeQuery();
-			
-			while(rs.next()) {
-				UserRecommendResDto resDto = new UserRecommendResDto();
-				resDto.setId(rs.getInt("id"));
-				resDto.setUsername(rs.getString("username"));
-				resDto.setName(rs.getString("name"));
-				resDto.setHas_profile_image(rs.getInt("has_profile_image") == 1 ? true : false);
-				resDto.setFile_name(rs.getString("file_name"));
-				
-				userList.add(resDto);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			db.freeConnection(conn, pstmt);
-		}
-		
-		return userList;
-	}
-	
-	@Override
-	public List<RecentStoryResDto> selectRecentStories(int user_id) {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String sql = "";
-		List<RecentStoryResDto> userList = new ArrayList<RecentStoryResDto>();
-		
-		try {
-			conn = db.getConnection();
-			sql = "select "
-					+ "um.id ,"
-					+ "um.username, "
-					+ "um.name, "
-					+ "um.has_profile_image, "
-					+ "up.file_name, "
-					+ "us.id "
-				+ "from "
-					+ "user_mst um "
-					+ "left outer join user_profile_image up on(um.id = up.user_id) "
-					+ "left outer join user_story_mst us on(um.id = us.user_id) "
-				+ "where "
-					+ "um.id != ? and um.disable_flag = 0 and us.id is not null";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, user_id);
-			
-			rs = pstmt.executeQuery();
-			
-			while(rs.next()) {
-				RecentStoryResDto resDto = new RecentStoryResDto();
-				resDto.setId(rs.getInt("id"));
-				resDto.setUsername(rs.getString("username"));
-				resDto.setName(rs.getString("name"));
-				resDto.setHas_profile_image(rs.getInt("has_profile_image") == 1 ? true : false);
-				resDto.setFile_name(rs.getString("file_name"));
-				
-				userList.add(resDto);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			db.freeConnection(conn, pstmt);
-		}
-		
-		return userList;
 	}
 	
 }

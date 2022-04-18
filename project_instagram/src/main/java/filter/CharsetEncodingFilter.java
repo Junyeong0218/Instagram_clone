@@ -13,6 +13,10 @@ import javax.servlet.annotation.WebFilter;
 
 import repository.ArticleDao;
 import repository.ArticleDaoImpl;
+import repository.FollowDao;
+import repository.FollowDaoImpl;
+import repository.StoryDao;
+import repository.StoryDaoImpl;
 import repository.UserDao;
 import repository.UserDaoImpl;
 
@@ -24,8 +28,12 @@ public class CharsetEncodingFilter implements Filter {
 		ServletContext servletContext = filterConfig.getServletContext();
 		UserDao userDao = new UserDaoImpl();
 		ArticleDao articleDao = new ArticleDaoImpl();
+		FollowDao followDao = new FollowDaoImpl();
+		StoryDao storyDao = new StoryDaoImpl();
 		servletContext.setAttribute("userDao", userDao);
 		servletContext.setAttribute("articleDao", articleDao);
+		servletContext.setAttribute("followDao", followDao);
+		servletContext.setAttribute("storyDao", storyDao);
 	}
 
 	@Override

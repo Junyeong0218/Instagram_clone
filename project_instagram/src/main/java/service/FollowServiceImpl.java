@@ -2,25 +2,29 @@ package service;
 
 import java.util.List;
 
-import repository.UserDao;
-import response_dto.RecentStoryResDto;
+import repository.FollowDao;
 import response_dto.UserRecommendResDto;
 
 public class FollowServiceImpl implements FollowService {
 	
-	private UserDao userDao;
+	private FollowDao followDao;
 	
-	public FollowServiceImpl(UserDao userDao) {
-		this.userDao = userDao;
+	public FollowServiceImpl(FollowDao followDao) {
+		this.followDao = followDao;
 	}
 
 	@Override
 	public List<UserRecommendResDto> selectRecommendUsers(int user_id) {
-		return userDao.selectRecommendUsers(user_id);
+		return followDao.selectRecommendUsers(user_id);
 	}
 	
 	@Override
-	public List<RecentStoryResDto> selectRecentStories(int user_id) {
-		return userDao.selectRecentStories(user_id);
+	public int insertFollowUser(int partner_user_id, int user_id) {
+		return followDao.insertFollowUser(partner_user_id, user_id);
+	}
+	
+	@Override
+	public int deleteFollowUser(int partner_user_id, int user_id) {
+		return followDao.deleteFollowUser(partner_user_id, user_id);
 	}
 }

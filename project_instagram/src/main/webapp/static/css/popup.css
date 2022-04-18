@@ -34,6 +34,10 @@
     height: 336px;
 }
 
+.account-control {
+	height: auto;
+}
+
 .article-control-button,
 .account-control-button {
     padding: 4px 8px;

@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import entity.User;
-import repository.UserDao;
+import repository.FollowDao;
 import response_dto.UserRecommendResDto;
 import service.FollowService;
 import service.FollowServiceImpl;
@@ -27,7 +27,7 @@ public class LoadRecommendUsers extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
 		super.init(getServletConfig());
 		ServletContext servletContext = config.getServletContext();
-		followService = new FollowServiceImpl((UserDao) servletContext.getAttribute("userDao"));
+		followService = new FollowServiceImpl((FollowDao) servletContext.getAttribute("followDao"));
 	}
 	
 	@Override

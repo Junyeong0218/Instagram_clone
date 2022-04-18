@@ -4,7 +4,6 @@ import java.util.List;
 
 import entity.User;
 import response_dto.RecentStoryResDto;
-import response_dto.UserRecommendResDto;
 
 public interface UserDao {
 	
@@ -23,8 +22,4 @@ public interface UserDao {
 	public int updateUserProfile(User user);
 	
 	public int updatePassword(User user);
-	
-	public List<UserRecommendResDto> selectRecommendUsers(int user_id);
-
-	public List<RecentStoryResDto> selectRecentStories(int user_id);
 }

@@ -7,6 +7,7 @@
         <meta http-equiv="X-UA-Compatible">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>회원가입 · Instagram</title>
+        <link rel="shortcut icon" href="/static/images/shortcut.ico" type="image/x-icon">
         <link rel="stylesheet" href="/static/css/container.css">
         <link rel="stylesheet" href="/static/css/signup/signup.css">
         <link rel="stylesheet" href="/static/css/short_footer.css">
