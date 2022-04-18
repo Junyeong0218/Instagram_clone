@@ -30,6 +30,7 @@ public class ArticleComment {
 	private LocalDateTime deleted_date;
 	private boolean related_flag;
 	private int related_comment_id;
+	private boolean like_flag;
 	
 	private int related_comment_count;
 	private int comment_like_user_count;

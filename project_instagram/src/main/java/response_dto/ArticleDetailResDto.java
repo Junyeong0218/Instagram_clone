@@ -30,6 +30,8 @@ public class ArticleDetailResDto {
 	private LocalDateTime article_create_date;
 	private List<String> media_name_list;
 	
+	private int like_user_count;
+	
 	private boolean like_flag;
 	private List<ArticleComment> article_comment_list;
 }

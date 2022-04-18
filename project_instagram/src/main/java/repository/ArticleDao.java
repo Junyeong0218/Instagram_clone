@@ -15,4 +15,8 @@ public interface ArticleDao {
 	public int insertComment(int article_id, String contents, int user_id);
 	
 	public List<ArticleDetail> selectArticleDetail(int article_id, int user_id);
+	
+	public int insertCommentLike(int comment_id, int user_id);
+	
+	public int deleteCommentLike(int comment_id, int user_id);
 }

@@ -40,6 +40,7 @@ public class ArticleDetail {
 	private String commented_user_file_name;
 	private String comment_contents;  // article_comment
 	private LocalDateTime comment_create_date;  // article_comment
+	private boolean comment_like_flag;
 	private int related_comment_count; // article_comment
 	private int comment_like_user_count; // article_comment
 	

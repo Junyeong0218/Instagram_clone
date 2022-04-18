@@ -84,6 +84,7 @@ public class ArticleServiceImpl implements ArticleService {
 		ArticleDetailResDto articleDetailResDto = new ArticleDetailResDto();
 		
 		for(int i = 0; i < articleDetailList.size(); i++) {
+			System.out.println(articleDetailList.get(i));
 			ArticleDetail detail = articleDetailList.get(i);
 			if(i == 0) {
 				articleDetailResDto.setId(detail.getArticle_id());
@@ -96,6 +97,7 @@ public class ArticleServiceImpl implements ArticleService {
 				articleDetailResDto.setContents(detail.getContents());
 				articleDetailResDto.setArticle_create_date(detail.getCreate_date());
 				articleDetailResDto.setLike_flag(detail.isLike_flag());
+				articleDetailResDto.setLike_user_count(detail.getLike_user_count());
 				
 				articleDetailResDto.setMedia_name_list(new ArrayList<String>());
 				articleDetailResDto.setArticle_comment_list(new ArrayList<ArticleComment>());
@@ -118,11 +120,22 @@ public class ArticleServiceImpl implements ArticleService {
 				comment.setCreate_date(detail.getComment_create_date());
 				comment.setRelated_comment_count(detail.getRelated_comment_count());
 				comment.setComment_like_user_count(detail.getComment_like_user_count());
+				comment.setLike_flag(detail.isComment_like_flag());
 				
 				article_comment_list.add(comment);
 			}
 			
 		}
 		return articleDetailResDto;
+	}
+	
+	@Override
+	public int insertCommentLike(int comment_id, int user_id) {
+		return articleDao.insertCommentLike(comment_id, user_id);
+	}
+	
+	@Override
+	public int deleteCommentLike(int comment_id, int user_id) {
+		return articleDao.deleteCommentLike(comment_id, user_id);
 	}
 }

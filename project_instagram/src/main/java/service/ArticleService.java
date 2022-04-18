@@ -16,4 +16,8 @@ public interface ArticleService {
 	public int insertComment(int article_id, String contents, int user_id);
 	
 	public ArticleDetailResDto selectArticleDetail(int article_id, int user_id);
+	
+	public int insertCommentLike(int comment_id, int user_id);
+
+	public int deleteCommentLike(int comment_id, int user_id);
 }

@@ -42,10 +42,10 @@ public class ArticleDaoImpl implements ArticleDao {
 					
 					+ "media.media_name, "
 					
-					+ "count(ar.like_user_id) as `like_user_count`, "
+					+ "count(distinct ar.like_user_id) as `like_user_count`, "
 					+ "ar2.like_user_id, "
 					
-					+ "count(ac.commented_user_id) as `total_commented_user_count` "
+					+ "count(distinct ac.id) as `total_commented_user_count` "
 				+ "from "
 					+ "article_mst am "
 					+ "left outer join user_mst um on(um.id = am.user_id) "
@@ -205,7 +205,8 @@ public class ArticleDaoImpl implements ArticleDao {
 						+ "ac.`contents` as comment_contents, "
 						+ "ac.create_date as comment_create_date, "
 						+ "count(ac2.id) as related_comment_count, "
-						+ "count(acr.like_user_id) as comment_like_user_count "
+						+ "count(acr.like_user_id) as comment_like_user_count,"
+						+ "acr2.like_user_id as comment_like_flag "
 					+ "from "
 						+ "article_mst am "
 						+ "left outer join user_mst um on(um.id = am.user_id) "
@@ -218,13 +219,18 @@ public class ArticleDaoImpl implements ArticleDao {
 						+ "left outer join user_profile_image up2 on(up2.user_id = ac.commented_user_id) "
 						+ "left outer join article_comment ac2 on(ac2.related_comment_id = ac.id and ac2.related_flag = 1) "
 						+ "left outer join article_comment_reaction acr on(acr.article_comment_id = ac.id) "
+						+ "left outer join article_comment_reaction acr2 on(acr2.article_comment_id = ac.id and acr2.like_user_id = ?) "
 					+ "where "
 						+ "am.id = ? "
+					+ "group by "
+						+ "comment_id "
 					+ "order by "
-						+ "comment_like_user_count desc";
+						+ "comment_like_user_count desc, "
+						+ "comment_create_date asc";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, user_id);
-			pstmt.setInt(2,  article_id);
+			pstmt.setInt(2, user_id);
+			pstmt.setInt(3,  article_id);
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
@@ -250,6 +256,7 @@ public class ArticleDaoImpl implements ArticleDao {
 				detail.setComment_create_date(rs.getTimestamp("comment_create_date").toLocalDateTime());
 				detail.setRelated_comment_count(rs.getInt("related_comment_count"));
 				detail.setComment_like_user_count(rs.getInt("comment_like_user_count"));
+				detail.setComment_like_flag(rs.getInt("comment_like_flag") == 0 ? false : true);
 				
 				articleDetailList.add(detail);
 			}
@@ -261,5 +268,55 @@ public class ArticleDaoImpl implements ArticleDao {
 		}
 		
 		return articleDetailList;
+	}
+	
+	@Override
+	public int insertCommentLike(int comment_id, int user_id) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String sql = null;
+		int result = 0;
+		
+		try {
+			conn = db.getConnection();
+			sql = "insert into article_comment_reaction values(0, ?, ?, now(), now());";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, comment_id);
+			pstmt.setInt(2, user_id);
+			
+			result = pstmt.executeUpdate();
+			
+		} catch(SQLDataException e1) {
+			System.out.println("no rows");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public int deleteCommentLike(int comment_id, int user_id) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String sql = null;
+		int result = 0;
+		
+		try {
+			conn = db.getConnection();
+			sql = "delete from article_comment_reaction where article_comment_id = ? and like_user_id = ?;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, comment_id);
+			pstmt.setInt(2, user_id);
+			
+			result = pstmt.executeUpdate();
+			
+		} catch(SQLDataException e1) {
+			System.out.println("no rows");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 }

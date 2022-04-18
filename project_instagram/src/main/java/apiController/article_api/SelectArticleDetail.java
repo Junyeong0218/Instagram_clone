@@ -55,6 +55,7 @@ public class SelectArticleDetail extends HttpServlet {
 							  " \"contents\": \"" + articleDetailResDto.getContents() + "\", " +
 							  " \"article_create_date\": \"" + articleDetailResDto.getArticle_create_date() + "\", " +
 							  " \"like_flag\": \"" + articleDetailResDto.isLike_flag() + "\", " + 
+							  " \"total_like_count\": \"" + articleDetailResDto.getLike_user_count() + "\", " + 
 							  " \"media_name_list\": [ ");
 		for(String media_name : media_name_list) {
 			sb.append("\"" + media_name + "\", ");
@@ -71,13 +72,14 @@ public class SelectArticleDetail extends HttpServlet {
 								  " \"file_name\": \"" + comment.getFile_name() + "\", " +
 								  " \"contents\": \"" + comment.getContents() + "\", " +
 								  " \"create_date\": \"" + comment.getCreate_date() + "\", " +
+								  " \"comment_like_flag\": \"" + comment.isLike_flag() + "\", " +
 								  " \"related_comment_count\": \"" + comment.getRelated_comment_count() + "\", " +
 								  " \"comment_like_user_count\": \"" + comment.getComment_like_user_count() + "\"},  ");
 		}
 		sb.replace(sb.lastIndexOf(","), sb.length(), "");
 		sb.append(" ] }");
 		
-		System.out.println(sb.toString());
+//		System.out.println(sb.toString());
 		
 		response.setContentType("text/plain; charset=UTF-8");
 		response.getWriter().print(sb.toString());

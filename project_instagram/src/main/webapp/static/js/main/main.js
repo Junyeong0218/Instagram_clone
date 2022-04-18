@@ -3,4 +3,4 @@ window.onload = (event) => {
 	loadRecommendUsers();
 	loadRecentStories();
 	loadArticleList();
-}	
+}
