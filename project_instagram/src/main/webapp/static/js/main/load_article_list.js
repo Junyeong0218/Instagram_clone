@@ -157,23 +157,23 @@ ${Number(articleData.total_commented_user_count) > 1 ? `<div class="article-text
 
 function makeUploadTimeMessage(create_date) {
 	const upload_time = new Date(create_date);
-	const now = new Date()
+	const now = new Date();
 	const ago = new Date(now - upload_time);
 	ago.setUTCHours(-9);
 	
-	const year = ago.getFullYear() - 1970;
-	const month = ago.getMonth() + 1;
-	const date = ago.getDate();
-	const hour = ago.getHours();
-	const minute = ago.getMinutes();
-	const second = ago.getSeconds();
+	let year = ago.getFullYear() - 1970;
+	let month = ago.getMonth() + 1;
+	let date = ago.getDate();
+	let hour = ago.getHours();
+	let minute = ago.getMinutes();
+	let second = ago.getSeconds();
 	
 	if(year > 0) {
 		return `${year}년 전`;
 	} else if(month > 1) {
 		return `${month}개월 전`;
-	} else if(date > 1) {
-		return `${date - 1}일 전`;
+	} else if(date == 1 && upload_time.getDay() != now.getDay()) {
+		return `${date}일 전`;
 	} else if(hour > 0) {
 		return `${hour}시간 전`;
 	} else if(minute > 0) {

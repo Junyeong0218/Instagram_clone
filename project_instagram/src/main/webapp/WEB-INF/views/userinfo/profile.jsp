@@ -114,7 +114,7 @@
 
         <jsp:include page="/WEB-INF/views/templetes/short_footer.jsp" />
 
-        <div class="pop-up">
+        <div id="account-menus" class="pop-up">
             <div class="account-control">
                 <button id="change-password" class="account-control-button">
                     <span>비밀번호 변경</span>
@@ -146,6 +146,11 @@
                 <button id="pop-up-closer" class="account-control-button">
                     <span>취소</span>
                 </button>
+            </div>
+        </div>
+        <div id="follow-info" class="pop-up">
+            <div class="follow-description">
+				
             </div>
         </div>
     </div>

@@ -68,7 +68,6 @@
     <script src="/static/js/main/load_aside_recommend.js"></script>
     <script src="/static/js/main/load_recent_stories.js"></script>
     <script src="/static/js/main/load_article_list.js"></script>
-    <script src="/static/js/main/article_detail_control.js"></script>
     <script src="/static/js/main/main.js"></script>
 </body>
 

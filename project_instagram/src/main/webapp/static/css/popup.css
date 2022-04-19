@@ -77,3 +77,135 @@
     color: rgb(237, 73, 83);
     font-weight: 600;
 }
+
+.follow-description {
+	display: flex;
+	flex-direction: column;
+	width: 400px;
+	height: 400px;
+	border-radius: 12px;
+	background-color: white;
+	overflow: hidden;
+}
+
+.follow-info-header {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 43px;
+	border-bottom: 1px solid rgb(219, 219, 219);
+}
+
+.follow-title {
+	font-size: 16px;
+	font-weight: 500;
+	line-height: 24px;
+}
+
+.modal-closer {
+	position: absolute;
+	top: 12px;
+	right: 16px;
+	cursor: pointer;
+}
+
+.following-tab {
+	display: flex;
+	width: 100%;
+	height: 41px;
+	border-bottom: 1px solid rgb(219, 219, 219);
+}
+
+.following-tab > button {
+	width: 50%;
+	height: 41px;
+	background: none;
+	cursor: pointer;
+}
+
+.follow-people,
+.follow-hashtag {
+	border: none;
+	font-size: 16px;
+	font-weight: 500;
+	color: rgba(0, 55, 107, 0.3);
+	line-height: 24px;
+}
+
+.follow-people.active,
+.follow-hashtag.active {
+	border-bottom: 1px solid rgb(38, 38, 38);
+	color: rgb(0, 55, 107);
+}
+
+.people-info,
+.hashtag-info {
+	display: none;
+	flex-direction: column;
+	width: 100%;
+	height: auto;
+	flex-grow: 1;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+
+.people-info.active,
+.hashtag-info.active {
+	display: flex;
+}
+
+.people-info > .row {
+	padding: 8px 16px;
+	display: flex;
+	align-items: center;
+	width: 100%;
+	height: 54px;
+}
+
+.user-profile-image {
+	margin-right: 12px;
+	width: 30px;
+	height: 30px;	
+}
+
+.user-profile-image > img {
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+}
+
+.summary {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	flex: 1 0 auto;
+}
+
+.user-summary-username {
+	font-size: 14px;
+	font-weight: 500;
+	color: rgb(38, 38, 38);
+	line-height: 18px;
+}
+
+.user-summary-name {
+	font-size: 14px;
+	font-weight: 300;
+	color: rgb(142, 142, 142);
+	line-height: 18px;
+}
+
+.follow-button {
+	padding: 5px 9px;
+	height: 30px;
+	border: none;
+	border-radius: 4px;
+	background-color: rgb(0, 149, 246);
+	font-size: 14px;
+	font-weight: 500;
+	color: white;
+	cursor: pointer;
+}

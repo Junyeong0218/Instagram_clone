@@ -110,6 +110,11 @@ main {
     font-weight: 500;
 }
 
+.follower,
+.following {
+	pointer-events: none;
+}
+
 .tab-buttons {
     display: flex;
     justify-content: center;
