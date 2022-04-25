@@ -19,7 +19,7 @@
 <body>
     <div class="container">
 
-        <jsp:include page="/WEB-INF/views/templetes/header.jsp" />
+        <jsp:include page="/WEB-INF/views/templates/header.jsp" />
 
         <main>
             <div class="main-wrapper">
@@ -32,7 +32,7 @@
                     </div>
                 </div>
 
-                <jsp:include page="/WEB-INF/views/templetes/main_aside.jsp" />
+                <jsp:include page="/WEB-INF/views/templates/main_aside.jsp" />
 
             </div>
         </main>

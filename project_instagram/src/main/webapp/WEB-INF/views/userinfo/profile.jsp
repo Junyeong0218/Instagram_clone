@@ -21,18 +21,20 @@
 
     <div class="container">
 
-        <jsp:include page="/WEB-INF/views/templetes/header.jsp" />
+        <jsp:include page="/WEB-INF/views/templates/header.jsp" />
 
         <main>
             <div class="main-wrapper">
                 <div class="user-summary">
                     <img src="/static/images/profile_background.png" class="profile-background" alt="">
+                    
                     <c:if test="${sessionScope.user.has_profile_image == true}">
 	                    <img src="/static/images/user_profile_images/${sessionScope.user.file_name}" class="profile-image" alt="유저 프로필 이미지">
                     </c:if>
                     <c:if test="${sessionScope.user.has_profile_image == false}">
                     	<img src="/static/images/basic_profile_image.jpg" class="profile-image" alt="유저 프로필 이미지">
                     </c:if>
+                    
                     <div class="userinfo">
                         <div class="menu-buttons">
                             <span>${sessionScope.user.username}</span>
@@ -112,7 +114,7 @@
             </div>
         </main>
 
-        <jsp:include page="/WEB-INF/views/templetes/short_footer.jsp" />
+        <jsp:include page="/WEB-INF/views/templates/short_footer.jsp" />
 
         <div id="account-menus" class="pop-up">
             <div class="account-control">

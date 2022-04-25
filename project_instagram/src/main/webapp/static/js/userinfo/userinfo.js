@@ -60,6 +60,8 @@ function focusFormWithQueryString() {
 	if(array.length > 1 && array[1].includes("change-password")) {
 		userinfo_form.classList.add("hidden");
 		password_form.classList.remove("hidden");
+		to_userinfo_button.parentElement.classList.remove("selected-menu");
+		to_password_button.parentElement.classList.add("selected-menu");
 	}
 }
 

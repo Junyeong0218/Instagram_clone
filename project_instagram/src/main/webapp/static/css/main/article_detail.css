@@ -151,10 +151,19 @@
 
 }
 
+.show-reply-comment > .detail-contents {
+	display: none;
+}
+
+.show-reply-comment.active > .detail-contents {
+	display: flex;
+}
+
 .show-reply-button {
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    cursor:pointer;
 }
 
 .show-reply-button>span {
@@ -170,7 +179,11 @@
     font-weight: 500;
     color: rgb(142, 142, 142);
     line-height: 16px;
-    cursor: pointer;
+}
+
+.show-reply-button>span,
+.show-reply-button>button {
+	pointer-events: none;
 }
 
 .detail-content {

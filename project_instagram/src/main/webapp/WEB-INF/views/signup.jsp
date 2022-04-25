@@ -30,23 +30,33 @@
                         <div class="line"></div>
                     </div>
                     <form action="" method="post">
-                        <label for="email"> <span>휴대폰 번호 또는 이메일 주소</span> <input type="text" name="email">
+                        <label for="email">
+                        	<span>휴대폰 번호 또는 이메일 주소</span>
+                       		<input type="text" name="email">
                             <div class="input-indicator">
                                 <span></span>
                             </div>
-                        </label> <label for="name"> <span>성명</span> <input type="text" name="name">
+                        </label>
+						<label for="name">
+							<span>성명</span>
+							<input type="text" name="name">
                             <div class="input-indicator">
                                 <span></span>
                             </div>
-                        </label> <label for="username"> <span>사용자 이름</span> <input type="text" name="username">
+                        </label>
+                        <label for="username">
+                        	<span>사용자 이름</span>
+                        	<input type="text" name="username">
                             <div class="input-indicator">
                                 <span></span>
                             </div>
-                        </label> <label for="password"> <span>비밀번호</span> <input type="password" name="password">
+                        </label>
+                        <label for="password">
+                        	<span>비밀번호</span>
+                        	<input type="password" name="password">
                             <div class="input-indicator">
                                 <span></span>
-                                <button type="button" class="default-toggle hidden">비밀번호
-                                    표시</button>
+                                <button type="button" class="default-toggle hidden">비밀번호 표시</button>
                             </div>
                         </label>
                         <button type="submit">
@@ -60,15 +70,14 @@
                 <div class="download">
                     <p>앱을 다운로드하세요.</p>
                     <div class="download-buttons">
-                        <a href="#"> <img src="/static/images/download_applestore.png" alt="앱스토어 다운로드">
-                        </a> <a href="#"> <img src="/static/images/download_playstore.png" alt="플레이스토어 다운로드">
-                        </a>
+                        <a href="#"><img src="/static/images/download_applestore.png" alt="앱스토어 다운로드"></a>
+                        <a href="#"><img src="/static/images/download_playstore.png" alt="플레이스토어 다운로드"></a>
                     </div>
                 </div>
             </main>
         </div>
 
-        <jsp:include page="/WEB-INF/views/templetes/short_footer.jsp" />
+        <jsp:include page="/WEB-INF/views/templates/short_footer.jsp" />
 
         <script src="/static/js/signup/signup.js"></script>
     </body>

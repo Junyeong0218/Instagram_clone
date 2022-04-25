@@ -18,7 +18,7 @@
 <body>
 	<div class="container">
 		
-		<jsp:include page="/WEB-INF/views/templetes/header.jsp" />
+		<jsp:include page="/WEB-INF/views/templates/header.jsp" />
 		
 		<main>
 			<ul class="userinfo-menus">
@@ -219,7 +219,7 @@
 		</main>
 	</div>
 	
-	<jsp:include page="/WEB-INF/views/templetes/short_footer.jsp" />
+	<jsp:include page="/WEB-INF/views/templates/short_footer.jsp" />
 	
 	<div class="pop-up">
 		<div class="gender-control">

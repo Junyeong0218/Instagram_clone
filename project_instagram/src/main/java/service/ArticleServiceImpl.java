@@ -77,6 +77,16 @@ public class ArticleServiceImpl implements ArticleService {
 		return articleDao.insertComment(article_id, contents, user_id);
 	}
 	
+	@Override
+	public int insertRelatedComment(int article_id, String contents, int user_id, int related_comment_id) {
+		return articleDao.insertRelatedComment(article_id, contents, user_id, related_comment_id);
+	}
+	
+	@Override
+	public List<ArticleComment> selectRelatedComments(int related_comment_id, int user_id) {
+		return articleDao.selectRelatedComments(related_comment_id, user_id);
+	}
+	
 	@SuppressWarnings("unlikely-arg-type")
 	@Override
 	public ArticleDetailResDto selectArticleDetail(int article_id, int user_id) {

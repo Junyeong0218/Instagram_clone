@@ -4,6 +4,8 @@ let origin_article_list = new Array();
 let origin_article_detail_data;
 
 let article_load_count = 0;
+let relate_comment_flag = false;
+let relate_comment_id;
 
 function loadArticleList() {
 	$.ajax({
@@ -172,7 +174,7 @@ function makeUploadTimeMessage(create_date) {
 		return `${year}년 전`;
 	} else if(month > 1) {
 		return `${month}개월 전`;
-	} else if(date == 1 && upload_time.getDay() != now.getDay()) {
+	} else if((date == 1 && upload_time.getDay() != now.getDay()) || date > 1) {
 		return `${date}일 전`;
 	} else if(hour > 0) {
 		return `${hour}시간 전`;
@@ -298,23 +300,45 @@ function submitComment(event) {
 	const article_id = article_data.id;
 	let comment = event.target.previousElementSibling.value;
 	
-	$.ajax({
-		type: "post",
-		url: "/article/insert-comment",
-		data: { "article_id": article_id, 
-					  "comment": comment },
-		dataType: "text",
-		success: function (data) {
-			if(data == "1") {
-				location.reload();
+	if(relate_comment_flag == true) {
+		console.log("true 진입");
+		$.ajax({
+			type: "post",
+			url: "/article/insert-related-comment",
+			data: { "article_id": article_id,
+						  "comment": comment,
+						  "related_comment_id": relate_comment_id },
+			dataType: "text",
+			success: function (data) {
+				if(data == "1") {
+					location.reload();
+				}
+			},
+			error: function (xhr, status, error) {
+				console.log(xhr);
+				console.log(status);
+				console.log(error);
 			}
-		},
-		error: function (xhr, status, error) {
-			console.log(xhr);
-			console.log(status);
-			console.log(error);
-		} 
-	});
+		});
+	} else {
+		$.ajax({
+			type: "post",
+			url: "/article/insert-comment",
+			data: { "article_id": article_id, 
+						  "comment": comment },
+			dataType: "text",
+			success: function (data) {
+				if(data == "1") {
+					location.reload();
+				}
+			},
+			error: function (xhr, status, error) {
+				console.log(xhr);
+				console.log(status);
+				console.log(error);
+			} 
+		});
+	}
 }
 
 function showArticleDetail(event) {
@@ -335,6 +359,8 @@ function showArticleDetail(event) {
 		success: function (data) {
 			data = JSON.parse(data);
 			console.log(data);
+			relate_comment_flag = false;
+			relate_comment_id = 0;
 			
 			origin_article_detail_data = data;
 			
@@ -357,7 +383,21 @@ function showArticleDetail(event) {
 			
 			const comment_like_buttons = article_detail_tag.querySelectorAll(".comment-like-button");
 			for(let i=0; i< comment_like_buttons.length; i++) {
-				comment_like_buttons[i].onclick = toggleCommentLike;
+				comment_like_buttons[i].onclick = (event) => {
+					toggleCommentLike(event, false, -1, -1);	
+				}
+			}
+			
+			const reply_buttons = article_detail_tag.querySelectorAll(".reply");
+			for(let i=0; i< reply_buttons.length; i++) {
+				reply_buttons[i].onclick = addAtSignTagToTextArea;
+			}
+			
+			const show_reply_buttons = article_detail_tag.querySelectorAll(".show-reply-button");
+			if(show_reply_buttons.length != 0) {
+				for(let i=0; i < show_reply_buttons.length; i++) {
+					show_reply_buttons[i].onclick = toggleReplies;
+				}
 			}
 			
 			document.querySelector("body").style = "overflow: hidden;";
@@ -370,7 +410,97 @@ function showArticleDetail(event) {
 	});
 }
 
-function toggleCommentLike(event) {
+function toggleReplies(event) {
+	const reply = event.target.nextElementSibling;
+	const show_reply_comment = event.target.parentElement;
+	const index = getCurrentCommentIndex(show_reply_comment.previousElementSibling);
+	const current_comment_data = origin_article_detail_data.article_comment_list[index];
+	if(reply == null || typeof reply  == "undefined") {
+		console.log("select relpies");
+		$.ajax({
+			type: "get",
+			url: "/article/select-related-comments",
+			data: { "comment_id": current_comment_data.id },
+			dataType: "text",
+			success: function (data) {
+				// list 
+				data = JSON.parse(data);
+				origin_article_detail_data.article_comment_list[index].reply_list = data;
+				console.log(data);
+				console.log(origin_article_detail_data);
+				for(let i=0; i < data.length; i++) {
+					const related_comment_tag = makeRelatedCommentTag(data[i]);
+					show_reply_comment.appendChild(related_comment_tag);
+					
+					const like_button = related_comment_tag.querySelector(".comment-like-button");
+					like_button.onclick = (event) => {
+						toggleCommentLike(event, true, i, index);
+					}
+				}
+				show_reply_comment.classList.add("active");
+				show_reply_comment.querySelector(".show-reply-button > button").innerText = `답글 숨기기`;
+			},
+			error: function (xhr, status, error) {
+				console.log(xhr);
+				console.log(status);
+				console.log(error);
+			}
+		});
+	} else {
+		if(show_reply_comment.className.includes("active")) {
+			show_reply_comment.classList.remove("active");
+			show_reply_comment.querySelector(".show-reply-button > button").innerText = `답글 보기(${current_comment_data.related_comment_count}개)`;
+		} else {
+			show_reply_comment.classList.add("active");
+			show_reply_comment.querySelector(".show-reply-button > button").innerText = `답글 숨기기`;
+		}
+	}
+}
+
+function makeRelatedCommentTag(related_comment) {
+	const upload_time = makeUploadTimeMessage(related_comment.create_date);
+	const detail_contents = document.createElement("div");
+	detail_contents.className = "detail-contents";
+	detail_contents.innerHTML = `<div>
+									                            <div class="writer-image">
+									                                <img src="/static/images/${related_comment.has_profile_image == 'true' ? 'user_profile_images/' + related_comment.file_name : 'basic_profile_image.jpg'}" alt="">
+									                            </div>
+									                            <div class="detail-texts">
+									                                <div class="detail-content">
+									                                    <span class="writer-username">${related_comment.username}</span>
+									                                    <span
+									                                        class="content-description">${related_comment.contents}</span>
+									                                </div>
+									                                <div class="reply-buttons">
+									                                    <span class="upload-time">${upload_time}</span>
+									                                    ${Number(related_comment.comment_like_user_count) > 0 ? '<button type="button" class="comment_like_count">좋아요 ' + related_comment.comment_like_user_count + '개</button>' : ''}
+									                                    <button type="button" class="reply">답글 달기</button>
+									                                </div>
+									                            </div>
+									                        </div>
+									                        <button class="comment-like-button">
+									                            <img src="/static/images/article_detail_like_comment_button${related_comment.like_flag == "true" ? '_pressed' : ''}.png" alt="">
+									                        </button>`;
+	return detail_contents;
+}
+
+function addAtSignTagToTextArea(event) {
+	const index = getCurrentCommentIndex(event.path[4]);
+	const current_comment_data = origin_article_detail_data.article_comment_list[index];
+	relate_comment_flag = true;
+	relate_comment_id = current_comment_data.id;
+	const textarea = event.path[6].querySelector("textarea");
+	textarea.innerText = textarea.innerText + ` @${current_comment_data.username} `;
+}
+
+function getCurrentCommentIndex(comment) {
+	const comments = document.querySelector(".comments-wrapper").children;
+	for(let i=1; i < comments.length; i++) {
+		if(comments[i] == comment) return i-1;
+	}
+}
+
+function toggleCommentLike(event, isReply, reply_index, origin_comment_index) {
 	const img = event.target.children[0];
 	const current_comment = event.path[1];
 	const comment_wrapper = event.path[2].children;
@@ -383,8 +513,15 @@ function toggleCommentLike(event) {
 	}
 	
 	const comment_list = origin_article_detail_data.article_comment_list;
-	const comment_id = comment_list[index].id;
-	const comment_like_flag = comment_list[index].comment_like_flag;
+	let comment_id = comment_list[index].id;
+	let comment_like_flag = comment_list[index].comment_like_flag;
+	
+	if(isReply == true) { 
+		console.log(reply_index);
+		console.log(comment_list[origin_comment_index]);
+		comment_id = comment_list[origin_comment_index].reply_list[reply_index].id;
+		comment_like_flag = comment_list[origin_comment_index].reply_list[reply_index].like_flag;
+	}
 	
 	if(comment_like_flag == "true") {
 		// delete
@@ -395,7 +532,11 @@ function toggleCommentLike(event) {
 			dataType: "text",
 			success: function (data) {
 				if(data == "1") {
-					origin_article_detail_data.article_comment_list[index].comment_like_flag = "false";
+					if(isReply == true) {
+						origin_article_detail_data.article_comment_list[origin_comment_index].reply_list[reply_index].like_flag = false;
+					} else {
+						origin_article_detail_data.article_comment_list[index].comment_like_flag = "false";
+					}
 					
 					img.src = "/static/images/article_detail_like_comment_button.png";
 				}
@@ -415,7 +556,11 @@ function toggleCommentLike(event) {
 			dataType: "text",
 			success: function (data) {
 				if(data == "1") {
-					origin_article_detail_data.article_comment_list[index].comment_like_flag = "true";
+					if(isReply == true) {
+						origin_article_detail_data.article_comment_list[origin_comment_index].reply_list[reply_index].like_flag = true;			
+					} else {
+						origin_article_detail_data.article_comment_list[index].comment_like_flag = "true";
+					}
 					
 					img.src = "/static/images/article_detail_like_comment_button_pressed.png";
 				}
@@ -433,6 +578,7 @@ function removeArticleDetail(event) {
 	if(event.target.className == "article-detail-wrapper") {
 		event.target.remove();
 		document.querySelector("body").style = "";
+		relate_comment_flag = false;
 	}
 }
 

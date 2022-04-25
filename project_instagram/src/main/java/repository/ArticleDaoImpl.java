@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import db.DBConnectionMgr;
+import entity.ArticleComment;
 import entity.ArticleDetail;
 
 public class ArticleDaoImpl implements ArticleDao {
@@ -90,6 +91,8 @@ public class ArticleDaoImpl implements ArticleDao {
 			System.out.println("no rows");
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt, rs);
 		}
 		
 		return articleDetailList;
@@ -115,6 +118,8 @@ public class ArticleDaoImpl implements ArticleDao {
 			System.out.println("no rows");
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt);
 		}
 		
 		return result;
@@ -140,6 +145,8 @@ public class ArticleDaoImpl implements ArticleDao {
 			System.out.println("no rows");
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt);
 		}
 		
 		return result;
@@ -166,9 +173,103 @@ public class ArticleDaoImpl implements ArticleDao {
 			System.out.println("no rows");
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt);
 		}
 		
 		return result;
+	}
+	
+	@Override
+	public int insertRelatedComment(int article_id, String contents, int user_id, int related_comment_id) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String sql = null;
+		int result = 0;
+		
+		try {
+			conn = db.getConnection();
+			sql = "insert into article_comment values(0, ?, ?, ?, now(), now(), 0, null, 1, ?);";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, article_id);
+			pstmt.setInt(2, user_id);
+			pstmt.setString(3,  contents);
+			pstmt.setInt(4, related_comment_id);
+			
+			result = pstmt.executeUpdate();
+			
+		} catch(SQLDataException e1) {
+			System.out.println("no rows");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt);
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public List<ArticleComment> selectRelatedComments(int related_comment_id, int user_id) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		List<ArticleComment> comments = new ArrayList<ArticleComment>();
+		
+		try {
+			conn = db.getConnection();
+			sql = "SELECT "
+						+ "ac.id, "
+						+ "ac.article_id, "
+						+ "ac.commented_user_id, "
+						+ "um.username, "
+						+ "um.has_profile_image, "
+						+ "up.file_name, "
+						+ "ac.`contents`, "
+						+ "ac.create_date, "
+						
+						+ "COUNT(acr.id) AS comment_like_user_count, "
+						+ "acr2.like_user_id "
+					+ "FROM "
+						+ "article_comment ac "
+						+ "LEFT OUTER JOIN user_mst um ON(um.id = ac.commented_user_id) "
+						+ "LEFT OUTER JOIN user_profile_image up ON(up.user_id = ac.commented_user_id) "
+						+ "LEFT OUTER JOIN article_comment_reaction acr ON(acr.article_comment_id = ac.id) "
+						+ "LEFT OUTER JOIN article_comment_reaction acr2 ON(acr2.article_comment_id = ac.id AND acr2.like_user_id = ?) "
+					+ "WHERE "
+						+ "ac.related_comment_id = ? "
+					+ "GROUP BY "
+						+ "ac.id;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, user_id);
+			pstmt.setInt(2, related_comment_id);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				ArticleComment comment = new ArticleComment();
+				comment.setId(rs.getInt("id"));
+				comment.setArticle_id(rs.getInt("article_id"));
+				comment.setUser_id(rs.getInt("commented_user_id"));
+				comment.setUsername(rs.getString("username"));
+				comment.setHas_profile_image(rs.getInt("has_profile_image") == 1 ? true : false);
+				comment.setFile_name(rs.getString("file_name"));
+				comment.setContents(rs.getString("contents"));
+				comment.setCreate_date(rs.getTimestamp("create_date").toLocalDateTime());
+				comment.setComment_like_user_count(rs.getInt("comment_like_user_count"));
+				comment.setLike_flag(rs.getInt("like_user_id") == 0 ? false : true);
+				
+				comments.add(comment);
+			}
+		} catch(SQLDataException e1) {
+			System.out.println("no rows");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt, rs);
+		}
+		
+		return comments;
 	}
 	
 	@Override
@@ -214,7 +315,7 @@ public class ArticleDaoImpl implements ArticleDao {
 						+ "left outer join article_media media on(am.id = media.article_id) "
 						+ "left outer join article_reaction ar on(am.id = ar.article_id) "
 						+ "left outer join article_reaction ar2 on(am.id = ar.article_id and ar.like_user_id = ?) "
-						+ "left outer join article_comment ac on(am.id = ac.article_id) "
+						+ "left outer join article_comment ac on(am.id = ac.article_id and ac.related_flag = 0) "
 						+ "left outer join user_mst um2 on(um2.id = ac.commented_user_id) "
 						+ "left outer join user_profile_image up2 on(up2.user_id = ac.commented_user_id) "
 						+ "left outer join article_comment ac2 on(ac2.related_comment_id = ac.id and ac2.related_flag = 1) "
@@ -265,6 +366,8 @@ public class ArticleDaoImpl implements ArticleDao {
 			System.out.println("no rows");
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt, rs);
 		}
 		
 		return articleDetailList;
@@ -290,6 +393,8 @@ public class ArticleDaoImpl implements ArticleDao {
 			System.out.println("no rows");
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt);
 		}
 		
 		return result;
@@ -315,6 +420,8 @@ public class ArticleDaoImpl implements ArticleDao {
 			System.out.println("no rows");
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt);
 		}
 		
 		return result;
