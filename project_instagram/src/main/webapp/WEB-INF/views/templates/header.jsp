@@ -34,7 +34,8 @@
 						alt="추천 게시글"></a>
 				</div>
 				<div class="activity">
-					<a href="#"><img src="/static/images/menu_activity.png" alt="활동 내역"></a>
+					<button type="button" class="show-activity"><img src="/static/images/menu_activity.png" alt="활동 내역"></button>
+					<div class="activity-menu-wrapper"></div>
 				</div>
 				<div class="profile">
 					<button type="button" class="nonclicked-nav-profile">

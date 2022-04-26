@@ -34,4 +34,18 @@ public class ArticleResDto {
 	private int total_like_count;
 	private int total_commented_user_count;
 	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof ArticleResDto) {
+			if(this.id == ((ArticleResDto) obj).getId()) {
+				return true;
+			}
+		} else if(obj instanceof Integer) {
+			if(this.id == (int) obj) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 }

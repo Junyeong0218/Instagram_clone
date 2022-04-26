@@ -78,7 +78,7 @@ public class ArticleDaoImpl implements ArticleDao {
 				detail.setMedia_type(rs.getString("media_type"));
 				detail.setContents(rs.getString("contents"));
 				detail.set_stored(rs.getInt("is_stored") == 1 ? true : false);
-				detail.setCreate_date(rs.getTimestamp("create_date").toLocalDateTime());
+				detail.setCreate_date(rs.getTimestamp("create_date") != null ? rs.getTimestamp("create_date").toLocalDateTime() : null);
 				detail.setMedia_name(rs.getString("media_name"));
 				detail.setLike_user_count(rs.getInt("like_user_count"));
 				detail.setLike_flag(rs.getInt("like_user_id") == 0 ? false : true);

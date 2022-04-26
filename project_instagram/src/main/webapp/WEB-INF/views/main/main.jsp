@@ -64,6 +64,7 @@
     </div>
     <script src="/static/js/main/searcher_control.js"></script>
     <script src="/static/js/main/profile_menu_control.js"></script>
+    <script src="/static/js/main/activity_menu_control.js"></script>
     <script src="/static/js/main/pop_up_and_window.js"></script>
     <script src="/static/js/main/load_aside_recommend.js"></script>
     <script src="/static/js/main/load_recent_stories.js"></script>

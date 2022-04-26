@@ -1,4 +1,4 @@
-const follower = document.querySelector(".follower");
+/*const follower = document.querySelector(".follower");
 const following = document.querySelector(".following");
 
 window.onload = loadFollowingInfo;
@@ -19,4 +19,4 @@ function loadFollowingInfo() {
 			console.log(error);
 		}
 	});
-}
+}*/

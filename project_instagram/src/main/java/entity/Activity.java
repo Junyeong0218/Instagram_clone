@@ -1,8 +1,8 @@
-package response_dto;
+package entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -11,8 +11,11 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class FollowSummaryResDto {
+public class Activity {
 
-	private int following;
-	private int follower;
+	private int user_id;
+	private String username;
+	private boolean has_profile_image;
+	private String file_name;
+	
 }

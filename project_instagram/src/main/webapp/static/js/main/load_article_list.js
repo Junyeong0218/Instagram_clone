@@ -14,6 +14,7 @@ function loadArticleList() {
 		dataType: "text",
 		success: function (data) {
 			data = JSON.parse(data);
+			if(data.length == 1 && data[0].id == 0) return;
 			for(let i = 0; i < data.length; i++) {
 				origin_article_list.push(data[i]);
 				console.log(origin_article_list);
@@ -59,7 +60,7 @@ function makeArticleTag(articleData) {
 												<img src="/static/images/${articleData.has_profile_image == "true" ? articleData.file_name : 'basic_profile_image.jpg'}" alt="게시글 작성자 프로필 이미지">
 											</div>
 											<div class="writer-info">
-												<a href="#" class="writer-username">${articleData.username}</a>
+												<a href="/profile?username=${articleData.username}" class="writer-username">${articleData.username}</a>
 												${articleData.feature == "true" ? '<span class="remark">' + articleData.feature + '</span>' : ''}
 											</div>
 											<button type="button" class="article-menu">

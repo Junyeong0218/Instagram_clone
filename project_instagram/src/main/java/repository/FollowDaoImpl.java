@@ -9,7 +9,7 @@ import java.util.List;
 
 import db.DBConnectionMgr;
 import entity.User;
-import response_dto.FollowSummaryResDto;
+import entity.UserProfile;
 import response_dto.UserRecommendResDto;
 
 public class FollowDaoImpl implements FollowDao {
@@ -124,34 +124,66 @@ public class FollowDaoImpl implements FollowDao {
 	}
 	
 	@Override
-	public FollowSummaryResDto selectFollowSummary(int user_id) {
+	public List<UserProfile> selectUserProfileInfo(String username, int session_user_id) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql = null;
-		FollowSummaryResDto resDto = null; 
+		List<UserProfile> userProfile = new ArrayList<UserProfile>();
 		
 		try {
 			conn = db.getConnection();
 			sql = "select "
-						+ "count(fm.partner_user_id) as following, "
-						+ "count(fm2.user_id) as follower "
+						+ "am.id, "
+						+ "um.id as `user_id`, "
+						+ "um.username, "
+						+ "um.`name`, "
+						+ "um.has_profile_image, "
+						+ "up.file_name, "
+						+ "am.media_type, "
+						+ "am.is_stored, "
+						+ "media.media_name, "
+						+ "am.create_date, "
+						
+						+ "fm3.partner_user_id, "
+						+ "count(distinct fm.partner_user_id) as following, "
+						+ "count(distinct fm2.user_id) as follower "
 					+ "from "
-						+ "follow_mst fm "
-						+ "left outer join follow_mst fm2 on(fm2.partner_user_id = ?) "
+						+ "user_mst um "
+						+ "left outer join user_profile_image up on(up.user_id = um.id) "
+						+ "left outer join article_mst am on(am.user_id = um.id) "
+						+ "left outer join article_media media on(media.article_id = am.id) "
+						+ "left outer join follow_mst fm on(fm.user_id = um.id) "
+						+ "left outer join follow_mst fm2 on(fm2.partner_user_id = um.id) "
+						+ "left outer join follow_mst fm3 on(fm3.user_id = ? and fm3.partner_user_id = um.id) "
 					+ "where "
-						+ "fm.user_id = ?;";
+						+ "um.username = ? "
+					+ "order by "
+						+ "am.create_date desc;";
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, user_id);
-			pstmt.setInt(2, user_id);
+			pstmt.setInt(1, session_user_id);
+			pstmt.setString(2, username);
 			
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
-				resDto = new FollowSummaryResDto();
+				UserProfile profile = new UserProfile();
 				
-				resDto.setFollower(rs.getInt("follower"));
-				resDto.setFollowing(rs.getInt("following"));
+				profile.setArticle_id(rs.getInt("id"));
+				profile.setUser_id(rs.getInt("user_id"));
+				profile.setUsername(rs.getString("username"));
+				profile.setName(rs.getString("name"));
+				profile.setHas_profile_image(rs.getInt("has_profile_image") == 0 ? false : true);
+				profile.setFile_name(rs.getString("file_name"));
+				profile.setMedia_type(rs.getString("media_type"));
+				profile.setMedia_name(rs.getString("media_name"));
+				profile.set_stored(rs.getBoolean("is_stored"));
+				profile.setCreate_date(rs.getTimestamp("create_date") != null ? rs.getTimestamp("create_date").toLocalDateTime() : null);
+				profile.setFollow_flag(rs.getInt("partner_user_id") > 0 ? true : false);
+				profile.setFollower(rs.getInt("follower"));
+				profile.setFollowing(rs.getInt("following"));
+				
+				userProfile.add(profile);
 			}
 		} catch(SQLDataException e1) {
 			System.out.println("no row!");
@@ -161,7 +193,7 @@ public class FollowDaoImpl implements FollowDao {
 			db.freeConnection(conn, pstmt);
 		}
 		
-		return resDto;
+		return userProfile;
 	}
 	
 	@Override
