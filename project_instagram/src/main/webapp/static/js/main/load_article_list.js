@@ -436,6 +436,20 @@ function toggleReplies(event) {
 					like_button.onclick = (event) => {
 						toggleCommentLike(event, true, i, index);
 					}
+					
+					const replies_to_reply = related_comment_tag.querySelectorAll(".reply");
+					for(let i=0; i < replies_to_reply.length; i++) {
+						replies_to_reply[i].onclick = (event) => {
+							const origin_comment = event.path[5].previousElementSibling;
+							const origin_comment_index = getCurrentCommentIndex(origin_comment);
+							const textarea = event.path[7].querySelector("textarea");
+							
+							relate_comment_flag = true;
+							relate_comment_id = origin_article_detail_data.article_comment_list[origin_comment_index].id;
+							
+							textarea.innerText = textarea.innerText + ` @${origin_article_detail_data.article_comment_list[origin_comment_index].reply_list[i].username} `;
+						}
+					}
 				}
 				show_reply_comment.classList.add("active");
 				show_reply_comment.querySelector(".show-reply-button > button").innerText = `답글 숨기기`;
