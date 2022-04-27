@@ -388,6 +388,20 @@ nav {
 	color: rgb(142, 142, 142);
 }
 
+.activity-follow {
+	padding: 5px 9px;
+	width: 62px;
+	height: 30px;
+	border: 1px solid rgb(219, 219, 219);
+	border-radius: 4px;
+	background-color: transparent;
+	font-size: 14px;
+	font-weight: 600;
+	color: rgb(38, 38, 38);
+	line-height: 20px;
+	cursor: pointer;
+}
+
 .origin-image {
 	width: 40px;
 	height: 40px;

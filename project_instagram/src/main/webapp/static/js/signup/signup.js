@@ -1,11 +1,98 @@
 const input_tags = document.querySelectorAll("input");
 const submit_button = document.querySelector("button[type='submit']");
 
+const username_regex = /^[a-z][A-Za-z0-9]{1,15}$/;
+const phone_regex = /^01(0|1|6|7|8|9)[0-9]{3,4}[0-9]{4}$/;
+const email_regex = /^[A-za-z0-9!@#$%^&*`~=+_]{3,}@[A-Za-z0-9]{2,}[\.](com|net|co\.kr|org)$/;
+const name_regex = /^[A-Za-z가-힣]{2,20}$/;
+const symbol_regex = /[!@#$%^&*`~=+_]{1,16}/;
+const password_regex = /^[A-za-z0-9!@#$%^&*`~=+_]{8,16}$/;
+
+let phone_or_email_check_flag = false;
+let username_check_flag = false;
+let name_check_flag = false;
+let password_check_flag = false;
+
 for (let i = 0; i < input_tags.length; i++) {
         input_tags[i].oninput = keydownEvent;
         input_tags[i].onkeydown = keydownEvent;
         input_tags[i].onpaste = keydownEvent;
         input_tags[i].onkeyup = keyupEvent;
+        input_tags[i].onblur = checkRegex;
+}
+
+function checkRegex(event) {
+	const message_tag = event.target.parentElement.nextElementSibling;
+	switch(event.target.name) {
+		case "email":
+			const phone_result = event.target.value.match(phone_regex);
+			const email_result = event.target.value.match(email_regex);
+			console.log(phone_result);
+			console.log(email_result);
+			if(email_result != null && email_result[0] == email_result.input) {
+				phone_or_email_check_flag = true;
+				message_tag.innerText = "이메일입니다.";
+				message_tag.classList.remove("red");
+				message_tag.classList.add("green");
+			} else if(phone_result != null && phone_result[0] == phone_result.input) {
+				phone_or_email_check_flag = true;
+				message_tag.innerText = "휴대폰 번호입니다.";
+				message_tag.classList.remove("red");
+				message_tag.classList.add("green");
+			} else {
+				phone_or_email_check_flag = false;
+				message_tag.innerText = "정확히 입력해주세요.";
+				messate_tag.classList.add("red");
+				messate_tag.classList.remove("green");
+			}
+			break;
+		case "name":
+			const name_result = event.target.value.match(name_regex);
+			console.log(name_result);
+			if(name_result != null && name_result[0] == name_result.input) {
+				name_check_flag = true;
+				message_tag.innerText = "가입가능한 이름입니다.";
+				messate_tag.classList.remove("red");
+				messate_tag.classList.add("green");
+			} else {
+				name_check_flag = false;
+				message_tag.innerText = "정확히 입력해주세요.";
+				messate_tag.classList.add("red");
+				messate_tag.classList.remove("green");
+			}
+			break;
+		case "username":
+			const username_result = event.target.value.match(username_regex);
+			console.log(username_result);
+			if(username_result != null && username_result[0] == username_result.input) {
+				username_check_flag = true;
+				message_tag.innerText = "가입가능한 아이디입니다.";
+				messate_tag.classList.remove("red");
+				messate_tag.classList.add("green");
+			} else {
+				username_check_flag = false;
+				message_tag.innerText = "정확히 입력해주세요.";
+				messate_tag.classList.add("red");
+				messate_tag.classList.remove("green");
+			}
+			break;
+		case "password":
+			const password_result = event.target.value.match(password_regex);
+			console.log(password_result);
+			if(password_result != null && password_result[0] == password_result.input) {
+				password_check_flag = true;
+				message_tag.innerText = "가입가능한 비밀번호입니다.";
+				messate_tag.classList.remove("red");
+				messate_tag.classList.add("green");
+			} else {
+				password_check_flag = false;
+				message_tag.innerText = "정확히 입력해주세요.";
+				messate_tag.classList.add("red");
+				messate_tag.classList.remove("green");
+			}
+			break;
+	}
+	
 }
 
 function checkUsername(event) {
@@ -41,7 +128,6 @@ function keyupEvent(event) {
                 event.target.className = "";
                 event.target.previousElementSibling.className = "no-value-span";
                 event.target.nextElementSibling.children[0].className = "wrong-input";
-                checkValue();
         }
 }
 
@@ -72,7 +158,6 @@ function keydownEvent(event) {
 						} else {
 	                        event.target.nextElementSibling.children[0].className = "right-input";
 						}
-                        checkValue();
                 }
         }
 }

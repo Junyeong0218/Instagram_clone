@@ -152,6 +152,24 @@ label input {
     background: none;
 }
 
+.input-message {
+	display: none;
+	width: 100%;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 18px;
+}
+
+.input-message.red {
+	display: block;
+	color: DF0C0C;
+}
+
+.input-message.green {
+	display: block;
+	color: 0A9819;
+}
+
 .no-value-span {
     transform: none;
     transition: .1s;

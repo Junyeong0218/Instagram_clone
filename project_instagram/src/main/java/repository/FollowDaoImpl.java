@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import db.DBConnectionMgr;
+import entity.Activity;
+import entity.ArticleComment;
+import entity.ArticleDetail;
+import entity.Follow;
 import entity.User;
 import entity.UserProfile;
 import response_dto.UserRecommendResDto;
@@ -121,6 +125,104 @@ public class FollowDaoImpl implements FollowDao {
 		}
 		
 		return result;
+	}
+	
+	@Override
+	public List<Activity> selectActivities(int user_id) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		List<Activity> activities = new ArrayList<Activity>();
+		
+		try {
+			conn = db.getConnection();
+			sql = "SELECT "
+						+ "al.id, "
+						+ "al.user_id, "
+						+ "um.username, "
+						+ "um.has_profile_image, "
+						+ "up.file_name, "
+
+						+ "al.related_user_id, "
+						+ "um2.username AS related_username, "
+						+ "um2.has_profile_image AS related_user_has_profile_image, "
+						+ "up2.file_name AS related_user_file_name, "
+
+						+ "al.activity_flag, "
+						+ "al.activity_message, "
+
+						+ "al.article_id, "
+						+ "media.media_name, "
+
+						+ "al.comment_id, "
+						+ "ac.`contents`, "
+						
+						+ "al.follow_id, "
+						+ "fm.follower_group, "
+
+						+ "al.create_date, "
+						+ "al.update_date "
+					+ "FROM "
+						+ "activity_logs al "
+						+ "LEFT OUTER JOIN user_mst um ON(um.id = al.user_id) "
+						+ "LEFT OUTER JOIN user_profile_image up ON(up.user_id = al.user_id) "
+						+ "LEFT OUTER JOIN user_mst um2 ON(um2.id = al.related_user_id) "
+						+ "LEFT OUTER JOIN user_profile_image up2 ON(up2.user_id = al.related_user_id) "
+						+ "LEFT OUTER JOIN article_media media ON(media.article_id = al.article_id) "
+						+ "LEFT OUTER JOIN article_comment ac ON(ac.id = al.comment_id) "
+						+ "LEFT OUTER JOIN follow_mst fm ON(fm.id = al.follow_id) "
+					+ "WHERE  "
+						+ "al.related_user_id = ?;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, user_id);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				Activity activity = new Activity();
+				activity.setId(rs.getInt("id"));
+				activity.setUser_id(rs.getInt("user_id"));
+				activity.setUsername(rs.getString("username"));
+				activity.setHas_profile_image(rs.getInt("has_profile_image") == 0 ? false : true);
+				activity.setFile_name(rs.getString("file_name"));
+				activity.setRelated_user_id(rs.getInt("related_user_id"));
+				activity.setRelated_username(rs.getString("related_username"));
+				activity.setRelated_user_has_profile_image(rs.getInt("related_user_has_profile_image") == 0 ? false : true);
+				activity.setRelated_user_file_name(rs.getString("related_user_file_name"));
+				activity.setActivity_flag(rs.getString("activity_flag"));
+				activity.setActivity_message(rs.getString("activity_message"));
+				
+				ArticleDetail articleDetail = new ArticleDetail();
+				articleDetail.setArticle_id(rs.getInt("article_id"));
+				articleDetail.setMedia_name(rs.getString("media_name"));
+				
+				activity.setArticleDetail(articleDetail);
+				
+				ArticleComment comment = new ArticleComment();
+				comment.setId(rs.getInt("comment_id"));
+				comment.setContents(rs.getString("contents"));
+				
+				activity.setArticleComment(comment);
+				
+				Follow follow = new Follow();
+				follow.setId(rs.getInt("follow_id"));
+				follow.setFollower_group(rs.getString("follower_group"));
+				
+				activity.setFollow(follow);
+				activity.setCreate_date(rs.getTimestamp("create_date") != null ? rs.getTimestamp("create_date").toLocalDateTime() : null);
+				activity.setUpdate_date(rs.getTimestamp("update_date") != null ? rs.getTimestamp("update_date").toLocalDateTime() : null);
+				
+				activities.add(activity);
+			}
+		} catch(SQLDataException e1) {
+			System.out.println("no row!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt);
+		}
+		
+		return activities;
 	}
 	
 	@Override

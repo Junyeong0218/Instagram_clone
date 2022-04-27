@@ -37,6 +37,7 @@
                                 <span></span>
                             </div>
                         </label>
+                        <span class="input-message"></span>
 						<label for="name">
 							<span>성명</span>
 							<input type="text" name="name">
@@ -44,6 +45,7 @@
                                 <span></span>
                             </div>
                         </label>
+                        <span class="input-message"></span>
                         <label for="username">
                         	<span>사용자 이름</span>
                         	<input type="text" name="username">
@@ -51,6 +53,7 @@
                                 <span></span>
                             </div>
                         </label>
+                        <span class="input-message"></span>
                         <label for="password">
                         	<span>비밀번호</span>
                         	<input type="password" name="password">
@@ -59,6 +62,7 @@
                                 <button type="button" class="default-toggle hidden">비밀번호 표시</button>
                             </div>
                         </label>
+                        <span class="input-message"></span>
                         <button type="submit">
                             <span>가입</span>
                         </button>

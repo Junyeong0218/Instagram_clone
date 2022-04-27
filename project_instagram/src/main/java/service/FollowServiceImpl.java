@@ -3,6 +3,7 @@ package service;
 import java.util.ArrayList;
 import java.util.List;
 
+import entity.Activity;
 import entity.User;
 import entity.UserProfile;
 import repository.FollowDao;
@@ -31,6 +32,11 @@ public class FollowServiceImpl implements FollowService {
 	@Override
 	public int deleteFollowUser(int partner_user_id, int user_id) {
 		return followDao.deleteFollowUser(partner_user_id, user_id);
+	}
+	
+	@Override
+	public List<Activity> selectActivities(int user_id) {
+		return followDao.selectActivities(user_id);
 	}
 	
 	@SuppressWarnings("unlikely-arg-type")
@@ -74,7 +80,6 @@ public class FollowServiceImpl implements FollowService {
 				}
 			}
 		}
-		
 		
 		return dto;
 	}
