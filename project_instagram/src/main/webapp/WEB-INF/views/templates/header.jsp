@@ -27,7 +27,7 @@
 						alt="다이렉트 메세지"></a>
 				</div>
 				<div class="new-article">
-					<a href="#"><img src="/static/images/menu_upload.png" alt="게시글 업로드"></a>
+					<button type="button" class="show-new-article"><img src="/static/images/menu_upload.png" alt="게시글 업로드"></button>
 				</div>
 				<div class="explore">
 					<a href="#"><img src="/static/images/menu_recommends.png"

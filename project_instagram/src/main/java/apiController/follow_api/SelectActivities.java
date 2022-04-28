@@ -19,7 +19,7 @@ import service.FollowService;
 import service.FollowServiceImpl;
 
 @WebServlet("/follow/select-activities")
-public class SelectAvtivities extends HttpServlet {
+public class SelectActivities extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private FollowService followService;
@@ -43,6 +43,7 @@ public class SelectAvtivities extends HttpServlet {
 		StringBuilder sb = new StringBuilder();
 		sb.append("[ ");
 		for(Activity activity : activities) {
+			System.out.println(activity);
 			sb.append(" { \"id\": \"" + activity.getId() + "\", " + 
 									"\"user_id\": \"" + activity.getUser_id() + "\", " + 
 									"\"username\": \"" + activity.getUsername() + "\", " + 

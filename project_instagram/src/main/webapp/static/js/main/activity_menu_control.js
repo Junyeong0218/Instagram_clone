@@ -2,6 +2,10 @@ const activity_button = document.querySelector(".show-activity");
 const activity_menu_wrapper = document.querySelector(".activity-menu-wrapper");
 
 activity_button.onclick = (event) => {
+	if(activity_menu_wrapper.children.length != 0) {
+		activity_menu_wrapper.innerHTML = "";
+		return;
+	}
 	console.log(event);
 	$.ajax({
 		type: "get",

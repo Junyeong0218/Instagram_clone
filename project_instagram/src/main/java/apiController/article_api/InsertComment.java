@@ -36,7 +36,8 @@ public class InsertComment extends HttpServlet {
 		
 		int article_id = Integer.parseInt(request.getParameter("article_id"));
 		String contents = request.getParameter("comment");
-		
+		System.out.println(article_id);
+		System.out.println(contents);
 		int result = articleService.insertComment(article_id, contents, sessionUser.getId());
 		System.out.println(result);
 		

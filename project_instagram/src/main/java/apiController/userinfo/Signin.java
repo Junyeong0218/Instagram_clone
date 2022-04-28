@@ -2,7 +2,6 @@ package apiController.userinfo;
 
 import java.io.IOException;
 
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;

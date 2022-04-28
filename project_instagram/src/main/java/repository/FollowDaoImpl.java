@@ -47,6 +47,8 @@ public class FollowDaoImpl implements FollowDao {
 					+ "um.id != ? and "
 					+ "um.disable_flag = 0 and "
 					+ "um.id not in(select fm.partner_user_id from follow_mst fm where fm.user_id = ?) "
+				+ "group by "
+					+ "um.id "
 				+ "limit 5;";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, user_id);
@@ -173,7 +175,11 @@ public class FollowDaoImpl implements FollowDao {
 						+ "LEFT OUTER JOIN article_comment ac ON(ac.id = al.comment_id) "
 						+ "LEFT OUTER JOIN follow_mst fm ON(fm.id = al.follow_id) "
 					+ "WHERE  "
-						+ "al.related_user_id = ?;";
+						+ "al.related_user_id = ? "
+					+ "GROUP BY "
+						+ "al.id "
+					+ "ORDER BY "
+						+ "al.create_date desc;";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, user_id);
 			rs = pstmt.executeQuery();

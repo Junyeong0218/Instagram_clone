@@ -154,21 +154,23 @@ public class ArticleDaoImpl implements ArticleDao {
 	
 	@Override
 	public int insertComment(int article_id, String contents, int user_id) {
+		System.out.println("dao 진입");
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		String sql = null;
 		int result = 0;
 		
 		try {
+			System.out.println("getConnection");
 			conn = db.getConnection();
 			sql = "insert into article_comment values(0, ?, ?, ?, now(), now(), 0, null, 0, null);";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, article_id);
 			pstmt.setInt(2, user_id);
 			pstmt.setString(3,  contents);
-			
+			System.out.println("pstmt end");
 			result = pstmt.executeUpdate();
-			
+			System.out.println("executed!");
 		} catch(SQLDataException e1) {
 			System.out.println("no rows");
 		} catch (Exception e) {
@@ -295,7 +297,7 @@ public class ArticleDaoImpl implements ArticleDao {
 
 						+ "media.media_name, "
 						
-						+ "count(ar.like_user_id) as like_user_count, "
+						+ "count(distinct ar.like_user_id) as like_user_count, "
 						+ "ar2.like_user_id, "
 						
 						+ "ac.id as comment_id, "
@@ -305,8 +307,8 @@ public class ArticleDaoImpl implements ArticleDao {
 						+ "up2.file_name as commented_user_file_name, "
 						+ "ac.`contents` as comment_contents, "
 						+ "ac.create_date as comment_create_date, "
-						+ "count(ac2.id) as related_comment_count, "
-						+ "count(acr.like_user_id) as comment_like_user_count,"
+						+ "count(distinct ac2.id) as related_comment_count, "
+						+ "count(distinct acr.like_user_id) as comment_like_user_count,"
 						+ "acr2.like_user_id as comment_like_flag "
 					+ "from "
 						+ "article_mst am "
@@ -354,11 +356,11 @@ public class ArticleDaoImpl implements ArticleDao {
 				detail.setCommented_user_has_profile_image(rs.getInt("commented_user_has_profile_image") == 1 ? true : false);
 				detail.setCommented_user_file_name(rs.getString("commented_user_file_name"));
 				detail.setComment_contents(rs.getString("comment_contents"));
-				detail.setComment_create_date(rs.getTimestamp("comment_create_date").toLocalDateTime());
+				detail.setComment_create_date(rs.getTimestamp("comment_create_date") != null ? rs.getTimestamp("comment_create_date").toLocalDateTime() : null);
 				detail.setRelated_comment_count(rs.getInt("related_comment_count"));
 				detail.setComment_like_user_count(rs.getInt("comment_like_user_count"));
 				detail.setComment_like_flag(rs.getInt("comment_like_flag") == 0 ? false : true);
-				
+				System.out.println(detail);
 				articleDetailList.add(detail);
 			}
 			

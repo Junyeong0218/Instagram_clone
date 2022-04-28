@@ -242,8 +242,8 @@ nav {
 	height: auto;
 }
 
-.nav-wrapper>div>a, .nav-wrapper>div>button {
-	width: 24px;
+.nav-wrapper>div>a,
+.nav-wrapper>div:not(:last-child)>button {
 	height: 24px;
 }
 
@@ -286,7 +286,8 @@ nav {
 	width: 24px;
 }
 
-.show-activity {
+.show-activity,
+.show-new-article {
 	border: none;
 	background: none;
 	cursor: pointer;

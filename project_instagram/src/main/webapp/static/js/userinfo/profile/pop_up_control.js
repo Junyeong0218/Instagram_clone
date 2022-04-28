@@ -17,7 +17,7 @@ let origin_following_list;
 let origin_hashtag_list;
 let origin_follower_list;
 
-account_menu_button.onclick = showAccountMenus;
+if(account_menu_button != null && typeof account_menu_button != "undefined") account_menu_button.onclick = showAccountMenus;
 account_menus.onclick = closeAccountMenus;
 
 follower_button.onclick = showFollowInfo;

@@ -74,6 +74,7 @@ public class ArticleServiceImpl implements ArticleService {
 	
 	@Override
 	public int insertComment(int article_id, String contents, int user_id) {
+		System.out.println("service 진입");
 		return articleDao.insertComment(article_id, contents, user_id);
 	}
 	

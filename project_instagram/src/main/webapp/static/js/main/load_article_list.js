@@ -34,7 +34,7 @@ function loadArticleList() {
 				comment_submit_button.onclick = submitComment;
 				
 				const show_comments_button = article_tag.querySelector(".show-comments-button");
-				show_comments_button.onclick = showArticleDetail;
+				if(show_comments_button != null && typeof show_comments_button != "undefined") show_comments_button.onclick = showArticleDetail;
 				
 				const comment_button = article_tag.querySelector(".comment-button").parentElement;
 				comment_button.onclick = showArticleDetail;
@@ -289,7 +289,7 @@ function activeCommentSubmitButton(event) {
 
 function submitComment(event) {
 	console.log(event);
-	const article_index = getArticleIndex(event.path[3]);
+	const article_index = getArticleIndex(event.composedPath()[3]);
 	const wrapper = event.path[5];
 	let article_data;
 	if(wrapper.className == "article-detail-wrapper") {
@@ -300,6 +300,8 @@ function submitComment(event) {
 	console.log(article_data);
 	const article_id = article_data.id;
 	let comment = event.target.previousElementSibling.value;
+	console.log(article_id);
+	console.log(comment);
 	
 	if(relate_comment_flag == true) {
 		console.log("true 진입");
@@ -322,6 +324,7 @@ function submitComment(event) {
 			}
 		});
 	} else {
+		console.log("일반 insert");
 		$.ajax({
 			type: "post",
 			url: "/article/insert-comment",
@@ -329,6 +332,7 @@ function submitComment(event) {
 						  "comment": comment },
 			dataType: "text",
 			success: function (data) {
+				console.log(data);
 				if(data == "1") {
 					location.reload();
 				}
@@ -667,44 +671,45 @@ ${article_data.feature == "null" ? '' : '<span class="remark">' + article_data.f
 	// article added
 	
 	const comment_list = article_data.article_comment_list;
-	for(let i=0; i< comment_list.length; i++) {
-		const comment = comment_list[i];
-		const upload_time = makeUploadTimeMessage(comment.create_date);
-		const detail_contents = document.createElement("div");
-		detail_contents.className = "detail-contents";
-		detail_contents.innerHTML = `<div>
-										                            <div class="writer-image">
-										                                <img src="/static/images/${comment.has_profile_image == 'true' ? 'user_profile_images/' + comment.file_name : 'basic_profile_image.jpg'}" alt="">
-										                            </div>
-										                            <div class="detail-texts">
-										                                <div class="detail-content">
-										                                    <span class="writer-username">${comment.username}</span>
-										                                    <span
-										                                        class="content-description">${comment.contents}</span>
-										                                </div>
-										                                <div class="reply-buttons">
-										                                    <span class="upload-time">${upload_time}</span>
-										                                    ${Number(comment.comment_like_user_count) > 0 ? '<button type="button" class="comment_like_count">좋아요 ' + comment.comment_like_user_count + '개</button>' : ''}
-										                                    <button type="button" class="reply">답글 달기</button>
-										                                </div>
-										                            </div>
-										                        </div>
-										                        <button class="comment-like-button">
-										                            <img src="/static/images/article_detail_like_comment_button${comment.comment_like_flag == "true" ? '_pressed' : ''}.png" alt="">
-										                        </button>`;
-										                        
-		comments_wrapper.appendChild(detail_contents);
-		
-		if(comment.related_comment_count > 0) {
-			const show_reply_comment = document.createElement("div");
-			show_reply_comment.className = "show-reply-comment";
-			show_reply_comment.innerHTML = `<div class="show-reply-button">
-														                            <span></span>
-														                            <button type="button">답글 보기(${comment.related_comment_count}개)</button>
-														                        </div>`;
-			comments_wrapper.appendChild(show_reply_comment);
-		}
+	if(comment_list.length > 1 || comment_list[0].id != 0) {
+		for(let i=0; i< comment_list.length; i++) {
+			const comment = comment_list[i];
+			const upload_time = makeUploadTimeMessage(comment.create_date);
+			const detail_contents = document.createElement("div");
+			detail_contents.className = "detail-contents";
+			detail_contents.innerHTML = `<div>
+											                            <div class="writer-image">
+											                                <img src="/static/images/${comment.has_profile_image == 'true' ? 'user_profile_images/' + comment.file_name : 'basic_profile_image.jpg'}" alt="">
+											                            </div>
+											                            <div class="detail-texts">
+											                                <div class="detail-content">
+											                                    <span class="writer-username">${comment.username}</span>
+											                                    <span
+											                                        class="content-description">${comment.contents}</span>
+											                                </div>
+											                                <div class="reply-buttons">
+											                                    <span class="upload-time">${upload_time}</span>
+											                                    ${Number(comment.comment_like_user_count) > 0 ? '<button type="button" class="comment_like_count">좋아요 ' + comment.comment_like_user_count + '개</button>' : ''}
+											                                    <button type="button" class="reply">답글 달기</button>
+											                                </div>
+											                            </div>
+											                        </div>
+											                        <button class="comment-like-button">
+											                            <img src="/static/images/article_detail_like_comment_button${comment.comment_like_flag == "true" ? '_pressed' : ''}.png" alt="">
+											                        </button>`;
 											                        
+			comments_wrapper.appendChild(detail_contents);
+			
+			if(comment.related_comment_count > 0) {
+				const show_reply_comment = document.createElement("div");
+				show_reply_comment.className = "show-reply-comment";
+				show_reply_comment.innerHTML = `<div class="show-reply-button">
+															                            <span></span>
+															                            <button type="button">답글 보기(${comment.related_comment_count}개)</button>
+															                        </div>`;
+				comments_wrapper.appendChild(show_reply_comment);
+			}
+		}
 	}
 	
 	article_info.appendChild(comments_wrapper);
