@@ -25,15 +25,13 @@ public class SessionFilter implements Filter {
 		String[] uris = uri.split("/");
 		
 		if(uris.length > 1 && !uris[1].equals("index") && !uris[1].equals("signup") && !uris[1].equals("signin") && !uris[1].equals("static")
-				 && !uris[1].equals("check-username") && !uris[1].equals("templetes")) {
+				 && !uris[1].contains("check") && !uris[1].equals("templates")) {
 			User user = (User) req.getSession().getAttribute("user");
 			if(user == null) {
 				resp.sendRedirect("/index");
-			} else {
-				chain.doFilter(request, response);
+				return;
 			}
-		} else {
-			chain.doFilter(request, response);
 		}
+		chain.doFilter(request, response);
 	}
 }

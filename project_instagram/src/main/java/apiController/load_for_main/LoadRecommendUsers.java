@@ -45,7 +45,7 @@ public class LoadRecommendUsers extends HttpServlet {
 						", \"has_profile_image\": \"" + user.isHas_profile_image() + "\"" + 
 						", \"file_name\": \""+ user.getFile_name() + "\" }, ");
 		}
-		sb.replace(sb.lastIndexOf(","), sb.length(), "");
+		if(recommendList.size() > 0) sb.replace(sb.lastIndexOf(","), sb.length(), "");
 		sb.append(" ]");
 		
 		response.setContentType("text/plain; charset=UTF-8");

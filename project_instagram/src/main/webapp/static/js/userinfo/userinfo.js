@@ -89,7 +89,7 @@ function checkOriginPassword(event) {
 		data: { "password": event.target.value },
 		dataType: "text",
 		success: function (data) {
-			if(data == "1") {
+			if(data == "true") {
 				alert("이전 비밀번호와 일치합니다.");
 				is_origin_password_equal = true;
 			} else {

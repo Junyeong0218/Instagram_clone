@@ -1,12 +1,13 @@
 package service;
 
 import entity.User;
+import request_dto.CheckInputReqDto;
 
 public interface AuthService {
 	
-	public int checkUsername(String username);
+	public int checkInput(CheckInputReqDto checkInputReqDto);
 	
-	public int checkOriginPassword(User user);
+	public boolean checkOriginPassword(User user);
 	
 	public User getUser(String username);
 	

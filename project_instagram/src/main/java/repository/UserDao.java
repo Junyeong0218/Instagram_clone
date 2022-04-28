@@ -1,20 +1,19 @@
 package repository;
 
-import java.util.List;
-
 import entity.User;
-import response_dto.RecentStoryResDto;
 
 public interface UserDao {
 	
+	public int checkEmail(String email);
+	public int checkPhone(String phone);
 	public int checkUsername(String username);
 	
-	public int checkOriginPassword(User user);
+	public String selectOriginPassword(int user_id);
+	
+	public String selectPassword(String username);
 
 	public User getUser(String username);
 	
-	public int signin(User user);
-
 	public int signup(User user);
 	
 	public int updateUserinfo(User user);

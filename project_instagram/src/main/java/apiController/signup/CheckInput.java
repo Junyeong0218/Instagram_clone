@@ -11,11 +11,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import repository.UserDao;
+import request_dto.CheckInputReqDto;
 import service.AuthService;
 import service.AuthServiceImpl;
 
-@WebServlet("/check-username")
-public class CheckUsername extends HttpServlet{
+@WebServlet("/check-input")
+public class CheckInput extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	
 	private AuthService authService;
@@ -29,10 +30,13 @@ public class CheckUsername extends HttpServlet{
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String username = request.getParameter("username");
+		String paramName = request.getParameterNames().nextElement();
+		String value = request.getParameter(paramName);
+		CheckInputReqDto checkInputReqDto = CheckInputReqDto.of(paramName, value);
+		// getClass().getDeclaredFields() 
 		
-		int result = authService.checkUsername(username);
-		
+		int result = authService.checkInput(checkInputReqDto);
+
 		response.getWriter().print(result);
 	}
 }

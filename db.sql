@@ -41,7 +41,12 @@ CREATE TABLE IF NOT EXISTS `activity_logs` (
   CONSTRAINT `follow_id_for_activity` FOREIGN KEY (`follow_id`) REFERENCES `follow_mst` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `user_id_for_did_user` FOREIGN KEY (`user_id`) REFERENCES `user_mst` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `user_id_for_related_user` FOREIGN KEY (`related_user_id`) REFERENCES `user_mst` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+-- 테이블 데이터 project_instagram.activity_logs:~0 rows (대략적) 내보내기
+DELETE FROM `activity_logs`;
+/*!40000 ALTER TABLE `activity_logs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `activity_logs` ENABLE KEYS */;
 
 -- 테이블 project_instagram.article_comment 구조 내보내기
 DROP TABLE IF EXISTS `article_comment`;
@@ -63,7 +68,12 @@ CREATE TABLE IF NOT EXISTS `article_comment` (
   CONSTRAINT `article_id_for_comment` FOREIGN KEY (`article_id`) REFERENCES `article_mst` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `commented_user_id` FOREIGN KEY (`commented_user_id`) REFERENCES `user_mst` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `related_comment_id` FOREIGN KEY (`related_comment_id`) REFERENCES `article_comment` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+-- 테이블 데이터 project_instagram.article_comment:~0 rows (대략적) 내보내기
+DELETE FROM `article_comment`;
+/*!40000 ALTER TABLE `article_comment` DISABLE KEYS */;
+/*!40000 ALTER TABLE `article_comment` ENABLE KEYS */;
 
 -- 테이블 project_instagram.article_comment_reaction 구조 내보내기
 DROP TABLE IF EXISTS `article_comment_reaction`;
@@ -78,7 +88,12 @@ CREATE TABLE IF NOT EXISTS `article_comment_reaction` (
   KEY `like_user_id_for_comment_reaction` (`like_user_id`),
   CONSTRAINT `article_comment_id_for_reaction` FOREIGN KEY (`article_comment_id`) REFERENCES `article_comment` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `like_user_id_for_comment_reaction` FOREIGN KEY (`like_user_id`) REFERENCES `user_mst` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+-- 테이블 데이터 project_instagram.article_comment_reaction:~0 rows (대략적) 내보내기
+DELETE FROM `article_comment_reaction`;
+/*!40000 ALTER TABLE `article_comment_reaction` DISABLE KEYS */;
+/*!40000 ALTER TABLE `article_comment_reaction` ENABLE KEYS */;
 
 -- 테이블 project_instagram.article_media 구조 내보내기
 DROP TABLE IF EXISTS `article_media`;
@@ -97,7 +112,7 @@ CREATE TABLE IF NOT EXISTS `article_media` (
 DELETE FROM `article_media`;
 /*!40000 ALTER TABLE `article_media` DISABLE KEYS */;
 INSERT INTO `article_media` (`id`, `article_id`, `media_name`, `create_date`, `update_date`) VALUES
-	(0, 1, 'media01.webp', '2022-04-15 21:32:13', '2022-04-15 21:32:13');
+	(1, 1, 'media01.webp', '2022-04-15 21:32:13', '2022-04-15 21:32:13');
 /*!40000 ALTER TABLE `article_media` ENABLE KEYS */;
 
 -- 테이블 project_instagram.article_mst 구조 내보내기
@@ -114,9 +129,9 @@ CREATE TABLE IF NOT EXISTS `article_mst` (
   PRIMARY KEY (`id`),
   KEY `user_id_for_article` (`user_id`),
   CONSTRAINT `user_id_for_article` FOREIGN KEY (`user_id`) REFERENCES `user_mst` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
 
--- 테이블 데이터 project_instagram.article_mst:~1 rows (대략적) 내보내기
+-- 테이블 데이터 project_instagram.article_mst:~0 rows (대략적) 내보내기
 DELETE FROM `article_mst`;
 /*!40000 ALTER TABLE `article_mst` DISABLE KEYS */;
 INSERT INTO `article_mst` (`id`, `user_id`, `feature`, `media_type`, `contents`, `is_stored`, `create_date`, `update_date`) VALUES
@@ -136,7 +151,12 @@ CREATE TABLE IF NOT EXISTS `article_reaction` (
   KEY `like_user_id` (`like_user_id`),
   CONSTRAINT `article_id_for_like` FOREIGN KEY (`article_id`) REFERENCES `article_mst` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `like_user_id` FOREIGN KEY (`like_user_id`) REFERENCES `user_mst` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+-- 테이블 데이터 project_instagram.article_reaction:~0 rows (대략적) 내보내기
+DELETE FROM `article_reaction`;
+/*!40000 ALTER TABLE `article_reaction` DISABLE KEYS */;
+/*!40000 ALTER TABLE `article_reaction` ENABLE KEYS */;
 
 -- 테이블 project_instagram.follow_mst 구조 내보내기
 DROP TABLE IF EXISTS `follow_mst`;
@@ -152,7 +172,12 @@ CREATE TABLE IF NOT EXISTS `follow_mst` (
   KEY `partner_id_for_follow` (`partner_user_id`),
   CONSTRAINT `partner_id_for_follow` FOREIGN KEY (`partner_user_id`) REFERENCES `user_mst` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `user_id_for_follow` FOREIGN KEY (`user_id`) REFERENCES `user_mst` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+-- 테이블 데이터 project_instagram.follow_mst:~0 rows (대략적) 내보내기
+DELETE FROM `follow_mst`;
+/*!40000 ALTER TABLE `follow_mst` DISABLE KEYS */;
+/*!40000 ALTER TABLE `follow_mst` ENABLE KEYS */;
 
 -- 테이블 project_instagram.user_mst 구조 내보내기
 DROP TABLE IF EXISTS `user_mst`;
@@ -173,7 +198,9 @@ CREATE TABLE IF NOT EXISTS `user_mst` (
   `disable_flag` tinyint(1) unsigned zerofill NOT NULL DEFAULT 0 COMMENT '0: active / 1: disabled',
   `disable_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `username` (`username`)
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `phone` (`phone`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb3;
 
 -- 테이블 project_instagram.user_profile_image 구조 내보내기
@@ -187,7 +214,14 @@ CREATE TABLE IF NOT EXISTS `user_profile_image` (
   PRIMARY KEY (`id`),
   KEY `user_id_for_profile_image` (`user_id`),
   CONSTRAINT `user_id_for_profile_image` FOREIGN KEY (`user_id`) REFERENCES `user_mst` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
+
+-- 테이블 데이터 project_instagram.user_profile_image:~1 rows (대략적) 내보내기
+DELETE FROM `user_profile_image`;
+/*!40000 ALTER TABLE `user_profile_image` DISABLE KEYS */;
+INSERT INTO `user_profile_image` (`id`, `user_id`, `file_name`, `create_date`, `update_date`) VALUES
+	(1, 1, NULL, '2022-04-28 12:34:57', '2022-04-28 12:34:57');
+/*!40000 ALTER TABLE `user_profile_image` ENABLE KEYS */;
 
 -- 테이블 project_instagram.user_story_mst 구조 내보내기
 DROP TABLE IF EXISTS `user_story_mst`;

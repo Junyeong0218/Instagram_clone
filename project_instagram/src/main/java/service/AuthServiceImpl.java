@@ -1,8 +1,10 @@
 package service;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import entity.User;
 import repository.UserDao;
-import repository.UserDaoImpl;
+import request_dto.CheckInputReqDto;
 
 public class AuthServiceImpl implements AuthService {
 	
@@ -13,13 +15,20 @@ public class AuthServiceImpl implements AuthService {
 	}
 	
 	@Override
-	public int checkUsername(String username) {
-		return userDao.checkUsername(username);
+	public int checkInput(CheckInputReqDto checkInputReqDto) {
+		if(checkInputReqDto.getEmail() != null) return userDao.checkEmail(checkInputReqDto.getEmail());
+		else if(checkInputReqDto.getPhone() != null) return userDao.checkEmail(checkInputReqDto.getPhone());
+		else if(checkInputReqDto.getUsername() != null) return userDao.checkEmail(checkInputReqDto.getUsername());
+		else return 0;
 	}
 	
 	@Override
-	public int checkOriginPassword(User user) {
-		return userDao.checkOriginPassword(user);
+	public boolean checkOriginPassword(User user) {
+		String originPassword = userDao.selectOriginPassword(user.getId());
+		if(BCrypt.checkpw(user.getPassword(), originPassword)) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -29,9 +38,8 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public User signin(User user) {
-		int result = userDao.signin(user);
-		
-		if(result == 2) {
+		String db_password = userDao.selectPassword(user.getUsername());
+		if(BCrypt.checkpw(user.getPassword(), db_password)) {
 			User userDetail = userDao.getUser(user.getUsername());
 			return userDetail;
 		}

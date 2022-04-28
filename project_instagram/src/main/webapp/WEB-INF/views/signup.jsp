@@ -29,7 +29,7 @@
                         <div class="or">또는</div>
                         <div class="line"></div>
                     </div>
-                    <form action="" method="post">
+                    <form action="/signup" method="post" enctype="application/x-www-form-urlencoded">
                         <label for="email">
                         	<span>휴대폰 번호 또는 이메일 주소</span>
                        		<input type="text" name="email">
@@ -63,7 +63,7 @@
                             </div>
                         </label>
                         <span class="input-message"></span>
-                        <button type="submit">
+                        <button class="submit-button" type="submit" disabled>
                             <span>가입</span>
                         </button>
                     </form>

@@ -9,6 +9,8 @@ const symbol_regex = /[!@#$%^&*`~=+_]{1,16}/;
 const password_regex = /^[A-za-z0-9!@#$%^&*`~=+_]{8,16}$/;
 
 let phone_or_email_check_flag = false;
+let phone_flag = false;
+let email_flag = false;
 let username_check_flag = false;
 let name_check_flag = false;
 let password_check_flag = false;
@@ -18,7 +20,28 @@ for (let i = 0; i < input_tags.length; i++) {
         input_tags[i].onkeydown = keydownEvent;
         input_tags[i].onpaste = keydownEvent;
         input_tags[i].onkeyup = keyupEvent;
+        input_tags[i].onfocus = initFlag;
         input_tags[i].onblur = checkRegex;
+}
+
+function initFlag(event) {
+	const name = event.target.name;
+	switch(name) {
+		case "email":
+			phone_or_email_check_flag = false;
+			phone_flag = false;
+			email_flag = false;
+			break;
+		case "name":
+			name_check_flag = false;
+			break;
+		case "username":
+			username_check_flag = false;
+			break;
+		case "password":
+			password_check_flag = false;
+			break;
+	}
 }
 
 function checkRegex(event) {
@@ -31,96 +54,128 @@ function checkRegex(event) {
 			console.log(email_result);
 			if(email_result != null && email_result[0] == email_result.input) {
 				phone_or_email_check_flag = true;
-				message_tag.innerText = "이메일입니다.";
-				message_tag.classList.remove("red");
-				message_tag.classList.add("green");
+				email_flag = true;
+				if(checkInput(event.target)) {
+					message_tag.innerText = "가입 가능한 이메일입니다.";
+					message_tag.classList.remove("red");
+					message_tag.classList.add("green");
+				} else {
+					message_tag.innerText = "중복된 이메일입니다.";
+					message_tag.classList.add("red");
+					message_tag.classList.remove("green");
+				}
 			} else if(phone_result != null && phone_result[0] == phone_result.input) {
 				phone_or_email_check_flag = true;
-				message_tag.innerText = "휴대폰 번호입니다.";
-				message_tag.classList.remove("red");
-				message_tag.classList.add("green");
+				phone_flag = true;
+				if(checkInput(event.target)) {
+					message_tag.innerText = "가입 가능한 휴대폰 번호입니다.";
+					message_tag.classList.remove("red");
+					message_tag.classList.add("green");
+				} else {
+					message_tag.innerText = "중복된 휴대폰 번호입니다.";
+					message_tag.classList.add("red");
+					message_tag.classList.remove("green");
+				}
 			} else {
 				phone_or_email_check_flag = false;
 				message_tag.innerText = "정확히 입력해주세요.";
-				messate_tag.classList.add("red");
-				messate_tag.classList.remove("green");
+				message_tag.classList.add("red");
+				message_tag.classList.remove("green");
 			}
 			break;
 		case "name":
 			const name_result = event.target.value.match(name_regex);
-			console.log(name_result);
 			if(name_result != null && name_result[0] == name_result.input) {
 				name_check_flag = true;
 				message_tag.innerText = "가입가능한 이름입니다.";
-				messate_tag.classList.remove("red");
-				messate_tag.classList.add("green");
+				message_tag.classList.remove("red");
+				message_tag.classList.add("green");
+				event.target.nextElementSibling.children[0].className = "right-input";
 			} else {
 				name_check_flag = false;
 				message_tag.innerText = "정확히 입력해주세요.";
-				messate_tag.classList.add("red");
-				messate_tag.classList.remove("green");
+				message_tag.classList.add("red");
+				message_tag.classList.remove("green");
+				event.target.nextElementSibling.children[0].className = "wrong-input";
 			}
 			break;
 		case "username":
 			const username_result = event.target.value.match(username_regex);
 			console.log(username_result);
 			if(username_result != null && username_result[0] == username_result.input) {
-				username_check_flag = true;
-				message_tag.innerText = "가입가능한 아이디입니다.";
-				messate_tag.classList.remove("red");
-				messate_tag.classList.add("green");
+				if(checkInput(event.target)) {
+					username_check_flag = true;
+					message_tag.innerText = "가입가능한 아이디입니다.";
+					message_tag.classList.remove("red");
+					message_tag.classList.add("green");
+				} else {
+					message_tag.innerText = "이미 가입된 아이디입니다.";
+					message_tag.classList.add("red");
+					message_tag.classList.remove("green");
+				}
 			} else {
 				username_check_flag = false;
 				message_tag.innerText = "정확히 입력해주세요.";
-				messate_tag.classList.add("red");
-				messate_tag.classList.remove("green");
+				message_tag.classList.add("red");
+				message_tag.classList.remove("green");
 			}
 			break;
 		case "password":
+			const symbol_result = event.target.value.match(symbol_regex)
 			const password_result = event.target.value.match(password_regex);
-			console.log(password_result);
-			if(password_result != null && password_result[0] == password_result.input) {
+			if(symbol_result == null) {
+				password_check_flag = false;
+				message_tag.innerText = "!@#$%^&*`~=+_ 를 하나 이상 포함해야합니다.";
+				message_tag.classList.add("red");
+				message_tag.classList.remove("green");
+				event.target.nextElementSibling.children[0].className = "wrong-input";
+			} else if(password_result != null && password_result[0] == password_result.input) {
 				password_check_flag = true;
 				message_tag.innerText = "가입가능한 비밀번호입니다.";
-				messate_tag.classList.remove("red");
-				messate_tag.classList.add("green");
+				message_tag.classList.remove("red");
+				message_tag.classList.add("green");
+				event.target.nextElementSibling.children[0].className = "right-input";
 			} else {
 				password_check_flag = false;
-				message_tag.innerText = "정확히 입력해주세요.";
-				messate_tag.classList.add("red");
-				messate_tag.classList.remove("green");
+				message_tag.innerText = "비밀번호는 8자 이상 입력해야합니다.";
+				message_tag.classList.add("red");
+				message_tag.classList.remove("green");
+				event.target.nextElementSibling.children[0].className = "wrong-input";
 			}
 			break;
 	}
-	
+	checkValue();
 }
 
-function checkUsername(event) {
-	if(event.target.value.length < 7 || event.target.value.length > 16) {
-        event.target.nextElementSibling.children[0].className = "wrong-input";
-	} else {
-		$.ajax({
-			type: "get",
-			url: "/check-username",
-			data: { "username": event.target.value },
-			dataType: "text",
-			success: function (data) {
-				console.log(data);
-				if(data == "0") {
-					event.target.className = "typed-input";
-                    event.target.previousElementSibling.className = "typed-span";
-                    event.target.nextElementSibling.children[0].className = "right-input";
-				} else {
-					event.target.nextElementSibling.children[0].className = "wrong-input";
-				}
-			},
-			error: function (xhr, status, error) {
-				console.log(xhr);
-				console.log(status);
-				console.log(error);
+function checkInput(input) {
+	let target_name = input.name == "email" ? phone_flag ? "phone" : "email" : input.name;
+	let data = {};
+	data[''+target_name] = input.value;
+	console.log(data);
+	let flag;
+	$.ajax({
+		type: "get",
+		url: "/check-input",
+		data: data,
+		dataType: "text",
+		async: false,
+		success: function (data) {
+			console.log(data);
+			if(data == "0") {
+                input.nextElementSibling.children[0].className = "right-input";
+                flag =  true;
+			} else {
+				input.nextElementSibling.children[0].className = "wrong-input";
+				flag =  false;
 			}
-		});
-	}
+		},
+		error: function (xhr, status, error) {
+			console.log(xhr);
+			console.log(status);
+			console.log(error);
+		}
+	});
+	return flag;
 }
 
 function keyupEvent(event) {
@@ -153,29 +208,20 @@ function keydownEvent(event) {
                 if (!isFunctionKey(event)) {
                         event.target.className = "typed-input";
                         event.target.previousElementSibling.className = "typed-span";
-						if(event.target.name == "username") {
-							checkUsername(event);
-						} else {
-	                        event.target.nextElementSibling.children[0].className = "right-input";
-						}
                 }
         }
 }
 
 function checkValue() {
-        let isValid = true;
-        for (let i = 0; i < input_tags.length; i++) {
-                if (input_tags[i].value == null || input_tags[i].value == "") {
-                        isValid = false;
-                        break;
-                }
-        }
+        let isValid = phone_or_email_check_flag && username_check_flag && 
+        					  name_check_flag && password_check_flag;
+        console.log(isValid);
         if (isValid == true) {
                 submit_button.disabled = false;
-                submit_button.className = "active-button";
+                submit_button.classList.add("active");
         } else {
                 submit_button.disabled = true;
-                submit_button.className = "";
+                submit_button.classList.remove("active");
         }
 }
 

@@ -34,11 +34,11 @@ public class CheckOriginPassword extends HttpServlet{
 		String targetPassword = request.getParameter("password");
 		
 		User user = User.builder()
-						.id(sessionUser.getId())
-						.password(targetPassword)
-						.build();
+										.id(sessionUser.getId())
+										.password(targetPassword)
+										.build();
 		
-		int result = authService.checkOriginPassword(user);
+		boolean result = authService.checkOriginPassword(user);
 		
 		response.getWriter().print(result);
 		System.out.println(result);

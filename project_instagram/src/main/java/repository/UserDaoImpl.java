@@ -17,6 +17,64 @@ public class UserDaoImpl implements UserDao {
 	}
 	
 	@Override
+	public int checkEmail(String email) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		int result = 0;
+		
+		try {
+			conn = db.getConnection();
+			sql = "select count(email) from user_mst where email = ? and disable_flag = 0;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, email);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				result = rs.getInt(1);
+			}
+		} catch (SQLDataException e) {
+			System.out.println("no row");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt, rs);
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public int checkPhone(String phone) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		int result = 0;
+		
+		try {
+			conn = db.getConnection();
+			sql = "select count(phone) from user_mst where phone = ? and disable_flag = 0;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, phone);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				result = rs.getInt(1);
+			}
+		} catch (SQLDataException e) {
+			System.out.println("no row");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt, rs);
+		}
+		
+		return result;
+	}
+	
+	@Override
 	public int checkUsername(String username) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -39,30 +97,29 @@ public class UserDaoImpl implements UserDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			db.freeConnection(conn);
+			db.freeConnection(conn, pstmt, rs);
 		}
 		
 		return result;
 	}
 	
 	@Override
-	public int checkOriginPassword(User user) {
+	public String selectOriginPassword(int user_id) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql = null;
-		int result = 0;
+		String password = null;
 		
 		try {
 			conn = db.getConnection();
-			sql = "select count(password) from user_mst where id = ? and password = ? and disable_flag = 0;";
+			sql = "select password from user_mst where id = ? and disable_flag = 0;";
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, user.getId());
-			pstmt.setString(2, user.getPassword());
+			pstmt.setInt(1, user_id);
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
-				result = rs.getInt(1);
+				password = rs.getString("password");
 			}
 		} catch (SQLDataException e) {
 			System.out.println("no row");
@@ -72,7 +129,36 @@ public class UserDaoImpl implements UserDao {
 			db.freeConnection(conn);
 		}
 		
-		return result;
+		return password;
+	}
+	
+	@Override
+	public String selectPassword(String username) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		String password = null;
+		
+		try {
+			conn = db.getConnection();
+			sql = "select password from user_mst where username = ? and disable_flag = 0;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, username);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				password = rs.getString("password");
+			}
+		} catch (SQLDataException e) {
+			System.out.println("no row");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn);
+		}
+		
+		return password;
 	}
 	
 	@Override
@@ -110,39 +196,6 @@ public class UserDaoImpl implements UserDao {
 		return result;
 	}
 	
-	@Override
-	public int signin(User user) {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String sql = "select "
-						+ "count(um.username) + count(um2.password) "
-					+ "from "
-						+ "user_mst um "
-						+ "left outer join user_mst um2 on(um.id = um2.id and um2.password = ?) "
-					+ "where "
-						+ "um.username = ? and um.disable_flag = 0;";
-		int result = 0;
-		
-		try {
-			conn = db.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, user.getPassword());
-			pstmt.setString(2, user.getUsername());
-			rs = pstmt.executeQuery();
-			
-			while(rs.next()) {
-				result = rs.getInt(1);
-			}
-		} catch (Exception e) {
-			System.out.println("No row");
-		} finally {
-			db.freeConnection(conn);
-		}
-		
-		return result;
-	}
-
 	@Override
 	public User getUser(String username) {
 		Connection conn = null;
