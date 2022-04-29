@@ -23,6 +23,13 @@
                     <img src="/static/images/select_image_button.png" alt="">
                 </button>
                 <div class="image-picker">
+                	<div class="liner">
+	                	<div class="small-wrapper">
+	                		
+	                	</div>
+	                	<button type="button" class="prev-button"><img src="/static/images/new_article_prev_button.png" alt=""></button>
+	                	<button type="button" class="next-button"><img src="/static/images/new_article_next_button.png" alt=""></button>
+                	</div>
                 	<button type="button" class="add-new-media">
                 		<img src="/static/images/new_article_add_new_media.png" alt="">
                 	</button>

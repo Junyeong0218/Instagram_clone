@@ -1,11 +1,16 @@
 const show_new_article = document.querySelector(".show-new-article");
-const show_new_article_modal = document.querySelector(".new-article-modal");
+const new_article_modal = document.querySelector(".new-article-modal");
 const new_article_closer = document.querySelector(".new-article-closer");
 const non_picked_image = document.querySelector(".non-picked-image");
 const picked_image = document.querySelector(".picked-image");
 const select_image_button = document.querySelector(".select-image-button");
 const image_picker = document.querySelector(".image-picker");
+const small_wrapper = document.querySelector(".small-wrapper");
+const liner = document.querySelector(".liner");
 const add_new_media_button = document.querySelector(".add-new-media");
+
+const prev_button = new_article_modal.querySelector(".prev-button");
+const next_button = new_article_modal.querySelector(".next-button");
 
 const file_tag = document.querySelector("#new-file");
 let files = new Array();
@@ -14,9 +19,9 @@ let last_file_index = 0;
 //----------------------------------------------------------------------
 // EventListeners
 
-show_new_article.onclick = () => show_new_article_modal.classList.add("active");
+show_new_article.onclick = () => new_article_modal.classList.add("active");
 new_article_closer.onclick = () => {
-	show_new_article_modal.classList.remove("active");
+	new_article_modal.classList.remove("active");
 	const medias = picked_image.children;
 	for(let i=0; i < medias.length; i++) {
 		if(medias[i].tagName == "IMG" || medias[i].tagName == "VIDEO") {
@@ -30,31 +35,186 @@ new_article_closer.onclick = () => {
 	files = new Array();
 }
 
-select_image_button.onclick = (event) => {
-	image_picker.classList.toggle("active");
-}
+select_image_button.onclick = () => image_picker.classList.toggle("active");
 
-file_tag.onchange = (event) => {
-	console.log(event);
-	const file = file_tag.files[last_file_index++];
+add_new_media_button.onclick = () => file_tag.click();
+
+file_tag.onchange = () => {
+	const file = file_tag.files[0];
 	const fileReader = new FileReader();
 	fileReader.readAsDataURL(file);
-	files.push(file);
 	
 	fileReader.onloadend = (event) => {
-		console.log(event);
+		if(file.size < 1024) {
+			alert("1KB 이상의 파일만 등록할 수 있습니다.");
+			return;
+		}
+		files.push(file);
+		const div = document.createElement("div");
+		const div_for_small = document.createElement("div");
+		const src = event.target.result;
+		const remove_button = makeRemoveImageButtonTag();
 		if(file.type.split("/")[0] == "image") {
 			const img = document.createElement("img");
-			img.src = event.target.result;
-			picked_image.insertBefore(img, select_image_button);
-			image_picker.insertBefore(img, );
+			img.src = src;
+			div.appendChild(img)
+			picked_image.insertBefore(div, select_image_button);
+			
+			const small_img = document.createElement("img");
+			small_img.src = src;
+			div_for_small.appendChild(small_img);
+			div_for_small.appendChild(remove_button);
+			small_wrapper.appendChild(div_for_small);
 		} else {
 			const video = document.createElement("video");
-			video.src = event.target.result;
+			video.src = src;
 			video.autoplay = "autoplay";
-			picked_image.insertBefore(video, select_image_button);
+			div.appendChild(video);
+			picked_image.insertBefore(div, select_image_button);
+			
+			const small_video = document.createElement("video");
+			small_video.src = src + "#t=0.5";
+			small_video.preload = "metadata";
+			div_for_small.appendChild(small_video);
+			div_for_small.appendChild(remove_button);
+			small_wrapper.appendChild(div_for_small);
 		}
 		non_picked_image.classList.add("disabled");
 		picked_image.classList.remove("disabled");
+		const index = files.length - 1;
+		resizeMedia(div);
+		resizeMedia(div_for_small);
+		activeMedia(index);
+		div_for_small.onclick = activeSpecificIndexMedia;
+		remove_button.onclick = (event) => {
+			removeImage(event);
+		}
+		if(files.length > 5) {
+			next_button.classList.add("active");
+		}
+	}
+}
+
+next_button.onclick = () => {
+	const move_x = files.length * 106 - 596;
+	small_wrapper.scrollTo(move_x, 0);
+	next_button.classList.remove("active");
+	prev_button.classList.add("active");
+}
+
+prev_button.onclick = () => {
+	const move_x = 596 - files.length * 106;
+	small_wrapper.scrollTo(move_x, 0);
+	next_button.classList.add("active");
+	prev_button.classList.remove("active");
+}
+
+//----------------------------------------------------------------------
+// Functions
+
+function getCurrentImageIndex(element) {
+	const images = small_wrapper.children;
+	for(let i=0; i < images.length; i++) {
+		if(images[i] == element) return i;
+	}
+}
+
+function alignImages() {
+	const images = small_wrapper.children;
+	for(let i=0; i < images.length; i++) {
+		if(i == 0) images[i].style = `transform: none`;
+		else			 images[i].style = `transform: translate3d(${i * 106}px, 0px, 0px);`;
+	}
+	liner.style = `width: ${images.length * 106 > 595 ? 596 : images.length * 106}px`;
+}
+
+function showNonPickedImage() {
+	non_picked_image.classList.remove("disabled");
+	picked_image.classList.add("disabled");
+}
+
+function removeImage(event) {
+	const remove_index = getCurrentImageIndex(event.target.parentElement);
+	let available_element = event.target.parentElement.nextElementSibling;
+	let index = remove_index + 1;
+	if(available_element == null || typeof  available_element == "undefined") {
+		available_element = event.target.parentElement.previousElementSibling;
+		index -= 2;
+	}
+	files.splice(remove_index, 1);
+	small_wrapper.children[remove_index].remove();
+	picked_image.children[remove_index].remove();
+	alignImages();
+	if(index == -1) {
+		showNonPickedImage();
+	} else {
+		activeSpecificIndexMedia(event.target.parentElement);
+	}
+}
+
+function makeRemoveImageButtonTag() {
+	const button = document.createElement("button");
+	button.type = "button";
+	button.className = "remove-image-button";
+	
+	const img = document.createElement("img");
+	img.src = "/static/images/new_article_remove_image.png";
+	button.appendChild(img);
+	
+	return button;
+}
+
+function activeSpecificIndexMedia(event) {
+	const index = getCurrentImageIndex(event.target);
+	activeMedia(index);
+}
+
+function resizeMedia(div) {
+	const wrapper = div.parentNode;
+	const media = div.children[0];
+	const width = media.width;
+	const height = media.height;
+	if(width > height) {
+		if(wrapper.className.includes("small-wrapper")) {
+			const size = (files.length - 1) * 106;
+			div.style = size == 0 ? `transform: none;` : `transform: translate3d(${size}px, 0px, 0px);`;
+			liner.style = size + 106 > 595 ? `width: 596px` : `width: ${size + 106}px`;
+		} else {
+			div.style = "width: 100%;";
+		}
+		media.style = "max-height: 100%; position: relative; pointer-events:none;";
+	} else {
+		if(wrapper.className.includes("small-wrapper")) {
+			const size = (files.length - 1) * 106;
+			div.style = size == 0 ? `transform: none;` : `transform: translate3d(${size}px, 0px, 0px);`;
+			liner.style = size + 106 > 595 ? `width: 596px` : `width: ${size + 106}px`;
+		} else {
+			div.style = "height: 100%;";
+		}
+		media.style = "max-width: 100%; position: relative; pointer-events:none;";
+	}
+}
+
+function activeMedia(activeIndex) {
+	console.log(activeIndex);
+	const medias = picked_image.children;
+	for(let i=0; i < medias.length; i++) {
+		if(medias[i].tagName != "DIV" || medias[i].className.includes("image-picker")) continue;
+		const media = medias[i].children[0];
+		if(i == activeIndex) {
+			medias[i].style.display = "";
+			media.classList.remove("hidden");
+		} else	{
+			medias[i].style.display = "none";
+			media.classList.add("hidden");
+		}
+	}
+	const buttons = small_wrapper.children;
+	for(let i=0; i < buttons.length; i++) {
+		if(i == activeIndex) {
+			buttons[i].classList.add("active");
+		} else {
+			buttons[i].classList.remove("active");
+		}
 	}
 }
