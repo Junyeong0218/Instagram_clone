@@ -9,7 +9,9 @@
     	<img src="/static/images/new_article_modal_closer.png" alt="">
     </button>
     <div class="new-article-wrapper">
-        <div class="title">새 게시물 만들기</div>
+        <div class="title">새 게시물 만들기
+        	<button type="button" class="next-form">다음으로</button>
+        </div>
         <div class="image-wrapper">
             <div class="non-picked-image">
                 <img src="/static/images/non_pick_image.png" alt="">

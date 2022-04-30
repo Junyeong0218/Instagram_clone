@@ -86,12 +86,11 @@ file_tag.onchange = () => {
 		resizeMedia(div_for_small);
 		activeMedia(index);
 		div_for_small.onclick = activeSpecificIndexMedia;
-		remove_button.onclick = (event) => {
-			removeImage(event);
-		}
+		remove_button.onclick = removeImage;
 		if(files.length > 5) {
 			next_button.classList.add("active");
 		}
+		console.log(files);
 	}
 }
 
@@ -134,22 +133,29 @@ function showNonPickedImage() {
 }
 
 function removeImage(event) {
-	const remove_index = getCurrentImageIndex(event.target.parentElement);
-	let available_element = event.target.parentElement.nextElementSibling;
-	let index = remove_index + 1;
-	if(available_element == null || typeof  available_element == "undefined") {
-		available_element = event.target.parentElement.previousElementSibling;
-		index -= 2;
-	}
+	event.preventDefault();
+	let remove_index = getCurrentImageIndex(event.target.parentElement);
 	files.splice(remove_index, 1);
 	small_wrapper.children[remove_index].remove();
 	picked_image.children[remove_index].remove();
 	alignImages();
-	if(index == -1) {
+	
+	const image = small_wrapper.children[remove_index];
+	let active_index;
+	if(image == null || typeof image == "undefined") active_index = remove_index - 1;
+	else																					   active_index = remove_index;
+	
+	if(active_index < 0) {
 		showNonPickedImage();
 	} else {
-		activeSpecificIndexMedia(event.target.parentElement);
+		activeMedia(active_index);
 	}
+	
+	if(files.length < 6) {
+		prev_button.classList.remove("active");
+		next_button.classList.remove("active");
+	}
+	console.log(files);
 }
 
 function makeRemoveImageButtonTag() {
@@ -165,7 +171,9 @@ function makeRemoveImageButtonTag() {
 }
 
 function activeSpecificIndexMedia(event) {
+	if(event.srcElement.tagName == "BUTTON") return;
 	const index = getCurrentImageIndex(event.target);
+	console.log("activeSpecificIndexMedia : " + index);
 	activeMedia(index);
 }
 
