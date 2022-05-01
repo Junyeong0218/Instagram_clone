@@ -1,5 +1,6 @@
 const show_new_article = document.querySelector(".show-new-article");
 const new_article_modal = document.querySelector(".new-article-modal");
+const new_article_wrapper = document.querySelector(".new-article-wrapper");
 const new_article_closer = document.querySelector(".new-article-closer");
 const non_picked_image = document.querySelector(".non-picked-image");
 const picked_image = document.querySelector(".picked-image");
@@ -8,6 +9,13 @@ const image_picker = document.querySelector(".image-picker");
 const small_wrapper = document.querySelector(".small-wrapper");
 const liner = document.querySelector(".liner");
 const add_new_media_button = document.querySelector(".add-new-media");
+const prev_form_button = document.querySelector(".prev-form");
+const next_form_button = document.querySelector(".next-form");
+const submit_article_button = document.querySelector(".submit-article");
+const contents_form = document.querySelector(".contents-form");
+const new_article_contents = document.querySelector(".article-contents");
+const current_content_length = document.querySelector(".current-length");
+const feature_input = document.querySelector("input[name='feature']");
 
 const prev_button = new_article_modal.querySelector(".prev-button");
 const next_button = new_article_modal.querySelector(".next-button");
@@ -19,7 +27,11 @@ let last_file_index = 0;
 //----------------------------------------------------------------------
 // EventListeners
 
-show_new_article.onclick = () => new_article_modal.classList.add("active");
+show_new_article.onclick = () => {
+	new_article_modal.classList.add("active");
+	document.body.style = "overflow: hidden;";
+	show_new_article.querySelector("img").src = "/static/images/menu_upload_clicked.png";
+}
 new_article_closer.onclick = () => {
 	new_article_modal.classList.remove("active");
 	const medias = picked_image.children;
@@ -31,6 +43,8 @@ new_article_closer.onclick = () => {
 	}
 	picked_image.classList.add("disabled");
 	non_picked_image.classList.remove("disabled");
+	document.body.style = "";
+	show_new_article.querySelector("img").src = "/static/images/menu_upload.png";
 	last_file_index = 0;
 	files = new Array();
 }
@@ -81,6 +95,7 @@ file_tag.onchange = () => {
 		}
 		non_picked_image.classList.add("disabled");
 		picked_image.classList.remove("disabled");
+		next_form_button.classList.add("active");
 		const index = files.length - 1;
 		resizeMedia(div);
 		resizeMedia(div_for_small);
@@ -88,6 +103,9 @@ file_tag.onchange = () => {
 		div_for_small.onclick = activeSpecificIndexMedia;
 		remove_button.onclick = removeImage;
 		if(files.length > 5) {
+			if(files.length > 9) {
+				add_new_media_button.classList.add("disabled");
+			}
 			next_button.classList.add("active");
 		}
 		console.log(files);
@@ -108,8 +126,91 @@ prev_button.onclick = () => {
 	prev_button.classList.remove("active");
 }
 
+prev_form_button.onclick = () => {
+	select_image_button.classList.remove("disabled");
+	new_article_wrapper.classList.remove("text-form");
+	contents_form.classList.remove("active");
+	submit_article_button.classList.remove("active");
+	prev_form_button.classList.remove("active");
+	next_form_button.classList.add("active");
+}
+
+next_form_button.onclick = () => {
+	select_image_button.classList.add("disabled");
+	new_article_wrapper.classList.add("text-form");
+	contents_form.classList.add("active");
+	submit_article_button.classList.add("active");
+	prev_form_button.classList.add("active");
+	next_form_button.classList.remove("active");
+	image_picker.classList.remove("active");
+}
+
+new_article_contents.oninput = (event) => {
+	if(event.target.value.length > 2200) {
+		alert("2,200자 이상 입력할 수 없습니다.");
+		event.target.value = event.target.value.substring(0, 2200);
+		current_content_length.innerText = event.target.value.length;
+	} else {
+		current_content_length.innerText = event.target.value.length;
+	}
+}
+
+submit_article_button.onclick = (event) => {
+	const formdata = makeFormData();
+	console.log(formdata);
+	$.ajax({
+		type: "post",
+		url: "/article/insert-article",
+		data: formdata,
+		encType: "multipart/form-data",
+		processData: false,
+		contentType: false,
+		dataType: "text",
+		success: function (data) {
+			if(data == "true") {
+				location.reload();
+			} else {
+				alert("게시글 업로드 실패");
+			}
+		},
+		error: function (xhr, status, error) {
+			console.log(xhr);
+			console.log(status);
+			console.log(error);
+		}
+	});
+}
+
 //----------------------------------------------------------------------
 // Functions
+
+function makeFormData() {
+	changeImageName();
+	const formdata = new FormData();
+	for(let i = 0; i < files.length; i++) {
+		formdata.append("file", files[i]);
+		formdata.append("type", files[i].type.split("/")[0]);
+	}
+	formdata.append("contents", new_article_contents.value);
+	formdata.append("feature", feature_input.value);
+	
+	return formdata;
+}
+
+function changeImageName() {
+	const dataTransfer = new DataTransfer();
+	for(let i = 0; i < files.length; i++) {
+		const numbering = String(i+1).padStart(2, "0");
+		const type = files[i].type;
+		const extension = "." + type.split("/")[1];
+		const new_name = "media" + numbering + extension;
+		const blob = files[i].slice(0, files[i].size, type);
+		
+		const new_file = new File([blob], new_name, { "type": type });
+		dataTransfer.items.add(new_file);
+	}
+	files = dataTransfer.files;
+}
 
 function getCurrentImageIndex(element) {
 	const images = small_wrapper.children;
@@ -130,6 +231,7 @@ function alignImages() {
 function showNonPickedImage() {
 	non_picked_image.classList.remove("disabled");
 	picked_image.classList.add("disabled");
+	next_form_button.classList.remove("active");
 }
 
 function removeImage(event) {
@@ -154,6 +256,10 @@ function removeImage(event) {
 	if(files.length < 6) {
 		prev_button.classList.remove("active");
 		next_button.classList.remove("active");
+	}
+	
+	if(files.length < 10) {
+		add_new_media_button.classList.remove("disabled");
 	}
 	console.log(files);
 }

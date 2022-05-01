@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import db.DBConnectionMgr;
+import entity.Article;
 import entity.ArticleComment;
 import entity.ArticleDetail;
+import entity.ArticleMedia;
 
 public class ArticleDaoImpl implements ArticleDao {
 	
@@ -17,6 +19,88 @@ public class ArticleDaoImpl implements ArticleDao {
 	
 	public ArticleDaoImpl() {
 		db = DBConnectionMgr.getInstance();
+	}
+	
+	@Override
+	public int insertArticle(Article article) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		int result = 0;
+		int article_id = 0;
+		
+		try {
+			conn = db.getConnection();
+			sql = "insert into article_mst values(0, ?, ?, ?, ?, 0, now(), now()); ";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, article.getUser_id());
+			pstmt.setString(2, article.getFeature());
+			pstmt.setString(3, article.getMedia_type());
+			pstmt.setString(4, article.getContents());
+			
+			result = pstmt.executeUpdate();
+			
+			if(result == 1) {
+				pstmt.close();
+				sql = "select id from article_mst where user_id = ? order by create_date desc limit 1;";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, article.getUser_id());
+				
+				rs = pstmt.executeQuery();
+				
+				while(rs.next()) {
+					article_id = rs.getInt(1);
+				}
+			}
+			
+			while(rs.next()) {
+				article_id = rs.getInt(1);
+			}
+		} catch(SQLDataException e1) {
+			System.out.println("no rows");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt, rs);
+		}
+		
+		return article_id;
+	}
+	
+	@Override
+	public int insertArticleMedias(List<ArticleMedia> media_list) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		StringBuilder sql = new StringBuilder();
+		int result  = 0;
+		
+		try {
+			conn = db.getConnection();
+			for(ArticleMedia media : media_list) {
+				sql.append("insert into "
+										+ "article_media(article_id, media_type, media_name, create_date, update_date) "
+									+ "values( "
+											+ "" + media.getArticle_id() + ", "
+											+ "\'" + media.getMedia_type() + "\', "
+											+ "\'" + media.getMedia_name() + "\', now(), now());");
+				
+				pstmt = conn.prepareStatement(sql.toString());
+				result += pstmt.executeUpdate();
+				
+				sql.delete(0, sql.length());
+				pstmt.close();
+			}
+			
+		} catch(SQLDataException e1) {
+			System.out.println("no rows");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt);
+		}
+		
+		return result;
 	}
 	
 	@Override

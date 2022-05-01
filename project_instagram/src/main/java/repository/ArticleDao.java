@@ -2,10 +2,16 @@ package repository;
 
 import java.util.List;
 
+import entity.Article;
 import entity.ArticleComment;
 import entity.ArticleDetail;
+import entity.ArticleMedia;
 
 public interface ArticleDao {
+	
+	public int insertArticle(Article article);
+	
+	public int insertArticleMedias(List<ArticleMedia> media_list);
 
 	public List<ArticleDetail> selectArticleList(int user_id);
 	

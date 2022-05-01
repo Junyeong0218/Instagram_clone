@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <head>
     <link rel="stylesheet" href="/static/css/new_article_modal.css">
 </head>
@@ -10,7 +11,9 @@
     </button>
     <div class="new-article-wrapper">
         <div class="title">새 게시물 만들기
-        	<button type="button" class="next-form">다음으로</button>
+        	<button type="button" class="prev-form">이전</button>
+        	<button type="button" class="next-form">다음</button>
+        	<button type="button" class="submit-article">공유하기</button>
         </div>
         <div class="image-wrapper">
             <div class="non-picked-image">
@@ -36,6 +39,27 @@
                 		<img src="/static/images/new_article_add_new_media.png" alt="">
                 	</button>
                 </div>
+            </div>
+            <div class="contents-form">
+            	<div class="principal-user">
+            		
+            		<c:if test="${sessionScope.user.has_profile_image == true}">
+            			<img src="/static/images/user_profile_images/${sessionScope.user.file_name}" alt="">
+            		</c:if>
+            		<c:if test="${sessionScope.user.has_profile_image == false}">
+            			<img src="/static/images/basic_profile_image.jpg" alt="">
+            		</c:if>
+            		
+            		<span>${sessionScope.user.username}</span>
+            	</div>
+            	<textarea class="article-contents" placeholder="문구 입력..."></textarea>
+            	<div class="contents-helper">
+            		<button type="button" class="insert-emoji"><img src="/static/images/emoji_icon.png"></button>
+            		<span class="length-indicator">
+            			<span class="current-length">0</span>/2,200
+            		</span>
+            	</div>
+            	<input type="text" name="feature" placeholder="위치 추가">
             </div>
         </div>
     </div>

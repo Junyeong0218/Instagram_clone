@@ -5,9 +5,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import entity.Article;
 import entity.ArticleComment;
 import entity.ArticleDetail;
+import entity.ArticleMedia;
 import repository.ArticleDao;
+import request_dto.InsertArticleReqDto;
 import response_dto.ArticleDetailResDto;
 import response_dto.ArticleResDto;
 
@@ -17,6 +20,22 @@ public class ArticleServiceImpl implements ArticleService {
 	
 	public ArticleServiceImpl(ArticleDao articleDao) {
 		this.articleDao = articleDao;
+	}
+	
+	@Override
+	public boolean insertArticle(InsertArticleReqDto insertArticleReqDto) {
+		Article article = insertArticleReqDto.toArticleEntity();
+		int article_id = articleDao.insertArticle(article);
+		
+		if(article_id == 0) return false;
+		insertArticleReqDto.setArticle_id(article_id);
+		
+		List<ArticleMedia> media_list = insertArticleReqDto.toArticleMediaList();
+		
+		int result = articleDao.insertArticleMedias(media_list);
+		System.out.println(result);
+		if(result > 0) return true;
+		else					 return false;
 	}
 	
 	@Override
