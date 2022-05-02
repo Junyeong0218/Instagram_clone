@@ -24,4 +24,13 @@ public class ArticleMedia {
 	private LocalDateTime create_date;
 	private LocalDateTime update_date;
 	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof ArticleMedia) {
+			if(this.media_name.equals(((ArticleMedia) obj).media_name))
+				return true;
+		}
+		return false;
+	}
+	
 }

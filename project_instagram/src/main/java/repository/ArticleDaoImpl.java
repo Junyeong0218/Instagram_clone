@@ -32,12 +32,11 @@ public class ArticleDaoImpl implements ArticleDao {
 		
 		try {
 			conn = db.getConnection();
-			sql = "insert into article_mst values(0, ?, ?, ?, ?, 0, now(), now()); ";
+			sql = "insert into article_mst values(0, ?, ?, ?, 0, now(), now()); ";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, article.getUser_id());
 			pstmt.setString(2, article.getFeature());
-			pstmt.setString(3, article.getMedia_type());
-			pstmt.setString(4, article.getContents());
+			pstmt.setString(3, article.getContents());
 			
 			result = pstmt.executeUpdate();
 			
@@ -120,11 +119,11 @@ public class ArticleDaoImpl implements ArticleDao {
 					+ "um.has_profile_image, "
 					+ "up.file_name, "
 					+ "am.feature, "
-					+ "am.media_type, "
 					+ "am.`contents`, "
 					+ "am.is_stored, "
 					+ "am.create_date, "
 					
+					+ "media.media_type, "
 					+ "media.media_name, "
 					
 					+ "count(distinct ar.like_user_id) as `like_user_count`, "
@@ -255,9 +254,8 @@ public class ArticleDaoImpl implements ArticleDao {
 			pstmt.setInt(1, article_id);
 			pstmt.setInt(2, user_id);
 			pstmt.setString(3,  contents);
-			System.out.println("pstmt end");
+			
 			result = pstmt.executeUpdate();
-			System.out.println("executed!");
 		} catch(SQLDataException e1) {
 			System.out.println("no rows");
 		} catch (Exception e) {
@@ -378,10 +376,10 @@ public class ArticleDaoImpl implements ArticleDao {
 						+ "um.has_profile_image, "
 						+ "up.file_name, "
 						+ "am.feature, "
-						+ "am.media_type, "
 						+ "am.`contents`, "
 						+ "am.create_date, "
 
+						+ "media.media_type, "
 						+ "media.media_name, "
 						
 						+ "count(distinct ar.like_user_id) as like_user_count, "
@@ -413,7 +411,7 @@ public class ArticleDaoImpl implements ArticleDao {
 					+ "where "
 						+ "am.id = ? "
 					+ "group by "
-						+ "comment_id "
+						+ "media.media_name "
 					+ "order by "
 						+ "comment_like_user_count desc, "
 						+ "comment_create_date asc";

@@ -1,6 +1,7 @@
 package service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,6 +39,7 @@ public class ArticleServiceImpl implements ArticleService {
 		else					 return false;
 	}
 	
+	@SuppressWarnings("unlikely-arg-type")
 	@Override
 	public List<ArticleResDto> selectArticles(int user_id) {
 		List<ArticleDetail> articleList = articleDao.selectArticleList(user_id);
@@ -57,23 +59,28 @@ public class ArticleServiceImpl implements ArticleService {
 				dto.setHas_profile_image(detail.isArticle_user_has_profile_image());
 				dto.setFile_name(detail.getArticle_user_file_name());
 				dto.setFeature(detail.getFeature());
-				dto.setMedia_type(detail.getMedia_type());
 				dto.setContents(detail.getContents());
 				dto.setStored(detail.is_stored());
 				dto.setArticle_create_date(detail.getCreate_date());
 				dto.setLike_flag(detail.isLike_flag());
 				
-				dto.setMedia_name_list(new ArrayList<String>());
-				dto.getMedia_name_list().add(detail.getMedia_name());
+				dto.setMedia_list(new ArrayList<ArticleMedia>());
+				ArticleMedia media = new ArticleMedia();
+				media.setMedia_type(detail.getMedia_type());
+				media.setMedia_name(detail.getMedia_name());
+				dto.getMedia_list().add(media);
 				
 				dto.setTotal_like_count(detail.getLike_user_count());
 				dto.setTotal_commented_user_count(detail.getTotal_commented_user_count());
 				
 				compressedList.add(dto);
 			} else {
-				List<String> mediaNameList = dto.getMedia_name_list();
+				List<ArticleMedia> mediaNameList = dto.getMedia_list();
 				if(!mediaNameList.contains(detail.getMedia_name())) {
-					mediaNameList.add(detail.getMedia_name());
+					ArticleMedia media = new ArticleMedia();
+					media.setMedia_type(detail.getMedia_type());
+					media.setMedia_name(detail.getMedia_name());
+					dto.getMedia_list().add(media);
 				}
 			}
 		}
@@ -123,19 +130,20 @@ public class ArticleServiceImpl implements ArticleService {
 				articleDetailResDto.setHas_profile_image(detail.isArticle_user_has_profile_image());
 				articleDetailResDto.setFile_name(detail.getArticle_user_file_name());
 				articleDetailResDto.setFeature(detail.getFeature());
-				articleDetailResDto.setMedia_type(detail.getMedia_type());
 				articleDetailResDto.setContents(detail.getContents());
 				articleDetailResDto.setArticle_create_date(detail.getCreate_date());
 				articleDetailResDto.setLike_flag(detail.isLike_flag());
 				articleDetailResDto.setLike_user_count(detail.getLike_user_count());
 				
-				articleDetailResDto.setMedia_name_list(new ArrayList<String>());
+				articleDetailResDto.setMedia_list(new ArrayList<ArticleMedia>());
 				articleDetailResDto.setArticle_comment_list(new ArrayList<ArticleComment>());
 			}
-			List<String> media_name_list = articleDetailResDto.getMedia_name_list();
-			if(!media_name_list.contains(detail.getMedia_name())) {
-				media_name_list.add(detail.getMedia_name());
-			}
+			List<ArticleMedia> media_list = articleDetailResDto.getMedia_list();
+			ArticleMedia media = new ArticleMedia();
+			media.setArticle_id(detail.getArticle_id());
+			media.setMedia_type(detail.getMedia_type());
+			media.setMedia_name(detail.getMedia_name());
+			media_list.add(media);
 			
 			List<ArticleComment> article_comment_list = articleDetailResDto.getArticle_comment_list();
 			if(!article_comment_list.contains(detail.getComment_id())) {
@@ -156,6 +164,17 @@ public class ArticleServiceImpl implements ArticleService {
 			}
 			
 		}
+		
+		List<ArticleMedia> media_list = articleDetailResDto.getMedia_list();
+		media_list.sort(new Comparator<ArticleMedia>() {
+			@Override
+			public int compare(ArticleMedia o1, ArticleMedia o2) {
+				int prevIndex = Integer.parseInt(o1.getMedia_name().substring(5, 7));
+				int nextIndex = Integer.parseInt(o2.getMedia_name().substring(5,  7));
+				return prevIndex - nextIndex;
+			}
+		});
+		
 		return articleDetailResDto;
 	}
 	

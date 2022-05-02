@@ -30,7 +30,6 @@ public class InsertArticleReqDto {
 								   .user_id(user_id)
 								   .feature(feature)
 								   .contents(contents)
-								   .media_type(media_type_list.get(0))
 								   .build();
 	}
 	

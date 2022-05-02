@@ -248,10 +248,11 @@ public class FollowDaoImpl implements FollowDao {
 						+ "um.`name`, "
 						+ "um.has_profile_image, "
 						+ "up.file_name, "
-						+ "am.media_type, "
 						+ "am.is_stored, "
-						+ "media.media_name, "
 						+ "am.create_date, "
+						
+						+ "media.media_type, "
+						+ "media.media_name, "
 						
 						+ "fm3.partner_user_id, "
 						+ "count(distinct fm.partner_user_id) as following, "
@@ -265,7 +266,7 @@ public class FollowDaoImpl implements FollowDao {
 						+ "left outer join follow_mst fm2 on(fm2.partner_user_id = um.id) "
 						+ "left outer join follow_mst fm3 on(fm3.user_id = ? and fm3.partner_user_id = um.id) "
 					+ "where "
-						+ "um.username = ? and media.media_name like \"%01%\""
+						+ "um.username = ? and media.media_name like \"%01%\" "
 					+ "group by "
 						+ "media.media_name "
 					+ "order by "
@@ -302,7 +303,7 @@ public class FollowDaoImpl implements FollowDao {
 		} finally {
 			db.freeConnection(conn, pstmt);
 		}
-		
+		System.out.println(userProfile);
 		return userProfile;
 	}
 	
@@ -329,6 +330,8 @@ public class FollowDaoImpl implements FollowDao {
 						+ "left outer join user_profile_image up on(up.user_id = fm.partner_user_id) "
 					+ "where "
 						+ "fm.user_id = ? "
+					+ "group by "
+						+ "fm.user_id "
 					+ "limit ?, 11;";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, user_id);
@@ -379,6 +382,8 @@ public class FollowDaoImpl implements FollowDao {
 						+ "left outer join user_profile_image up on(up.user_id = fm.user_id) "
 					+ "where "
 						+ "fm.partner_user_id = ? "
+					+ "group by "
+						+ "fm.user_id "
 					+ "limit ?, 11";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, user_id);

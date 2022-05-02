@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import entity.ArticleComment;
+import entity.ArticleMedia;
 import entity.User;
 import repository.ArticleDao;
 import response_dto.ArticleDetailResDto;
@@ -40,7 +41,7 @@ public class SelectArticleDetail extends HttpServlet {
 		int article_id = Integer.parseInt(request.getParameter("article_id"));
 		
 		ArticleDetailResDto articleDetailResDto = articleService.selectArticleDetail(article_id, sessionUser.getId());
-		List<String> media_name_list = articleDetailResDto.getMedia_name_list();
+		List<ArticleMedia> media_list = articleDetailResDto.getMedia_list();
 		List<ArticleComment> article_comment_list = articleDetailResDto.getArticle_comment_list();
 		System.out.println(articleDetailResDto);
 		
@@ -51,14 +52,14 @@ public class SelectArticleDetail extends HttpServlet {
 							  " \"has_profile_image\": \"" + articleDetailResDto.isHas_profile_image() + "\", " +
 							  " \"file_name\": \"" + articleDetailResDto.getFile_name() + "\", " +
 							  " \"feature\": \"" + articleDetailResDto.getFeature() + "\", " +
-							  " \"media_type\": \"" + articleDetailResDto.getMedia_type() + "\", " +
 							  " \"contents\": \"" + articleDetailResDto.getContents() + "\", " +
 							  " \"article_create_date\": \"" + articleDetailResDto.getArticle_create_date() + "\", " +
 							  " \"like_flag\": \"" + articleDetailResDto.isLike_flag() + "\", " + 
 							  " \"total_like_count\": \"" + articleDetailResDto.getLike_user_count() + "\", " + 
-							  " \"media_name_list\": [ ");
-		for(String media_name : media_name_list) {
-			sb.append("\"" + media_name + "\", ");
+							  " \"media_list\": [ ");
+		for(int i = 0; i < media_list.size(); i++) {
+			sb.append(" { \"media_type\": \"" + media_list.get(i).getMedia_type() + "\", "
+								+ " \"media_name\": \"" + media_list.get(i).getMedia_name() + "\" }, ");
 		}
 		sb.replace(sb.lastIndexOf(","), sb.length(), "");
 		sb.append(" ], \"article_comment_list\": [ ");
@@ -78,8 +79,6 @@ public class SelectArticleDetail extends HttpServlet {
 		}
 		sb.replace(sb.lastIndexOf(","), sb.length(), "");
 		sb.append(" ] }");
-		
-//		System.out.println(sb.toString());
 		
 		response.setContentType("text/plain; charset=UTF-8");
 		response.getWriter().print(sb.toString());

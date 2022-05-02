@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import entity.ArticleMedia;
 import entity.User;
 import repository.ArticleDao;
 import response_dto.ArticleResDto;
@@ -46,15 +47,15 @@ public class LoadArticles extends HttpServlet {
 					", \"has_profile_image\": \"" + dto.isHas_profile_image() + "\"" + 
 					", \"file_name\": \"" + dto.getFile_name() + "\"" + 
 					", \"feature\": \"" + dto.getFeature() + "\"" + 
-					", \"media_type\": \"" + dto.getMedia_type() + "\"" + 
 					", \"username\": \"" + dto.getUsername() + "\"" + 
 					", \"contents\": \"" + dto.getContents() + "\"" + 
 					", \"create_date\": \"" + dto.getArticle_create_date() + "\"" + 
 					", \"like_flag\": \"" + dto.isLike_flag() + "\"" + 
-					", \"media_name_list\": [ ");
-			List<String> mediaNameList = dto.getMedia_name_list();
-			for(String mediaName : mediaNameList) {
-				sb.append("\"" + mediaName + "\", ");
+					", \"media_list\": [ ");
+			List<ArticleMedia> mediaList = dto.getMedia_list();
+			for(ArticleMedia media : mediaList) {
+				sb.append(" { \"media_type\": \"" + media.getMedia_type() + "\", "
+									+ "\"media_name\": \"" + media.getMedia_name() + "\" }, ");
 			}
 			sb.replace(sb.lastIndexOf(","), sb.length(), "");
 			

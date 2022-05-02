@@ -94,7 +94,7 @@
 		                    		
 			                    		<c:forEach var="index" begin="${total * 3}" end="${ total * 3 + 2 > userProfile.article_count - 1 ? userProfile.article_count - 1 : total * 3 + 2}">
 				                    		<a href="#">
-				                    			<img src="/static/images/article_medias/${userProfile.article_list[index].id}/${userProfile.article_list[index].media_name_list[0]}" alt="">
+				                    			<img src="/static/images/article_medias/${userProfile.article_list[index].id}/${userProfile.article_list[index].media_list[0].media_name}" alt="">
 				                    		</a>
 			                    		</c:forEach>
 			                    		

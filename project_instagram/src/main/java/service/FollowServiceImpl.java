@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import entity.Activity;
+import entity.ArticleMedia;
 import entity.User;
 import entity.UserProfile;
 import repository.FollowDao;
@@ -62,10 +63,12 @@ public class FollowServiceImpl implements FollowService {
 			
 			ArticleResDto article = new ArticleResDto();
 			article.setId(profile.getArticle_id());
-			article.setMedia_type(profile.getMedia_type());
-			article.setMedia_name_list(new ArrayList<String>());
-			article.getMedia_name_list().add(profile.getMedia_name());
-			article.getMedia_name_list().add(profile.getMedia_name());
+			article.setMedia_list(new ArrayList<ArticleMedia>());
+			
+			ArticleMedia media = new ArticleMedia();
+			media.setMedia_type(profile.getMedia_type());
+			media.setMedia_name(profile.getMedia_name());
+			article.getMedia_list().add(media);
 			article.setArticle_create_date(profile.getCreate_date());
 			articleList.add(article);
 			

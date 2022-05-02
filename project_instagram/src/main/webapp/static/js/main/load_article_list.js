@@ -82,11 +82,15 @@ function makeArticleTag(articleData) {
 	const dots = document.createElement("div");
 	dots.className = "image-index";
 	
-	const mediaList = articleData.media_name_list;
+	const mediaList = articleData.media_list;
 	for(let i = 0; i < mediaList.length; i++) {
 		const li = document.createElement("li");
 		li.className = i == 0 ? "picture current" : "picture";
-		li.innerHTML = `<img src="/static/images/article_medias/${articleData.id}/${mediaList[i]}" alt="게시글 이미지">`;
+		if(mediaList[i].media_type == "image") {
+			li.innerHTML = `<img src="/static/images/article_medias/${articleData.id}/${mediaList[i].media_name}" alt="게시글 이미지">`;
+		} else if(mediaList[i].media_type == "video") {
+			li.innerHTML = `<video src="/static/images/article_medias/${articleData.id}/${mediaList[i].media_name}" autoplay alt="게시글 동영상">`;
+		}
 		ul.appendChild(li);
 		
 		if(mediaList.length > 1) {
@@ -213,7 +217,14 @@ function makeUploadTimeMessage(create_date) {
 }
 
 function moveToPrevImage(event) {
-	const ul = event.composedPath()[2].querySelector("ul");
+	let ul = event.composedPath()[2].querySelector("ul");
+	let detail_flag = false;
+	let image_width = 614;
+	if(event.composedPath()[2].className == "detail-images") {
+		ul = event.composedPath()[2];
+		detail_flag = true;
+		image_width = ul.querySelector("img").width;
+	}
 	const images = ul.children;
 	const current_image = ul.querySelector(".current");
 	let index = -1;
@@ -223,22 +234,31 @@ function moveToPrevImage(event) {
 			break;
 		}
 	}
+	let max_length = detail_flag ? images.length - 2 : images.length - 1;
 	if(index != -1) {
-		ul.scrollTo((--index) * 614, 0);
+		ul.scrollTo((--index) * image_width, 0);
+		if(detail_flag) event.target.parentElement.style = `left: ${(index) * image_width}px;`;
 		current_image.classList.remove("current");
 		current_image.previousElementSibling.classList.add("current");
 	}
-	if(index < images.length - 1) {
+	if(index < max_length) {
 		event.target.nextElementSibling.classList.add("active");
 	}
 	if(index == 0) {
 		event.target.classList.remove("active");
 	}
-	activeCurrentDot(ul, index);
+	if(!detail_flag) activeCurrentDot(ul, index);
 }
 
 function moveToNextImage(event) {
-	const ul = event.composedPath()[2].querySelector("ul");
+	let ul = event.composedPath()[2].querySelector("ul");
+	let detail_flag = false;
+	let image_width = 614;
+	if(event.composedPath()[2].className == "detail-images") {
+		ul = event.composedPath()[2];
+		detail_flag = true;
+		image_width = ul.querySelector("img").width;
+	}
 	const images = ul.children;
 	const current_image = ul.querySelector(".current");
 	let index = -1;
@@ -248,18 +268,20 @@ function moveToNextImage(event) {
 			break;
 		}
 	}
+	let max_length = detail_flag ? images.length - 2 : images.length - 1;
 	if(index != -1) {
-		ul.scrollTo((++index) * 614, 0);
+		ul.scrollTo((++index) * image_width, 0);
+		if(detail_flag) event.target.parentElement.style = `left: ${(index) * image_width}px;`;
 		current_image.classList.remove("current");
 		current_image.nextElementSibling.classList.add("current");
 	}
 	if(index > 0) {
 		event.target.previousElementSibling.classList.add("active");
 	}
-	if(index == images.length - 1) {
+	if(index == max_length) {
 		event.target.classList.remove("active");
 	}
-	activeCurrentDot(ul, index);
+	if(!detail_flag) activeCurrentDot(ul, index);
 }
 
 function activeCurrentDot(ul, index) {
@@ -283,7 +305,7 @@ function showArticleMenu(event) {
         pop_up.classList.remove("to-show");
         pop_up.classList.add("to-hidden");
         pop_up.style.top = '0px';
-        if(event.path[4].className != "article-detail-wrapper") {
+        if(event.composedPath()[4].className != "article-detail-wrapper") {
             document.querySelector("body").style = "";
 		}
     }
@@ -291,8 +313,8 @@ function showArticleMenu(event) {
 
 function toggleLikeArticle(event) {
 	const span = event.target.children[0];
-	const article_index = getArticleIndex(event.path[4]);
-	const wrapper = event.path[6];
+	const article_index = getArticleIndex(event.composedPath()[4]);
+	const wrapper = event.composedPath()[6];
 	let article_data;
 	if(wrapper.className == "article-detail-wrapper") {
 		article_data = origin_article_detail_data;
@@ -309,7 +331,7 @@ function toggleLikeArticle(event) {
 			success: function (data) {
 				if(data == "1") {
 					span.classList.remove("pressed");
-					const how_many_likes = event.path[3].querySelector(".how-many-likes");
+					const how_many_likes = event.composedPath()[3].querySelector(".how-many-likes");
 					article_data.like_flag = "false";
 					
 					article_data.total_like_count = Number(article_data.total_like_count) - 1;
@@ -332,7 +354,7 @@ function toggleLikeArticle(event) {
 			success: function (data) {
 				if(data == "1") {
 					span.classList.add("pressed");
-					const how_many_likes = event.path[3].querySelector(".how-many-likes");
+					const how_many_likes = event.composedPath()[3].querySelector(".how-many-likes");
 					article_data.like_flag = "true";
 					
 					article_data.total_like_count = Number(article_data.total_like_count) + 1;
@@ -374,7 +396,7 @@ function activeCommentSubmitButton(event) {
 function submitComment(event) {
 	console.log(event);
 	const article_index = getArticleIndex(event.composedPath()[3]);
-	const wrapper = event.path[5];
+	const wrapper = event.composedPath()[5];
 	let article_data;
 	if(wrapper.className == "article-detail-wrapper") {
 		article_data = origin_article_detail_data;
@@ -431,10 +453,10 @@ function submitComment(event) {
 }
 
 function showArticleDetail(event) {
-	let article_index = getArticleIndex(event.path[3]);
+	let article_index = getArticleIndex(event.composedPath()[3]);
 	let article_id;
 	if(article_index == -1) {
-		article_index = getArticleIndex(event.path[4]);
+		article_index = getArticleIndex(event.composedPath()[4]);
 		article_id = origin_article_list[article_index].id;
 	} else {
 		article_id = origin_article_list[article_index].id;
@@ -454,6 +476,7 @@ function showArticleDetail(event) {
 			origin_article_detail_data = data;
 			
 			const article_detail_tag = makeArticleDetail(data);
+			console.log(article_detail_tag);
 			container.appendChild(article_detail_tag);
 			
 			article_detail_tag.onclick = removeArticleDetail;
@@ -487,6 +510,12 @@ function showArticleDetail(event) {
 				for(let i=0; i < show_reply_buttons.length; i++) {
 					show_reply_buttons[i].onclick = toggleReplies;
 				}
+			}
+			
+			const picture_controller = article_detail_tag.querySelector(".picture-controller");
+			if(picture_controller != null && typeof picture_controller != "undefined") {
+				picture_controller.querySelector(".prev-image").onclick = moveToPrevImage;
+				picture_controller.querySelector(".next-image").onclick = moveToNextImage;
 			}
 			
 			document.querySelector("body").style = "overflow: hidden;";
@@ -529,9 +558,9 @@ function toggleReplies(event) {
 					const replies_to_reply = related_comment_tag.querySelectorAll(".reply");
 					for(let i=0; i < replies_to_reply.length; i++) {
 						replies_to_reply[i].onclick = (event) => {
-							const origin_comment = event.path[5].previousElementSibling;
+							const origin_comment = event.composedPath()[5].previousElementSibling;
 							const origin_comment_index = getCurrentCommentIndex(origin_comment);
-							const textarea = event.path[7].querySelector("textarea");
+							const textarea = event.composedPath()[7].querySelector("textarea");
 							
 							relate_comment_flag = true;
 							relate_comment_id = origin_article_detail_data.article_comment_list[origin_comment_index].id;
@@ -588,11 +617,11 @@ function makeRelatedCommentTag(related_comment) {
 }
 
 function addAtSignTagToTextArea(event) {
-	const index = getCurrentCommentIndex(event.path[4]);
+	const index = getCurrentCommentIndex(event.composedPath()[4]);
 	const current_comment_data = origin_article_detail_data.article_comment_list[index];
 	relate_comment_flag = true;
 	relate_comment_id = current_comment_data.id;
-	const textarea = event.path[6].querySelector("textarea");
+	const textarea = event.composedPath()[6].querySelector("textarea");
 	textarea.innerText = textarea.innerText + ` @${current_comment_data.username} `;
 }
 
@@ -605,8 +634,8 @@ function getCurrentCommentIndex(comment) {
 
 function toggleCommentLike(event, isReply, reply_index, origin_comment_index) {
 	const img = event.target.children[0];
-	const current_comment = event.path[1];
-	const comment_wrapper = event.path[2].children;
+	const current_comment = event.composedPath()[1];
+	const comment_wrapper = event.composedPath()[2].children;
 	let index = -1;
 	for(let i = 1; i < comment_wrapper.length; i++) {
 		if(comment_wrapper[i] == current_comment) {
@@ -695,10 +724,39 @@ function makeArticleDetail(article_data) {
 	const detail_images = document.createElement("div");
 	detail_images.className = "detail-images";
 	
-	for(let i=0; i< article_data.media_name_list.length; i++) {
-		const image = document.createElement("img");
-		image.src = `/static/images/article_medias/${article_data.id}/${article_data.media_name_list[i]}`;
-		detail_images.appendChild(image);
+	const media_list = article_data.media_list;
+	for(let i=0; i< media_list.length; i++) {
+		if(media_list[i].media_type == "image") {
+			const image = document.createElement("img");
+			image.src = `/static/images/article_medias/${article_data.id}/${article_data.media_list[i].media_name}`;
+			if(i == 0) image.className = "current";
+			detail_images.appendChild(image);
+		} else if(media_list[i].media_type == "video") {
+			const video = document.createElement("video");
+			video.src = `/static/images/article_medias/${article_data.id}/${article_data.media_name_list[i].media_name}`;
+			video.autoplay = "autoplay";
+			if(i == 0) video.className = "current";
+			detail_images.appendChild(video);
+		}
+	}
+	
+	if(media_list.length > 1) {
+		const picture_controller = document.createElement("div");
+		picture_controller.className = "picture-controller";
+		
+		const prev_image_button = document.createElement("button");
+		const next_image_button = document.createElement("button");
+		
+		prev_image_button.className = "prev-image";
+		next_image_button.className = "next-image active";
+		
+		prev_image_button.innerHTML = `<img src="/static/images/new_article_prev_button.png">`;
+		next_image_button.innerHTML = `<img src="/static/images/new_article_next_button.png">`;
+		
+		picture_controller.appendChild(prev_image_button);
+		picture_controller.appendChild(next_image_button);
+		
+		detail_images.appendChild(picture_controller);
 	}
 	
 	detail_container.appendChild(detail_images);

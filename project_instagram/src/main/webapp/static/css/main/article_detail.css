@@ -28,17 +28,68 @@
 }
 
 .detail-images {
+	position: relative;
     margin-right: 3px;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     max-height: 100%;
     background-color: white;
+    overflow-x: auto;
+    overflow-y: hidden;
+    list-style: none;
+    scroll-behavior: smooth;
 }
 
-.detail-images>img {
+.detail-images::-webkit-scrollbar,
+.detail-images::-webkit-scrollbar-thumb,
+.detail-images::-webkit-scrollbar-track {
+	display: none;
+	appearance: none;
+}
+
+.detail-images>img,
+.detail-images>video {
     width: 100%;
     max-height: 100%;
+    flex: none;
+}
+
+.detail-images > .picture-controller {
+	position: absolute;
+	top: 50%;
+	left: 0;
+	width: 100%;
+	height: 30px;
+}
+
+.picture-controller > .prev-image,
+.picture-controller > .next-image {
+	display: none;
+	width: 30px;
+	height: 100%;
+	border: none;
+	background: none;
+	cursor: pointer;
+}
+
+.picture-controller > .prev-image {
+	left: 8px;
+}
+
+.picture-controller > .next-image {
+	right: 8px;
+}
+
+.picture-controller > .prev-image.active,
+.picture-controller > .next-image.active {
+	position: absolute;
+	display: block;
+}
+
+.picture-controller > .prev-image > img,
+.picture-controller > .next-image > img {
+	pointer-events: none;
 }
 
 .article-info {

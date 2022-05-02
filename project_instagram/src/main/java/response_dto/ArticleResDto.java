@@ -3,6 +3,7 @@ package response_dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import entity.ArticleMedia;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,11 +25,10 @@ public class ArticleResDto {
 	private boolean has_profile_image;
 	private String file_name;
 	private String feature;
-	private String media_type;
 	private String contents;
 	private boolean stored;
 	private LocalDateTime article_create_date;
-	private List<String> media_name_list;
+	private List<ArticleMedia> media_list;
 	
 	private boolean like_flag;
 	private int total_like_count;
