@@ -39,39 +39,36 @@ public class FollowServiceImpl implements FollowService {
 		return followDao.selectActivities(user_id);
 	}
 	
-	@SuppressWarnings("unlikely-arg-type")
 	@Override
 	public UserProfileResDto selectUserProfileInfo(String username, int session_user_id) {
 		List<UserProfile> userProfile =  followDao.selectUserProfileInfo(username, session_user_id);
 		UserProfileResDto dto = new UserProfileResDto();
 		
-		System.out.println(userProfile);
+		dto.setUser_id(userProfile.get(0).getUser_id());
+		dto.setUsername(userProfile.get(0).getUsername());
+		dto.setName(userProfile.get(0).getName());
+		dto.setHas_profile_image(userProfile.get(0).isHas_profile_image());
+		dto.setFile_name(userProfile.get(0).getFile_name());
+		dto.setFollow_flag(userProfile.get(0).isFollow_flag());
+		dto.setFollower(userProfile.get(0).getFollower());
+		dto.setFollowing(userProfile.get(0).getFollowing());
+		dto.setArticle_list(new ArrayList<ArticleResDto>());
 		
 		for(int i = 0 ; i < userProfile.size(); i++) {
 			if(userProfile.get(i).is_stored() == true) continue;
-			if(dto.getUser_id() == 0) {
-				dto.setUser_id(userProfile.get(i).getUser_id());
-				dto.setUsername(userProfile.get(i).getUsername());
-				dto.setName(userProfile.get(i).getName());
-				dto.setHas_profile_image(userProfile.get(i).isHas_profile_image());
-				dto.setFile_name(userProfile.get(i).getFile_name());
-				dto.setFollow_flag(userProfile.get(i).isFollow_flag());
-				dto.setFollower(userProfile.get(i).getFollower());
-				dto.setFollowing(userProfile.get(i).getFollowing());
-				dto.setArticle_list(new ArrayList<ArticleResDto>());
-			}
+			
+			UserProfile profile = userProfile.get(i);
 			List<ArticleResDto> articleList = dto.getArticle_list();
-			if(articleList.contains(userProfile.get(i).getArticle_id())) {
-				articleList.get(articleList.indexOf(userProfile.get(i).getArticle_id())).getMedia_name_list().add(userProfile.get(i).getMedia_name());
-			} else {
-				ArticleResDto article = new ArticleResDto();
-				article.setId(userProfile.get(i).getArticle_id());
-				article.setMedia_type(userProfile.get(i).getMedia_type());
-				article.setMedia_name_list(new ArrayList<String>());
-				article.getMedia_name_list().add(userProfile.get(i).getMedia_name());
-				article.setArticle_create_date(userProfile.get(i).getCreate_date());
-				articleList.add(article);
-			}
+			
+			ArticleResDto article = new ArticleResDto();
+			article.setId(profile.getArticle_id());
+			article.setMedia_type(profile.getMedia_type());
+			article.setMedia_name_list(new ArrayList<String>());
+			article.getMedia_name_list().add(profile.getMedia_name());
+			article.getMedia_name_list().add(profile.getMedia_name());
+			article.setArticle_create_date(profile.getCreate_date());
+			articleList.add(article);
+			
 			if(i == userProfile.size() - 1) {
 				if(dto.getArticle_list().size() == 1 && dto.getArticle_list().get(0).getId() == 0) {
 					dto.setArticle_count(0);

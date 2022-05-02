@@ -39,6 +39,12 @@ function loadArticleList() {
 				const comment_button = article_tag.querySelector(".comment-button").parentElement;
 				comment_button.onclick = showArticleDetail;
 				
+				const picture_controller = article_tag.querySelector(".picture-controller");
+				if(picture_controller != null && typeof picture_controller != "undefined") {
+					picture_controller.children[0].onclick = moveToPrevImage;
+					picture_controller.children[1].onclick = moveToNextImage;
+				}
+				
 			}
 		},
 		error: function (xhr, status, error) {
@@ -79,7 +85,7 @@ function makeArticleTag(articleData) {
 	const mediaList = articleData.media_name_list;
 	for(let i = 0; i < mediaList.length; i++) {
 		const li = document.createElement("li");
-		li.className = "picture";
+		li.className = i == 0 ? "picture current" : "picture";
 		li.innerHTML = `<img src="/static/images/article_medias/${articleData.id}/${mediaList[i]}" alt="게시글 이미지">`;
 		ul.appendChild(li);
 		
@@ -92,6 +98,26 @@ function makeArticleTag(articleData) {
 	
 	pictures.appendChild(ul);
 	pictures.appendChild(dots);
+	
+	if(mediaList.length > 1) {
+		const picture_controller = document.createElement("div");
+		picture_controller.className = "picture-controller";
+		const prev_image_button = document.createElement("button");
+		const next_image_button = document.createElement("button");
+		
+		prev_image_button.type = "button";
+		next_image_button.type = "button";
+		
+		prev_image_button.className = "prev-image";
+		next_image_button.className = "next-image active";
+		
+		prev_image_button.innerHTML = `<img src="/static/images/new_article_prev_button.png">`;
+		next_image_button.innerHTML = `<img src="/static/images/new_article_next_button.png">`;
+		
+		picture_controller.appendChild(prev_image_button);
+		picture_controller.appendChild(next_image_button);
+		pictures.appendChild(picture_controller);
+	}
 	
 	// ------------------------------------
 	// make article pictures and dots
@@ -183,6 +209,64 @@ function makeUploadTimeMessage(create_date) {
 		return `${minute}분 전`;
 	} else {
 		return `${second}초 전`;
+	}
+}
+
+function moveToPrevImage(event) {
+	const ul = event.composedPath()[2].querySelector("ul");
+	const images = ul.children;
+	const current_image = ul.querySelector(".current");
+	let index = -1;
+	for(let i = 0; i < images.length; i++) {
+		if(images[i] == current_image) {
+			index = i;
+			break;
+		}
+	}
+	if(index != -1) {
+		ul.scrollTo((--index) * 614, 0);
+		current_image.classList.remove("current");
+		current_image.previousElementSibling.classList.add("current");
+	}
+	if(index < images.length - 1) {
+		event.target.nextElementSibling.classList.add("active");
+	}
+	if(index == 0) {
+		event.target.classList.remove("active");
+	}
+	activeCurrentDot(ul, index);
+}
+
+function moveToNextImage(event) {
+	const ul = event.composedPath()[2].querySelector("ul");
+	const images = ul.children;
+	const current_image = ul.querySelector(".current");
+	let index = -1;
+	for(let i = 0; i < images.length; i++) {
+		if(images[i] == current_image) {
+			index = i;
+			break;
+		}
+	}
+	if(index != -1) {
+		ul.scrollTo((++index) * 614, 0);
+		current_image.classList.remove("current");
+		current_image.nextElementSibling.classList.add("current");
+	}
+	if(index > 0) {
+		event.target.previousElementSibling.classList.add("active");
+	}
+	if(index == images.length - 1) {
+		event.target.classList.remove("active");
+	}
+	activeCurrentDot(ul, index);
+}
+
+function activeCurrentDot(ul, index) {
+	const dots = ul.nextElementSibling.children;
+	for(let i = 0; i < dots.length; i++) {
+		if(i == index) dots[i].classList.add("current-index");
+		else					dots[i].classList.remove("current-index");
 	}
 }
 

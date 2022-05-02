@@ -265,7 +265,7 @@ public class FollowDaoImpl implements FollowDao {
 						+ "left outer join follow_mst fm2 on(fm2.partner_user_id = um.id) "
 						+ "left outer join follow_mst fm3 on(fm3.user_id = ? and fm3.partner_user_id = um.id) "
 					+ "where "
-						+ "um.username = ? "
+						+ "um.username = ? and media.media_name like \"%01%\""
 					+ "group by "
 						+ "media.media_name "
 					+ "order by "

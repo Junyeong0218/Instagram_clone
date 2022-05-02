@@ -381,6 +381,7 @@ article {
 }
 
 .pictures {
+	position: relative;
     width: 100%;
     height: auto;
     display: flex;
@@ -394,13 +395,23 @@ article {
     justify-content: flex-start;
     width: 100%;
     height: auto;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
     list-style: none;
+    scroll-behavior: smooth;
+}
+
+.pictures ul::-webkit-scrollbar,
+.pictures ul::-webkit-scrollbar-thumb,
+.pictures ul::-webkit-scrollbar-track {
+	display: none;
+	appearance: none;
 }
 
 .picture {
     position: relative;
-    width: 100%;
+    display: flex;
+    align-items: center;
     height: 100%;
     min-height: 614px;
     max-height: 766.5px;
@@ -409,6 +420,43 @@ article {
 .picture img {
     width: 614px;
     object-fit: contain;
+}
+
+.picture-controller {
+	position: absolute;
+	top: 50%;
+	left: 0;
+	width: 100%;
+	height: 30px;
+}
+
+.picture-controller > .prev-image,
+.picture-controller > .next-image {
+	display: none;
+	width: 30px;
+	height: 100%;
+	border: none;
+	background: none;
+	cursor: pointer;
+}
+
+.picture-controller > .prev-image {
+	left: 8px;
+}
+
+.picture-controller > .next-image {
+	right: 8px;
+}
+
+.picture-controller > .prev-image.active,
+.picture-controller > .next-image.active {
+	position: absolute;
+	display: block;
+}
+
+.picture-controller > .prev-image > img,
+.picture-controller > .next-image > img {
+	pointer-events: none;
 }
 
 .image-index {
@@ -429,6 +477,7 @@ article {
     height: 6px;
     border-radius: 50%;
     background-color: rgb(168, 168, 168);
+    transition: 200ms ease-in-out;
 }
 
 .current-index {
@@ -436,6 +485,7 @@ article {
 }
 
 .article-description {
+	position: relative;
     width: 100%;
     background-color: white;
 }

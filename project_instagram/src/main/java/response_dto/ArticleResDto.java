@@ -41,7 +41,9 @@ public class ArticleResDto {
 				return true;
 			}
 		} else if(obj instanceof Integer) {
-			if(this.id == (int) obj) {
+			System.out.println(this.id);
+			System.out.println(obj);
+			if(this.id == (Integer) obj) {
 				return true;
 			}
 		}

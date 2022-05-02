@@ -233,6 +233,7 @@ main {
 
 .contents {
 	display: flex;
+	flex-direction: column;
 	width: 100%;
 	background-color: rgb(250, 250, 250);
 }
@@ -245,9 +246,12 @@ main {
 }
 
 .contents > .row > a {
-	margin-right: 28px;
 	width: 293px;
 	height: 100%;
+}
+
+.contents > .row > a:not(:last-child) {
+	margin-right: 28px;
 }
 
 .contents > .row > a > img {
