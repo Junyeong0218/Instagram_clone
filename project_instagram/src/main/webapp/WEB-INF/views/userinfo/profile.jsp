@@ -89,7 +89,7 @@
                     	<c:if test="${userProfile.article_count > 0}">
 	                    	<div class="contents">
 	                    	
-	                    		<c:forEach var="total" begin="0" end="${userProfile.article_count / 3 < 0 ? 0 : userProfile.article_count / 3}">
+	                    		<c:forEach var="total" begin="0" end="${userProfile.article_count / 3 < 0 ? 0 : (userProfile.article_count / 3) - 1}">
 		                    		<div class="row">
 		                    		
 			                    		<c:forEach var="index" begin="${total * 3}" end="${ total * 3 + 2 > userProfile.article_count - 1 ? userProfile.article_count - 1 : total * 3 + 2}">
@@ -201,7 +201,6 @@
 	<script src="/static/js/main/profile_menu_control.js"></script>
     <script src="/static/js/userinfo/profile/tab_control.js"></script>
     <script src="/static/js/userinfo/profile/pop_up_control.js"></script>
-    <script src="/static/js/userinfo/profile/load_follow_info.js"></script>
 </body>
 
 </html>

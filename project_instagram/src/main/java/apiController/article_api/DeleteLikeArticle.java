@@ -17,7 +17,7 @@ import service.ArticleService;
 import service.ArticleServiceImpl;
 
 @WebServlet("/article/delete-like-article")
-public class deleteLikeArticle extends HttpServlet {
+public class DeleteLikeArticle extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 private ArticleService articleService;

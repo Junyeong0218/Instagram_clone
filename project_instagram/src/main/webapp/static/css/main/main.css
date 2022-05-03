@@ -630,8 +630,14 @@ article {
     font-weight: 500;
 }
 
-.description-text {
+.description-text,
+.hash-tag-link {
     font-weight: 400;
+}
+
+.hash-tag-link,
+.user-tag-link {
+	color: rgb(0, 55, 180);
 }
 
 .show-comments-button {

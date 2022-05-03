@@ -67,7 +67,7 @@ function makeArticleTag(articleData) {
 											</div>
 											<div class="writer-info">
 												<a href="/profile?username=${articleData.username}" class="writer-username">${articleData.username}</a>
-												${articleData.feature == "true" ? '<span class="remark">' + articleData.feature + '</span>' : ''}
+												${articleData.feature != null && articleData.feature != "null" ? '<span class="remark">' + articleData.feature + '</span>' : ''}
 											</div>
 											<button type="button" class="article-menu">
 												<img src="/static/images/article_menu.png" alt="옵션 더 보기">
@@ -127,6 +127,7 @@ function makeArticleTag(articleData) {
 	// make article pictures and dots
 	
 	const upload_time_message = makeUploadTimeMessage(articleData.create_date);
+	const tagged_contents = makeContentsTags(articleData.contents);
 	
 	const description = document.createElement("div");
 	description.className = "article-description";
@@ -158,7 +159,7 @@ function makeArticleTag(articleData) {
 													</div>
 													<div class="article-texts">
 														<span class="description-username">${articleData.username}</span>
-														<span class="description-text">${articleData.contents}</span>
+														<span class="description-text">${tagged_contents}</span>
 													</div>
 ${Number(articleData.total_commented_user_count) > 1 ? `<div class="article-texts">
 																								<button type="button" class="show-comments-button">댓글 ` + articleData.total_commented_user_count + `개 모두 보기</span>
@@ -186,6 +187,37 @@ ${Number(articleData.total_commented_user_count) > 1 ? `<div class="article-text
 	article.appendChild(description);
 	
 	return article;
+}
+
+function makeContentsTags(contents) {
+	let tag = "";
+	let has_more_string = true;
+	while(has_more_string) {
+		console.log(contents);
+		let hash_tag_index = contents.indexOf("#");
+		let user_tag_index = contents.indexOf("@");
+		console.log(hash_tag_index);
+		console.log(user_tag_index);
+		if(hash_tag_index == -1 && user_tag_index == -1) {
+			tag += contents.substring(0, contents.length);
+			break;
+		} else if(hash_tag_index < user_tag_index || user_tag_index == -1) {
+			let blank_index = contents.indexOf(" ", hash_tag_index) == -1 ? contents.length : contents.indexOf(" ", hash_tag_index);
+			console.log("blank_index : " + blank_index);
+			tag += contents.substring(0, hash_tag_index);
+			tag += `<a class="hash-tag-link" href="#">${contents.substring(hash_tag_index, blank_index)}</a> `;
+			contents = contents.substring(blank_index + 1, contents.length);
+		} else if(user_tag_index < hash_tag_index || hash_tag_index == -1) {
+			let blank_index = contents.indexOf(" ", user_tag_index) == -1 ? contents.length : contents.indexOf(" ", user_tag_index);
+			console.log("blank_index : " + blank_index);
+			tag += contents.substring(0, user_tag_index);
+			tag +=  `<a class="user-tag-link" href="/profile?username=${contents.substring(user_tag_index + 1, blank_index)}">${contents.substring(user_tag_index, blank_index)}</a> `;
+			contents = contents.substring(blank_index + 1, contents.length);
+		}
+		if(contents.length == 0) has_more_string = false;
+	}
+	console.log(tag);
+	return tag;
 }
 
 function makeUploadTimeMessage(create_date) {

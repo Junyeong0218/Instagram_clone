@@ -268,7 +268,7 @@ public class FollowDaoImpl implements FollowDao {
 					+ "where "
 						+ "um.username = ? and media.media_name like \"%01%\" "
 					+ "group by "
-						+ "media.media_name "
+						+ "am.id "
 					+ "order by "
 						+ "am.create_date desc;";
 			pstmt = conn.prepareStatement(sql);

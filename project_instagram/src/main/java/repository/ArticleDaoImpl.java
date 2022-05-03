@@ -142,7 +142,7 @@ public class ArticleDaoImpl implements ArticleDao {
 					+ "am.user_id != ? and "
 					+ "am.user_id in(select fm.partner_user_id from follow_mst fm where fm.user_id = ?) "
 				+ "group by "
-					+ "media.media_name "
+					+ "media.id "
 				+ "order by "
 					+ "am.create_date desc,"
 					+ "media.media_name asc;";

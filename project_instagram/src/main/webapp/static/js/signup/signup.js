@@ -189,7 +189,7 @@ function keyupEvent(event) {
 function keydownEvent(event) {
         if (!isLengthZero(event) || event.target.value != null) {
                 if (event.target.name != "password" && event.keyCode == 13) {
-                        event.path[2].nextElementSibling.querySelector("input").focus();
+                        event.composedPath()[2].nextElementSibling.querySelector("input").focus();
                         return;
                 }
                 if (event.target.name == "password") {
