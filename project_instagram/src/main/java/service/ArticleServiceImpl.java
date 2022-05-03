@@ -114,7 +114,6 @@ public class ArticleServiceImpl implements ArticleService {
 		return articleDao.selectRelatedComments(related_comment_id, user_id);
 	}
 	
-	@SuppressWarnings("unlikely-arg-type")
 	@Override
 	public ArticleDetailResDto selectArticleDetail(int article_id, int user_id) {
 		List<ArticleDetail> articleDetailList = articleDao.selectArticleDetail(article_id, user_id);
@@ -146,7 +145,9 @@ public class ArticleServiceImpl implements ArticleService {
 			media_list.add(media);
 			
 			List<ArticleComment> article_comment_list = articleDetailResDto.getArticle_comment_list();
-			if(!article_comment_list.contains(detail.getComment_id())) {
+			if(detail.getComment_id() == 0) continue;
+			System.out.println(article_comment_list.contains( ArticleComment.builder().id(detail.getComment_id()).build() ));
+			if(!article_comment_list.contains( ArticleComment.builder().id(detail.getComment_id()).build() )) {
 				ArticleComment comment = new ArticleComment();
 				comment.setId(detail.getComment_id());
 				comment.setArticle_id(detail.getArticle_id());

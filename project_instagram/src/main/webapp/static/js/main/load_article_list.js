@@ -806,7 +806,7 @@ function makeArticleDetail(article_data) {
 										                    </div>
 										                    <div class="writer-info">
 										                        <a href="#" class="writer-username">${article_data.username}</a>
-${article_data.feature == "null" ? '' : '<span class="remark">' + article_data.feature + '</span>'}
+${article_data.feature == "null" || article_data.feature == null ? '' : '<span class="remark">' + article_data.feature + '</span>'}
 										                    </div>
 										                    <button type="button" class="article-menu">
 										                        <img src="/static/images/article_menu.png" alt="옵션 더 보기">
@@ -821,6 +821,7 @@ ${article_data.feature == "null" ? '' : '<span class="remark">' + article_data.f
 	comments_wrapper.className = "comments-wrapper";
 	
 	const article_upload_time = makeUploadTimeMessage(article_data.article_create_date);
+	const article_contents = makeContentsTags(article_data.contents);
 	const article = document.createElement("div");
 	article.className = "detail-contents";
 	article.innerHTML = `<div>
@@ -831,7 +832,7 @@ ${article_data.feature == "null" ? '' : '<span class="remark">' + article_data.f
 					                                <div class="detail-content">
 					                                    <span class="writer-username">${article_data.username}</span>
 					                                    <span
-					                                        class="content-description">${article_data.contents}</span>
+					                                        class="content-description">${article_contents}</span>
 					                                </div>
 					                                <div class="reply-buttons">
 					                                    <span class="upload-time">${article_upload_time}</span>
@@ -845,7 +846,8 @@ ${article_data.feature == "null" ? '' : '<span class="remark">' + article_data.f
 	// article added
 	
 	const comment_list = article_data.article_comment_list;
-	if(comment_list.length > 1 || comment_list[0].id != 0) {
+	console.log(comment_list);
+	if(comment_list.length > 0) {
 		for(let i=0; i< comment_list.length; i++) {
 			const comment = comment_list[i];
 			const upload_time = makeUploadTimeMessage(comment.create_date);

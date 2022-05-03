@@ -77,7 +77,7 @@ public class SelectArticleDetail extends HttpServlet {
 								  " \"related_comment_count\": \"" + comment.getRelated_comment_count() + "\", " +
 								  " \"comment_like_user_count\": \"" + comment.getComment_like_user_count() + "\"},  ");
 		}
-		sb.replace(sb.lastIndexOf(","), sb.length(), "");
+		if(article_comment_list.size() > 0) sb.replace(sb.lastIndexOf(","), sb.length(), "");
 		sb.append(" ] }");
 		
 		response.setContentType("text/plain; charset=UTF-8");

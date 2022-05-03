@@ -47,6 +47,8 @@ function makeActivityMenuTag(activity_list) {
 	
 	for(let i=0; i < activity_list.length; i++) {
 		const message_tag = makeATags(activity_list[i].contents);
+		/*const message_tag = activity_list[i].contents;*/
+		console.log(activity_list[i].contents);
 		const ago_tag = makeAgoTag(activity_list[i].create_date);
 		const row = document.createElement("div");
 		row.className = "row";
@@ -110,11 +112,12 @@ function makeATags(contents) {
 	let tag = "";
 	let at_index = contents.indexOf("@");
 	while(at_index != -1) {
-		at_index = contents.indexOf("@");
 		tag += contents.substring(0, at_index);
-		const blank_index = contents.indexOf(" ", at_index);
+		let blank_index = contents.indexOf(" ", at_index);
+		if(blank_index == -1) blank_index = contents.length;
 		tag += `<a href="/profile?username=${contents.substring(at_index + 1, blank_index)}" class="tag">${contents.substring(at_index, blank_index)}</a>`;
 		contents = contents.substring(blank_index, contents.length);
+		at_index = contents.indexOf("@");
 	}
 	tag += contents;
 	return tag;

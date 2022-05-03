@@ -411,7 +411,7 @@ public class ArticleDaoImpl implements ArticleDao {
 					+ "where "
 						+ "am.id = ? "
 					+ "group by "
-						+ "media.media_name "
+						+ "media.id "
 					+ "order by "
 						+ "comment_like_user_count desc, "
 						+ "comment_create_date asc";

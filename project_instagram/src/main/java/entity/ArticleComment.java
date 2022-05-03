@@ -52,11 +52,6 @@ public class ArticleComment {
 			if(temp.getId() == this.id) {
 				return true;
 			}
-		} else if(obj instanceof Integer) {
-			int temp = (int) obj;
-			if(temp == this.id) {
-				return true;
-			}
 		}
 		return false;
 	}
