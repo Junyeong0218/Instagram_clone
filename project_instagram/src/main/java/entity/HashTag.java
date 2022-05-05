@@ -22,4 +22,6 @@ public class HashTag {
 	private LocalDateTime create_date;
 	private LocalDateTime update_date;
 	
+	// ------------------------------- is_session_user_follow_this_hash_tag?
+	private boolean hash_tag_follow_flag;
 }

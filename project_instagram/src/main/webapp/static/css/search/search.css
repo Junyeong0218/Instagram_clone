@@ -1,0 +1,114 @@
+main {
+    width: 975px;
+}
+
+.main-wrapper {
+    margin: 90px auto 44px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    max-width: 935px;
+}
+
+.tag-summary {
+	position: relative;
+	margin-bottom: 44px;
+	display: flex;
+	align-items: center;
+	width: 935px;
+	height: 152px;
+}
+
+.profile-background {
+    position: absolute;
+    top: -8px;
+    left: -7px;
+}
+
+.profile-image {
+    width: 152px;
+    height: 100%;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.tag-info {
+	margin-left: 50px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	height: 100%;
+}
+
+.tag-description {
+	display: flex;
+	flex-direction: column;
+}
+
+.tag-name {
+	font-size: 28px;
+	font-weight: 300;
+	color: rgb(38, 38, 38);
+	line-height: 32px;
+}
+
+.article-count-message {
+	margin-top: 5px;
+	font-size: 16px;
+	font-weight: 400;
+	color: rgb(38, 38, 38);
+	line-height: 24px;
+}
+
+.article-count {
+	font-size: 16px;
+	font-weight: 500;
+	color: rgb(38, 38, 38);
+	line-height: 24px;
+}
+
+.follow-button {
+	padding: 5px 9px;
+	border: 1px solid rgb(219, 219, 219);
+	border-radius: 4px;
+	background-color: transparent;
+	font-size: 14px;
+	font-weight: 600;
+	color: rgb(38, 38, 38);
+	cursor: pointer;
+}
+
+.title {
+	margin-bottom: 16px;
+	font-size: 14px;
+	font-weight: 600;
+	color: rgb(142, 142, 142);
+	line-height: 18px;
+}
+
+.articles {
+	display: flex;
+    width: 100%;
+    flex-wrap: row wrap;
+}
+
+.contents > .row {
+	margin-bottom: 28px;
+	display: flex;
+	width: 100%;
+	height: 293px;
+}
+
+.contents > .row > a {
+	width: 293px;
+	height: 100%;
+}
+
+.contents > .row > a:not(:last-child) {
+	margin-right: 28px;
+}
+
+.contents > .row > a > img {
+	width: 100%;
+	height: 100%;
+}

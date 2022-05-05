@@ -136,12 +136,28 @@ header {
 
 .result-wrapper {
 	position: relative;
-	top: 12px;
+	top: 9px;
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
 	width: 375px;
 	height: 0;
+}
+
+.remove-all-results {
+	padding: 3px 6px;
+	display: none;
+	border: none;
+	background: none;
+	font-size: 14px;
+	font-weight: 500;
+	color: rgb(0, 149, 246);
+	text-align: center;
+	line-height: 24px;
+}
+
+.remove-all-results.active {
+	display: block;
 }
 
 .result-box-to-hide {
@@ -152,6 +168,7 @@ header {
 	position: absolute;
 	width: 100%;
 	height: 362px;
+	transition: 200ms linear;
 	transform-origin: top center;
 	transform: translateY(0);
 	transition: opacity 75ms linear, transform 38ms ease-out;
@@ -201,15 +218,74 @@ header {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	height: 322px;
-	overflow: hidden;
+	flex-grow: 1;
+	overflow-x: hidden;
+	overflow-y: auto;
 }
 
-.results div {
+.results.has-results {
+	justify-content: flex-start;
+}
+
+.results > .no-results {
 	text-align: center;
 	font-weight: 500;
 	color: rgb(142, 142, 142);
 	line-height: 18px;
+	pointer-events: none;
+}
+
+.result {
+	padding: 8px 16px;
+	display: flex;
+	align-items: center;
+	width: 100%;
+	height: 60px;
+}
+
+.result > img {
+	margin-right: 10px;
+	width: 44px;
+	height: 44px;
+}
+
+.result > .name-wrapper {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+}
+
+.name-wrapper > .username,
+.name-wrapper > .tag-name {
+	font-size: 14px;
+	font-weight: 500;
+	color: rgb(38, 38, 38);
+	line-height: 18px;
+	cursor: pointer;
+}
+
+.name-wrapper > .follow-info {
+	font-size: 14px;
+	font-weight: 400;
+	color: rgb(142, 142, 142);
+	line-height: 18px;
+}
+
+.remove-latest-result {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 32px;
+	height: 32px;
+	border: none;
+	background: none;
+	cursor: pointer;
+}
+
+.remove-latest-result > img {
+	width: 16px;
+	height: 16px;
+	pointer-events: none;
 }
 
 nav {

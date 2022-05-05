@@ -12,28 +12,27 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class User {
-
+public class LatestSearchDetail {
+	
 	private int id;
+	private int user_id;
+	
+	private int searched_user_id;
 	private String username;
-	private String password;
 	private String name;
-	private String email;
-	private String phone;
-	private String website;
-	private String description;
-	private int gender;
 	private boolean has_profile_image;
-	private LocalDateTime last_username_update_date;
+	private String file_name;
+	
+	private int hash_tag_id;
+	private String tag_name;
+	
 	private LocalDateTime create_date;
 	private LocalDateTime update_date;
 	
-	// ---------------------------- profile_file_name
-	private String file_name;
-	
-	// ---------------------------- is_session_user_follow_this_user?
 	private boolean user_follow_flag;
+	private boolean hash_tag_follow_flag;
+	
 }

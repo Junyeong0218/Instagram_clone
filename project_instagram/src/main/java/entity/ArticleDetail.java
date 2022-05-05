@@ -58,4 +58,7 @@ public class ArticleDetail {
 	// ---------------------------------- how_many_people_like_this_comment 
 	private int comment_like_user_count;
 	
+	// ---------------------------------- how_many_articles_about_this_has_tag
+	private int related_article_count;
+	
 }
