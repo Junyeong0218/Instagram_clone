@@ -23,7 +23,7 @@
 					<a href="/main"><img src="/static/images/menu_home.png" alt="홈"></a>
 				</div>
 				<div class="direct-message">
-					<a href="#"><img src="/static/images/menu_message.png"
+					<a href="/direct/message"><img src="/static/images/menu_message.png"
 						alt="다이렉트 메세지"></a>
 				</div>
 				<div class="new-article">

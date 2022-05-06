@@ -15,6 +15,8 @@ import repository.ArticleDao;
 import repository.ArticleDaoImpl;
 import repository.FollowDao;
 import repository.FollowDaoImpl;
+import repository.MessageDao;
+import repository.MessageDaoImpl;
 import repository.SearchDao;
 import repository.SearchDaoImpl;
 import repository.StoryDao;
@@ -33,11 +35,13 @@ public class CharsetEncodingFilter implements Filter {
 		FollowDao followDao = new FollowDaoImpl();
 		StoryDao storyDao = new StoryDaoImpl();
 		SearchDao searchDao = new SearchDaoImpl();
+		MessageDao messageDao = new MessageDaoImpl();
 		servletContext.setAttribute("userDao", userDao);
 		servletContext.setAttribute("articleDao", articleDao);
 		servletContext.setAttribute("followDao", followDao);
 		servletContext.setAttribute("storyDao", storyDao);
 		servletContext.setAttribute("searchDao", searchDao);
+		servletContext.setAttribute("messageDao", messageDao);
 	}
 
 	@Override

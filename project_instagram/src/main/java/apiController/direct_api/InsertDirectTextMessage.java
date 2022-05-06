@@ -1,8 +1,6 @@
-package viewController;
+package apiController.direct_api;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -18,8 +16,8 @@ import repository.MessageDao;
 import service.MessageService;
 import service.MessageServiceImpl;
 
-@WebServlet("/direct/message")
-public class DMController extends HttpServlet {
+@WebServlet("/direct/insert-direct-text-message")
+public class InsertDirectTextMessage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private MessageService messageService;
@@ -32,12 +30,16 @@ public class DMController extends HttpServlet {
 	}
 	
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		User sessionUser = (User) session.getAttribute("user");
 		
-//		Map<String, List<?>> messageInfo = messageService.selectRecentMessages(sessionUser.getId());
+		String contents = request.getParameter("contents");
+		int target_user_id = Integer.parseInt(request.getParameter("target_user_id"));
 		
-		request.getRequestDispatcher("/WEB-INF/views/direct/message.jsp").forward(request, response);
+		boolean result = messageService.insertDirectTextMessage(sessionUser.getId(), target_user_id, contents);
+		
+		response.setContentType("text/plain; charset=UTF-8");
+		response.getWriter().print(result);
 	}
 }
