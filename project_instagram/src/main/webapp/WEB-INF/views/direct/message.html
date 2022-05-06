@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>받은 메세지함 • Direct</title>
+    <link rel="shortcut icon" href="/static/images/shortcut.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/static/css/container.css">
+    <link rel="stylesheet" href="/static/css/main/header.css">
+    <link rel="stylesheet" href="/static/css/direct/message.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="header-wrapper">
+                <div class="logo">
+                    <a href="/main"><img src="/static/images/main_logo.png" alt="로고"></a>
+                </div>
+                <div class="searcher">
+                    <input type="text" placeholder="검색">
+                    <div class="searcher-placeholder">
+                        <div class="placeholder-wrapper">
+                            <span class="placeholder-image"></span> <span class="placeholder-text">검색</span>
+                        </div>
+                    </div>
+                    <div class="result-wrapper"></div>
+                </div>
+                <nav>
+                    <div class="nav-wrapper">
+                        <div class="home">
+                            <a href="/main"><img src="/static/images/menu_home.png" alt="홈"></a>
+                        </div>
+                        <div class="direct-message">
+                            <a href="#"><img src="/static/images/menu_message.png" alt="다이렉트 메세지"></a>
+                        </div>
+                        <div class="new-article">
+                            <button type="button" class="show-new-article"><img src="/static/images/menu_upload.png"
+                                    alt="게시글 업로드"></button>
+                        </div>
+                        <div class="explore">
+                            <a href="#"><img src="/static/images/menu_recommends.png" alt="추천 게시글"></a>
+                        </div>
+                        <div class="activity">
+                            <button type="button" class="show-activity"><img src="/static/images/menu_activity.png"
+                                    alt="활동 내역"></button>
+                            <div class="activity-menu-wrapper"></div>
+                        </div>
+                        <div class="profile">
+                            <button type="button" class="nonclicked-nav-profile">
+                                <img src="/static/images/basic_profile_image.jpg" alt="프로필">
+                            </button>
+                            <div class="profile-menu-wrapper"></div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <main>
+            <div class="message-box">
+                <div class="box-header">
+                    <div class="session-user">
+                        <span class="username">hippo2003</span>
+                        <button type="button" class="new-message">
+                            <img src="/static/images/direct_new_message.png">
+                        </button>
+                    </div>
+                    <div class="target-user">
+                        <button type="button" class="target-user-info">
+                            <img src="/static/images/basic_profile_image.jpg">
+                            <span class="name">박준영님</span>
+                        </button>
+                        <button type="button" class="message-info">
+                            <img src="/static/images/message_info.png">
+                        </button>
+                    </div>
+                </div>
+                <div class="message-wrapper">
+                    <div class="user-list">
+                        <button type="button" class="user active">
+                            <img src="/static/images/basic_profile_image.jpg">
+                            <div class="user-description">
+                                <span class="name">박준영님</span>
+                                <span class="recent-activity">ㅋㅋㅋㅋㅋㅋㅋㅋ<span class="date"> · 2일</span></span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="message-description">
+                        <div class="line date">
+                            2022년 4월 30일 오후 9:37
+                        </div>
+                        <div class="line receive">
+                            <div class="user-profile-image">
+                                <img src="/static/images/basic_profile_image.jpg">
+                            </div>
+                            <div class="message">
+                                차삿다 ㅎㅎㅎㅎㅎ
+                            </div>
+                        </div>
+                        <div class="line send">
+                            <div class="message">
+                                헐 뭐 샀어요??ㅋㅋ
+                            </div>
+                        </div>
+                        <div class="message-sender">
+                            <div>
+                                <button type="button" class="insert-emoji">
+                                    <img src="/static/images/emoji_icon.png">
+                                </button>
+                                <textarea name="written-message" placeholder="메시지 입력..."></textarea>
+                                <input type="file" name="file" class="image-input">
+                                <button type="button" class="send-image">
+                                    <img src="/static/images/direct_send_image.png" alt="">
+                                </button>
+                                <button type="button" class="send-reaction">
+                                    <img src="/static/images/menu_activity.png" alt="">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

@@ -13,4 +13,6 @@ public interface SearchService {
 	public List<SearchKeyword> selectKeyword(String keyword, int user_id);
 	
 	public SearchResultResDto selectAboutHashTag(String tag_name);
+	
+	public boolean insertLatestSearch(boolean isUser, int id, int user_id);
 }

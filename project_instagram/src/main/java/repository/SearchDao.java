@@ -15,4 +15,6 @@ public interface SearchDao {
 	public List<SearchKeyword> selectKeyword(String keyword, int user_id);
 	
 	public List<ArticleDetail> selectArticlesAboutHashTag(String tag_name);
+	
+	public int insertLatestSearch(boolean isUser, int id, int user_id);
 }

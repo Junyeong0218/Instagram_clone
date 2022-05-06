@@ -126,4 +126,10 @@ public class SearchServiceImpl implements SearchService {
 		
 		return dto;
 	}
+	
+	@Override
+	public boolean insertLatestSearch(boolean isUser, int id, int user_id) {
+		int result = searchDao.insertLatestSearch(isUser, id, user_id);
+		return result > 0 ? true : false;
+	}
 }

@@ -54,7 +54,8 @@ public class SearchDaoImpl implements SearchDao {
 					+ "where "
 						+ "lsr.user_id = ? "
 					+ "order by "
-						+ "lsr.create_date desc; ";
+						+ "lsr.update_date desc "
+					+ "limit 5;";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, user_id);
 			
@@ -63,7 +64,7 @@ public class SearchDaoImpl implements SearchDao {
 			while(rs.next()) {
 				LatestSearchDetail detail = new LatestSearchDetail();
 				detail.setId(rs.getInt("id"));
-				detail.setUser_id(rs.getInt("user_id"));
+				detail.setUser_id(user_id);
 				detail.setSearched_user_id(rs.getInt("searched_user_id"));
 				detail.setUsername(rs.getString("username"));
 				detail.setName(rs.getString("name"));
@@ -151,18 +152,35 @@ public class SearchDaoImpl implements SearchDao {
 						+ "um.has_profile_image, "
 						+ "up.file_name, "
 						+ "fm.id AS user_follow_flag, "
-
-						+ "htm.id AS hash_tag_id, "
-						+ "htm.tag_name, "
-						+ "fm2.id AS hash_tag_follow_flag "
+						
+						+ "0 AS hash_tag_id, "
+						+ "null as tag_name, "
+						+ "0 AS hash_tag_follow_flag "
 					+ "FROM "
 						+ "user_mst um "
 						+ "LEFT OUTER JOIN user_profile_image up ON(up.user_id = um.id) "
 						+ "LEFT OUTER JOIN follow_mst fm ON(fm.partner_user_id = um.id AND fm.user_id = ?) "
-						+ "LEFT OUTER JOIN hash_tag_mst htm ON(htm.tag_name LIKE \"%" + keyword + "%\") "
+					+ "WHERE  "
+						+ "um.username LIKE \"%" + keyword + "%\" and um.id != ? "
+					
+					+ "UNION ALL "
+					
+					+ "SELECT  "
+						+ "0 as id, "
+						+ "null as username, "
+						+ "null as `name`, "
+						+ "0 as has_profile_image, "
+						+ "null as file_name, "
+						+ "0 AS user_follow_flag, "
+					
+						+ "htm.id AS hash_tag_id, "
+						+ "htm.tag_name, "
+						+ "fm2.id AS hash_tag_follow_flag "
+					+ "FROM "
+						+ "hash_tag_mst htm "
 						+ "LEFT OUTER JOIN follow_mst fm2 ON(fm2.followed_hash_tag_id = htm.id AND fm2.user_id = ?) "
 					+ "WHERE "
-						+ "um.username LIKE \"%" + keyword + "%\" AND um.id != ? "
+						+ "htm.tag_name LIKE \"%" + keyword + "%\" "
 					+ "ORDER BY "
 						+ "user_follow_flag DESC, "
 						+ "hash_tag_follow_flag DESC;";
@@ -243,6 +261,70 @@ public class SearchDaoImpl implements SearchDao {
 		} finally {
 			db.freeConnection(conn, pstmt, rs);
 		}
+		
 		return articleList;
+	}
+	
+	@Override
+	public int insertLatestSearch(boolean isUser, int id, int user_id) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs =  null;
+		String sql = null;
+		int result = 0;
+		
+		try {
+			conn = db.getConnection();
+			sql = "select "
+						+ "id "
+					+ "from "
+						+ "latest_search_records "
+					+ "where ";
+			if(isUser) sql += "searched_user_id = ? and user_id = ?;";
+			else			   sql += "hash_tag_id = ? and user_id = ?;";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, id);
+			pstmt.setInt(2, user_id);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				System.out.println("최근 검색 목록에 있음");
+				pstmt.close();
+				rs.close();
+				sql = "update latest_search_records set update_date = now() where ";
+				if(isUser) sql += "searched_user_id = ? and user_id = ?;";
+				else			   sql += "hash_tag_id = ? and user_id = ?;";
+				System.out.println(sql);
+				
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, id);
+				pstmt.setInt(2, user_id);
+				
+				result = pstmt.executeUpdate();
+			} else {
+				System.out.println("최근 검색 목록에 없음");
+				pstmt.close();
+				rs.close();
+				sql = "insert into latest_search_records values(0, ?, ";
+				if(isUser) sql += "?, null, now(), now());";
+				else			   sql += "null, ?, now(), now());";
+				System.out.println(sql);
+				
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, user_id);
+				pstmt.setInt(2, id);
+				
+				result = pstmt.executeUpdate();
+			}
+		} catch (SQLDataException e) {
+			System.out.println("no row!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt, rs);
+		}
+		
+		return result;
 	}
 }
