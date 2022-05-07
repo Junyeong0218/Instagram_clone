@@ -23,4 +23,10 @@ public class MessageServiceImpl implements MessageService {
 	public boolean insertDirectTextMessage(int user_id, int target_user_id, String contents) {
 		return messageDao.insertDirectTextMessage(user_id, target_user_id, contents) > 0 ? true : false;
 	}
+	
+	@Override
+	public int insertNewRoom(int user_id, List<Integer> target_user_ids) {
+		boolean isExist = messageDao.selectSpecificRoom(user_id, target_user_ids);
+		return 0;
+	}
 }

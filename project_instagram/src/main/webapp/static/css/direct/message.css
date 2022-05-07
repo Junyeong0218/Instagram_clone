@@ -212,6 +212,10 @@ main {
     color: rgb(38, 38, 38);
 }
 
+.user-description>.username {
+	display: none;
+}
+
 .recent-activity,
 .recent-activity>.date {
     color: rgb(142, 142, 142);

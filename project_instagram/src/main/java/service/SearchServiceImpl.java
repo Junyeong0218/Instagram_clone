@@ -132,4 +132,9 @@ public class SearchServiceImpl implements SearchService {
 		int result = searchDao.insertLatestSearch(isUser, id, user_id);
 		return result > 0 ? true : false;
 	}
+	
+	@Override
+	public List<User> selectUsers(String keyword, int user_id) {
+		return searchDao.selectUsers(keyword, user_id);
+	}
 }

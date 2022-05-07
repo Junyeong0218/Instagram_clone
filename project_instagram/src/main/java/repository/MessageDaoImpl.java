@@ -112,4 +112,31 @@ public class MessageDaoImpl implements MessageDao {
 		
 		return result;
 	}
+	
+	@Override
+	public boolean selectSpecificRoom(int user_id, List<Integer> target_user_ids) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		
+		try {
+			conn = db.getConnection();
+			sql = "";
+		} catch (SQLDataException e) {
+			System.out.println("no row!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt, rs);
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public boolean insertNewRoom(int user_id, List<Integer> target_user_ids) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

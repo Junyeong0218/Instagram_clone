@@ -31,13 +31,7 @@
 	                    </button>
 	                </div>
 	            	<div class="user-list">
-	                    <button type="button" class="user active">
-	                        <img src="/static/images/basic_profile_image.jpg">
-	                        <div class="user-description">
-	                            <span class="name">박준영님</span>
-	                            <span class="recent-activity">ㅋㅋㅋㅋㅋㅋㅋㅋ<span class="date"> · 2일</span></span>
-	                        </div>
-	                    </button>
+
 	                </div>
             	</div>
             	
@@ -52,7 +46,7 @@
                     <div class="target-user">
                         <button type="button" class="target-user-info">
                             <img src="/static/images/basic_profile_image.jpg">
-                            <span class="name">박준영님</span>
+                            <span class="name"></span>
                         </button>
                         <button type="button" class="message-info">
                             <img src="/static/images/message_info.png">
@@ -60,22 +54,22 @@
                     </div>
                     
                     <div class="message-description">
-                        <div class="line date">
-                            2022년 4월 30일 오후 9:37
-                        </div>
-                        <div class="line receive">
-                            <div class="user-profile-image">
-                                <img src="/static/images/basic_profile_image.jpg">
-                            </div>
-                            <div class="message">
-                                차삿다 ㅎㅎㅎㅎㅎ
-                            </div>
-                        </div>
-                        <div class="line send">
-                            <div class="message">
-                                헐 뭐 샀어요??ㅋㅋ
-                            </div>
-                        </div>
+<!--                         <div class="line date"> -->
+<!--                             2022년 4월 30일 오후 9:37 -->
+<!--                         </div> -->
+<!--                         <div class="line receive"> -->
+<!--                             <div class="user-profile-image"> -->
+<!--                                 <img src="/static/images/basic_profile_image.jpg"> -->
+<!--                             </div> -->
+<!--                             <div class="message"> -->
+<!--                                 차삿다 ㅎㅎㅎㅎㅎ -->
+<!--                             </div> -->
+<!--                         </div> -->
+<!--                         <div class="line send"> -->
+<!--                             <div class="message"> -->
+<!--                                 헐 뭐 샀어요??ㅋㅋ -->
+<!--                             </div> -->
+<!--                         </div> -->
 	                </div>
                     <div class="message-sender">
                         <div>
@@ -104,7 +98,7 @@
     				<img src="/static/images/direct_modal_closer.png">
     			</button>
     			<span class="title">새로운 메시지</span>
-    			<button type="button" class="next" disabled="disabled">다음</button>
+    			<button type="button" class="next" disabled>다음</button>
     		</div>
     		<div class="select-receiver">
     			<span>받는 사람:</span>

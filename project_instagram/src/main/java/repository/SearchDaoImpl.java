@@ -11,6 +11,7 @@ import db.DBConnectionMgr;
 import entity.ArticleDetail;
 import entity.LatestSearchDetail;
 import entity.SearchKeyword;
+import entity.User;
 
 public class SearchDaoImpl implements SearchDao {
 
@@ -326,5 +327,51 @@ public class SearchDaoImpl implements SearchDao {
 		}
 		
 		return result;
+	}
+	
+	@Override
+	public List<User> selectUsers(String keyword, int user_id) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		List<User> users = new ArrayList<User>();
+		
+		try {
+			conn = db.getConnection();
+			sql = "select "
+						+ "um.id, "
+						+ "um.username, "
+						+ "um.`name`, "
+						+ "um.has_profile_image, "
+						+ "up.file_name "
+					+ "from "
+						+ "user_mst um "
+						+ "left outer join user_profile_image up on(up.user_id = um.id) "
+					+ "where "
+						+ "um.username like \"%" + keyword + "%\" and um.id != ?;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, user_id);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				User user = new User();
+				user.setId(rs.getInt("id"));
+				user.setUsername(rs.getString("username"));
+				user.setName(rs.getString("name"));
+				user.setHas_profile_image(rs.getBoolean("has_profile_image"));
+				user.setFile_name(rs.getString("file_name"));
+				
+				users.add(user);
+			}
+		} catch (SQLDataException e) {
+			System.out.println("no row!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt, rs);
+		}
+		
+		return users;
 	}
 }
