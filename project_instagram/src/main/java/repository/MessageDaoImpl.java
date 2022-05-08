@@ -4,11 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLDataException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import db.DBConnectionMgr;
+import entity.RoomInfo;
 
 public class MessageDaoImpl implements MessageDao {
 
@@ -114,15 +116,45 @@ public class MessageDaoImpl implements MessageDao {
 	}
 	
 	@Override
-	public boolean selectSpecificRoom(int user_id, List<Integer> target_user_ids) {
+	public List<RoomInfo> selectSpecificRoom(int user_id, List<Integer> target_user_ids) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql = null;
+		List<RoomInfo> rooms = new ArrayList<RoomInfo>();
 		
 		try {
 			conn = db.getConnection();
-			sql = "";
+			sql = "SELECT "
+						+ "room_users.id, "
+						+ "room_users.room_id, "
+						+ "room_users.user_id, "
+						+ "COUNT(room_users2.user_id) AS entered_users_count "
+					+ "FROM "
+						+ "direct_message_room_entered_users room_users "
+						+ "LEFT OUTER JOIN direct_message_room_mst room ON(room.id = room_users.room_id) "
+						+ "LEFT OUTER JOIN direct_message_room_entered_users room_users2 ON(room_users2.room_id = room.id) "
+					+ "WHERE "
+						+ "room_users.user_id IN(" + user_id + ", ";
+			for(int id : target_user_ids) {
+				sql += id + ", ";
+			}
+			sql.substring(0, sql.lastIndexOf(","));
+			sql += ") "
+					+ "GROUP BY "
+						+ "room_users.id;";
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				RoomInfo room = new RoomInfo();
+				room.setId(rs.getInt("id"));
+				room.setRoom_id(rs.getInt("room_id"));
+				room.setEntered_user_id(rs.getInt("user_id"));
+				room.setEntered_users_count(rs.getInt("entered_users_count"));
+				
+				rooms.add(room);
+			}
 		} catch (SQLDataException e) {
 			System.out.println("no row!");
 		} catch (Exception e) {
@@ -131,7 +163,7 @@ public class MessageDaoImpl implements MessageDao {
 			db.freeConnection(conn, pstmt, rs);
 		}
 		
-		return false;
+		return rooms;
 	}
 	
 	@Override
