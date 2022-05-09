@@ -3,6 +3,7 @@ package repository;
 import java.util.List;
 import java.util.Map;
 
+import entity.Message;
 import entity.RoomInfo;
 
 public interface MessageDao {
@@ -11,7 +12,11 @@ public interface MessageDao {
 	
 	public int insertDirectTextMessage(int user_id, int target_user_id, String contents);
 	
-	public List<RoomInfo> selectSpecificRoom(int user_id, List<Integer> target_user_ids);
+	public int selectSpecificRoomId(int user_id, List<Integer> target_user_ids);
 	
-	public boolean insertNewRoom(int user_id, List<Integer> target_user_ids);
+	public int insertNewRoom(int user_id, List<Integer> target_user_ids);
+	
+	public List<Message> selectMessages(int room_id);
+	
+	public List<RoomInfo> selectRoomInfoForInit(int user_id);
 }

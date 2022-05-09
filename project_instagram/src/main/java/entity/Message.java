@@ -15,21 +15,22 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RoomInfo {
+public class Message {
 
 	private int id;
 	private int room_id;
-	
-	// ----------------------------------- entered_user_info
 	private int user_id;
-	private String username;
-	private String name;
-	private boolean has_profile_image;
-	private String file_name;
-	
-	// ----------------------------------- last_message_info
-	private int message_id;
 	private String contents;
 	private LocalDateTime create_date;
+	private LocalDateTime update_date;
+	private boolean delete_flag;
+	private LocalDateTime delete_date;
+	
+	// ------------------------------------- image_flag_and_image_id
+	private boolean is_image;
+	private int image_id;
+	private String file_name;
+	
+	private boolean reaction_flag;
 	
 }

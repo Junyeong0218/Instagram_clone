@@ -11,12 +11,17 @@ const main_content = document.querySelector(".main-content");
 const message_wrapper = document.querySelector(".message-wrapper");
 const target_user = document.querySelector(".target-user");
 
+let origin_room_data;
 let followers;
 let target_users = new Array();
 let selected_users;
 
 // ------------------------------------------------------------------------------
 // EventListeners
+
+window.onload = () => {
+	loadMessageData();
+}
 
 textarea.onkeypress = (event) => {
 	if(event.keyCode == 13) {
@@ -51,6 +56,22 @@ next_button.onclick = makeNewRoom;
 // ------------------------------------------------------------------------------
 // Functions
 
+function loadMessageData() {
+	$.ajax({
+		type: "get",
+		url: "",
+		dataType: "text",
+		success: function (data) {
+			data = JSON.parse(data);
+		},
+		error: function (xhr, status, error) {
+			console.log(xhr);
+			console.log(status);
+			console.log(error);
+		}
+	});
+}
+
 function addToUserList(userinfo) {
 	const user_list = document.querySelector(".user-list").children;
 	let is_exist = false;
@@ -83,6 +104,7 @@ function makeNewRoom() {
 	if(target_users.length == 1) {
 		target_user.querySelector(".name").innerText = target_users[0].name + "님";
 		console.log(target_users[0]);
+		insertNewRoomToDB();
 		const is_exist = addToUserList(target_users[0]);
 		
 	} else {
@@ -102,20 +124,15 @@ function insertNewRoomToDB() {
 		target_user_id.push(target_users[i].id);
 	}
 	data["target_users"] = target_user_id;
+	console.log(data);
 	$.ajax({
 		type: "post",
 		url: "/direct/insert-new-room",
 		data: data,
 		dataType: "text",
 		success: function (data) {
+			data = JSON.parse(data);
 			console.log(data);
-			if(data == "true") {
-				console.log("insert 완료");
-			} else if(data == "false") {
-				console.log("insert 실패");
-			} else {
-				console.log(data);
-			}
 		},
 		error: function (xhr, status, error) {
 			console.log(xhr);

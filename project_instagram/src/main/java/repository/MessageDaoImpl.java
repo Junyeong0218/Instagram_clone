@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import db.DBConnectionMgr;
+import entity.Message;
 import entity.RoomInfo;
 
 public class MessageDaoImpl implements MessageDao {
@@ -116,12 +117,12 @@ public class MessageDaoImpl implements MessageDao {
 	}
 	
 	@Override
-	public List<RoomInfo> selectSpecificRoom(int user_id, List<Integer> target_user_ids) {
+	public int selectSpecificRoomId(int user_id, List<Integer> target_user_ids) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql = null;
-		List<RoomInfo> rooms = new ArrayList<RoomInfo>();
+		int room_id = 0;
 		
 		try {
 			conn = db.getConnection();
@@ -139,21 +140,77 @@ public class MessageDaoImpl implements MessageDao {
 			for(int id : target_user_ids) {
 				sql += id + ", ";
 			}
-			sql.substring(0, sql.lastIndexOf(","));
+			sql = sql.substring(0, sql.lastIndexOf(","));
 			sql += ") "
 					+ "GROUP BY "
-						+ "room_users.id;";
+						+ "room_users.id "
+					+ "HAVING "
+						+ "entered_users_count = ?;";
+			System.out.println(sql);
 			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, target_user_ids.size() + 1);
 			rs = pstmt.executeQuery();
 			
-			while(rs.next()) {
-				RoomInfo room = new RoomInfo();
-				room.setId(rs.getInt("id"));
-				room.setRoom_id(rs.getInt("room_id"));
-				room.setEntered_user_id(rs.getInt("user_id"));
-				room.setEntered_users_count(rs.getInt("entered_users_count"));
+			int row_count = 0;
+			if(rs != null) {
+				rs.last();
+				row_count = rs.getRow();
 				
-				rooms.add(room);
+				if(row_count == target_user_ids.size() + 1) {
+					rs.first();
+					room_id = rs.getInt("room_id");
+				}
+			}
+			
+		} catch (SQLDataException e) {
+			System.out.println("no row!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt, rs);
+		}
+		
+		return room_id;
+	}
+	
+	@Override
+	public int insertNewRoom(int user_id, List<Integer> target_user_ids) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		int room_id = 0;
+		int result = 0;
+		
+		try {
+			conn = db.getConnection();
+			sql = "insert into direct_message_room_mst values(0, ?, now(), now());";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, user_id);
+			result = pstmt.executeUpdate();
+			
+			if(result > 0) {
+				pstmt.close();
+				sql = "select id from direct_message_room_mst where user_id = ? order by create_date desc;";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, user_id);
+				rs = pstmt.executeQuery();
+				
+				while(rs.next()) {
+					room_id = rs.getInt("id");
+				}
+				target_user_ids.add(user_id);
+				
+				if(room_id != 0) {
+					for(int i = 0; i < target_user_ids.size(); i++) {
+						pstmt.close();
+						sql = "insert into direct_message_room_entered_users values(0, ?, ?, now(), now());";
+						pstmt = conn.prepareStatement(sql);
+						pstmt.setInt(1, room_id);
+						pstmt.setInt(2, target_user_ids.get(i));
+						result += pstmt.executeUpdate();
+					}
+				}
 			}
 		} catch (SQLDataException e) {
 			System.out.println("no row!");
@@ -163,12 +220,91 @@ public class MessageDaoImpl implements MessageDao {
 			db.freeConnection(conn, pstmt, rs);
 		}
 		
-		return rooms;
+		if(result > 0) {
+			return room_id;
+		} else {
+			return 0;
+		}
 	}
 	
 	@Override
-	public boolean insertNewRoom(int user_id, List<Integer> target_user_ids) {
-		// TODO Auto-generated method stub
-		return false;
+	public List<Message> selectMessages(int room_id) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		List<Message> messages = new ArrayList<Message>();
+		
+		try {
+			conn = db.getConnection();
+			sql  = "SELECT "
+						+ "message.id, "
+						+ "room_users.room_id, "
+						+ "room_users.user_id, "
+						+ "message.`contents`, "
+						+ "message.is_image, "
+						+ "message.image_id, "
+						+ "image.file_name, "
+						+ "COUNT(reaction.id) AS reaction_flag, "
+						+ "message.create_date "
+					+ "FROM  "
+						+ "direct_message_room_entered_users room_users "
+						+ "LEFT OUTER JOIN direct_message_mst message ON(message.user_id = room_users.user_id) "
+						+ "LEFT OUTER JOIN direct_message_image image ON(image.id = message.image_id AND message.is_image = 1) "
+						+ "LEFT OUTER JOIN direct_message_reaction reaction ON(reaction.direct_message_id = message.id) "
+					+ "WHERE "
+						+ "room_users.room_id = 1 "
+					+ "GROUP BY "
+						+ "room_users.id, "
+						+ "message.id "
+					+ "ORDER BY "
+						+ "message.create_date desc;";
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				Message message = new Message();
+				message.setId(rs.getInt("id"));
+				message.setRoom_id(rs.getInt("room_id"));
+				message.setUser_id(rs.getInt("user_id"));
+				message.setContents(rs.getString("contents"));
+				message.set_image(rs.getBoolean("is_image"));
+				message.setImage_id(rs.getInt("image_id"));
+				message.setFile_name(rs.getString("file_name"));
+				message.setReaction_flag(rs.getInt("reaction_flag") > 0 ? true : false);
+				message.setCreate_date(rs.getTimestamp("create_date") != null ? rs.getTimestamp("create_date").toLocalDateTime() : null);
+				
+				messages.add(message);
+			}
+		} catch (SQLDataException e) {
+			System.out.println("no row!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt, rs);
+		}
+		
+		return messages;
+	}
+	
+	@Override
+	public List<RoomInfo> selectRoomInfoForInit(int user_id) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		List<RoomInfo> rooms = new ArrayList<RoomInfo>();
+		
+		try {
+			conn = db.getConnection();
+			sql = "";
+		} catch (SQLDataException e) {
+			System.out.println("no row!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt, rs);
+		}
+		return rooms;
 	}
 }

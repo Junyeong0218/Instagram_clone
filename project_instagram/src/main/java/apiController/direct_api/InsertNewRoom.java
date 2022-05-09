@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import entity.Message;
 import entity.User;
 import repository.MessageDao;
 import service.MessageService;
@@ -37,12 +38,31 @@ public class InsertNewRoom extends HttpServlet {
 		HttpSession session = request.getSession();
 		User sessionUser = (User) session.getAttribute("user");
 		
-		String[] target_users = request.getParameterValues("target_users");
+		String[] target_users = request.getParameterValues("target_users[]");
 		List<Integer> target_user_ids = Arrays.stream(target_users).map(e -> Integer.parseInt(e))
 																															.collect(Collectors.toList());
 		System.out.println(target_user_ids);
 		
-		int result = messageService.insertNewRoom(sessionUser.getId(), target_user_ids);
-		System.out.println(result);
+		List<Message> messages = messageService.insertNewRoom(sessionUser.getId(), target_user_ids);
+		StringBuilder sb = new StringBuilder();
+		System.out.println(messages);
+		
+		sb.append("[ ");
+		for(Message message : messages) {
+			sb.append(" { \"id\": \"" + message.getId() + "\", " + 
+									"\"room_id\": \"" + message.getRoom_id() + "\", " +
+									"\"user_id\": \"" + message.getUser_id() + "\", " +
+									"\"contents\": \"" + message.getContents() + "\", " +
+									"\"is_image\": \"" + message.is_image() + "\", " +
+									"\"image_id\": \"" + message.getImage_id() + "\", " +
+									"\"file_name\": \"" + message.getFile_name() + "\", " +
+									"\"reaction_flag\": \"" + message.isReaction_flag() + "\", " +
+									"\"create_date\": \"" + message.getCreate_date() + "\"} , ");
+		}
+		if(messages.size() > 0) sb.replace(sb.lastIndexOf(","), sb.length(), "");
+		sb.append(" ]");
+		
+		response.setContentType("text/plain; charset=UTF-8");
+		response.getWriter().print(sb.toString());
 	}
 }
