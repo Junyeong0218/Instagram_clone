@@ -18,6 +18,7 @@ main {
     height: 100%;
     border: 1px solid rgb(219, 219, 219);
     border-radius: 4px;
+    background-color: white;
     overflow: hidden;
 }
 
@@ -210,10 +211,6 @@ main {
 
 .user-description>.name {
     color: rgb(38, 38, 38);
-}
-
-.user-description>.username {
-	display: none;
 }
 
 .recent-activity,

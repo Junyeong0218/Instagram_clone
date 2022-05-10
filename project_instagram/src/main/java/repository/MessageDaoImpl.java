@@ -89,7 +89,7 @@ public class MessageDaoImpl implements MessageDao {
 	}
 	
 	@Override
-	public int insertDirectTextMessage(int user_id, int target_user_id, String contents) {
+	public int insertDirectTextMessage(int user_id, int room_id, String contents) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		String sql = null;
@@ -100,7 +100,7 @@ public class MessageDaoImpl implements MessageDao {
 			sql = "insert into direct_message_mst values(0, ?, ?, ?, 0, null, now(), now(), 0, null);";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, user_id);
-			pstmt.setInt(2, target_user_id);
+			pstmt.setInt(2, room_id);
 			pstmt.setString(3, contents);
 			
 			result = pstmt.executeUpdate();
@@ -191,7 +191,7 @@ public class MessageDaoImpl implements MessageDao {
 			
 			if(result > 0) {
 				pstmt.close();
-				sql = "select id from direct_message_room_mst where user_id = ? order by create_date desc;";
+				sql = "select id from direct_message_room_mst where made_user_id = ? order by create_date desc;";
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setInt(1, user_id);
 				rs = pstmt.executeQuery();
@@ -249,17 +249,17 @@ public class MessageDaoImpl implements MessageDao {
 						+ "message.create_date "
 					+ "FROM  "
 						+ "direct_message_room_entered_users room_users "
-						+ "LEFT OUTER JOIN direct_message_mst message ON(message.user_id = room_users.user_id) "
+						+ "LEFT OUTER JOIN direct_message_mst message ON(message.user_id = room_users.user_id and message.room_id = room_users.room_id) "
 						+ "LEFT OUTER JOIN direct_message_image image ON(image.id = message.image_id AND message.is_image = 1) "
 						+ "LEFT OUTER JOIN direct_message_reaction reaction ON(reaction.direct_message_id = message.id) "
 					+ "WHERE "
-						+ "room_users.room_id = 1 "
+						+ "room_users.room_id = ? "
 					+ "GROUP BY "
-						+ "room_users.id, "
 						+ "message.id "
 					+ "ORDER BY "
 						+ "message.create_date desc;";
 			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, room_id);
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
@@ -297,7 +297,56 @@ public class MessageDaoImpl implements MessageDao {
 		
 		try {
 			conn = db.getConnection();
-			sql = "";
+			sql = "select "
+						+ "dm.id, "
+						+ "room_users.room_id, "
+						+ "room_users2.user_id, "
+						+ "um.username, "
+						+ "um.`name`, "
+						+ "um.has_profile_image, "
+						+ "up.file_name, "
+						+ "dm.`contents`, "
+						+ "dm.create_date "
+					+ "from "
+						+ "direct_message_room_entered_users room_users "
+						+ "left outer join direct_message_room_entered_users room_users2 on(room_users2.room_id = room_users.room_id) "
+						+ "left outer join user_mst um on(um.id = room_users2.user_id) "
+						+ "left outer join user_profile_image up on(up.user_id = um.id) "
+						+ "left outer join direct_message_mst dm on(dm.room_id = room_users.room_id and "
+							+ "dm.create_date = (select "
+																	+ "create_date "
+																+ "from "
+																	+ "direct_message_mst "
+																+ "where "
+																	+ "room_id = dm.room_id "
+																+ "order by "
+																	+ "create_date desc "
+																+ "limit 1)) "
+					+ "where "
+						+ "room_users.user_id = ? "
+					+ "group by "
+						+ "room_users.room_id, "
+						+ "room_users2.user_id "
+					+ "order by "
+						+ "dm.create_date desc;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, user_id);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				RoomInfo room = new RoomInfo();
+				room.setId(rs.getInt("id"));
+				room.setRoom_id(rs.getInt("room_id"));
+				room.setUser_id(rs.getInt("user_id"));
+				room.setUsername(rs.getString("username"));
+				room.setName(rs.getString("name"));
+				room.setHas_profile_image(rs.getBoolean("has_profile_image"));
+				room.setFile_name(rs.getString("file_name"));
+				room.setContents(rs.getString("contents"));
+				room.setCreate_date(rs.getTimestamp("create_date") != null ? rs.getTimestamp("create_date").toLocalDateTime() : null);
+				
+				rooms.add(room);
+			}
 		} catch (SQLDataException e) {
 			System.out.println("no row!");
 		} catch (Exception e) {
@@ -305,6 +354,8 @@ public class MessageDaoImpl implements MessageDao {
 		} finally {
 			db.freeConnection(conn, pstmt, rs);
 		}
+		
+		System.out.println(rooms);
 		return rooms;
 	}
 }

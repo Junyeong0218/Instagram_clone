@@ -35,9 +35,9 @@ public class InsertDirectTextMessage extends HttpServlet {
 		User sessionUser = (User) session.getAttribute("user");
 		
 		String contents = request.getParameter("contents");
-		int target_user_id = Integer.parseInt(request.getParameter("target_user_id"));
+		int room_id = Integer.parseInt(request.getParameter("room_id"));
 		
-		boolean result = messageService.insertDirectTextMessage(sessionUser.getId(), target_user_id, contents);
+		boolean result = messageService.insertDirectTextMessage(sessionUser.getId(), room_id, contents);
 		
 		response.setContentType("text/plain; charset=UTF-8");
 		response.getWriter().print(result);

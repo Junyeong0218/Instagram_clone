@@ -119,6 +119,10 @@
 	background-color: rgb(224, 241, 255);
 }
 
+.receivers > div:not(:first-child) {
+	margin-left: 5px;
+}
+
 .receivers > div > button {
 	margin-left: 8px;
 	display: flex;

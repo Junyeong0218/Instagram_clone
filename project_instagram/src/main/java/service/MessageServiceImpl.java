@@ -7,9 +7,10 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import entity.Message;
-import entity.Room;
 import entity.RoomInfo;
+import entity.User;
 import repository.MessageDao;
+import response_dto.RoomSummaryResDto;
 
 public class MessageServiceImpl implements MessageService {
 	
@@ -93,26 +94,62 @@ public class MessageServiceImpl implements MessageService {
 		if(room_id == 0) {
 			room_id = messageDao.insertNewRoom(user_id, target_user_ids);	
 		}
-		
-		List<Message> messages = messageDao.selectMessages(room_id);
-		
-		messages = messages.stream().filter(new Predicate<Message>() {
-																		@Override
-																		public boolean test(Message message) {
-																			if(message.getId() == 0) {
-																				return false;
-																			}
-																			return true;
-																		}
-																	})
-																	.collect(Collectors.toList());
-		
-		return messages;
+		return selectMessages(room_id);
 	}
 	
 	@Override
-	public List<RoomInfo> selectRoomInfoForInit(int user_id) {
-//		List<RoomInfo> rooms = 
-		return null;
+	public List<RoomSummaryResDto> selectRoomInfoForInit(int user_id) {
+		List<RoomInfo> rooms = messageDao.selectRoomInfoForInit(user_id);
+		List<RoomSummaryResDto> dtos = new ArrayList<RoomSummaryResDto>();
+		
+		for(RoomInfo room : rooms) {
+			RoomSummaryResDto room_id = RoomSummaryResDto.builder().room_id(room.getRoom_id()).build();
+			if( dtos.contains( room_id ) ) {
+				List<User> users = dtos.get(dtos.indexOf( room_id )).getEntered_users();
+				User user = User.builder().id(room.getUser_id())
+																 .username(room.getUsername())
+																 .name(room.getName())
+																 .has_profile_image(room.isHas_profile_image())
+																 .file_name(room.getFile_name())
+																 .build();
+				users.add(user);
+			} else {
+				RoomSummaryResDto dto = new RoomSummaryResDto();
+				dto.setRoom_id(room.getRoom_id());
+				List<User> users = new ArrayList<User>();
+				User user = User.builder().id(room.getUser_id())
+																 .username(room.getUsername())
+																 .name(room.getName())
+																 .has_profile_image(room.isHas_profile_image())
+																 .file_name(room.getFile_name())
+																 .build();
+				users.add(user);
+				dto.setEntered_users(users);
+				Message message = Message.builder().id(room.getId())
+																						 .contents(room.getContents())
+																						 .create_date(room.getCreate_date())
+																						 .build();
+				dto.setMessage(message);
+				dtos.add(dto);
+			}
+		}
+		return dtos;
+	}
+	
+	@Override
+	public List<Message> selectMessages(int room_id) {
+		List<Message> messages = messageDao.selectMessages(room_id);
+		
+//		messages = messages.stream().filter(new Predicate<Message>() {
+//																		@Override
+//																		public boolean test(Message message) {
+//																			if(message.getId() == 0) {
+//																				return false;
+//																			}
+//																			return true;
+//																		}
+//																	})
+//																	.collect(Collectors.toList());
+		return messages;
 	}
 }
