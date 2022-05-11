@@ -12,9 +12,13 @@ public interface MessageService {
 	
 	public boolean insertDirectTextMessage(int user_id, int room_id, String contents);
 	
+	public boolean insertDirectImageMessage(int user_id, int room_id, String file_name);
+	
 	public List<Message> insertNewRoom(int user_id, List<Integer> target_user_ids);
 	
 	public List<RoomSummaryResDto> selectRoomInfoForInit(int user_id);
 	
 	public List<Message> selectMessages(int room_id);
+	
+	public List<Integer> toggleMessageReaction(int user_id, int message_id);
 }

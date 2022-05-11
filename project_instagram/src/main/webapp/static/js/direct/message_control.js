@@ -12,6 +12,8 @@ const message_wrapper = document.querySelector(".message-wrapper");
 const message_description = document.querySelector(".message-description");
 const target_user = document.querySelector(".target-user");
 const user_list_tag = document.querySelector(".user-list");
+const send_image_button = document.querySelector(".send-image");
+const image_input = document.querySelector(".image-input");
 
 let origin_room_data;
 let followers;
@@ -50,6 +52,42 @@ main_new_message.onclick = activeNewTargetModal;
 modal_closer.onclick = () => new_target_modal.classList.remove("active");
 receiver.oninput = selectUser;
 next_button.onclick = makeNewRoom;
+
+send_image_button.onclick = () => image_input.click();
+image_input.onchange = () => {
+	const file_reader = new FileReader();
+	const file = image_input.files[0];
+	
+	file_reader.onloadend = (event) => {
+		const formData = new FormData();
+		formData.append("room_id", origin_room_data.room_summary[activated_room_index].room_id);
+		formData.append("file", file);
+		$.ajax({
+			type: "post",
+			url: "/direct/insert-direct-image-message",
+			data: formData,
+			encType: "multipart/form-data",
+			processData: false,
+			contentType: false,
+			dataType: "text",
+			success: function (data) {
+				console.log(data);
+				if(data == "true") {
+					selectMessages();
+				} else {
+					alert("이미지 업로드 실패");
+				}
+			},
+			error: function (xhr, status, error) {
+				console.log(xhr);
+				console.log(status);
+				console.log(error);
+			}
+		});
+	}
+	
+	file_reader.readAsDataURL(file);
+}
 
 // ------------------------------------------------------------------------------
 // Functions
@@ -162,6 +200,7 @@ function addMessagesToRoom() {
 	message_description.innerHTML = "";
 	for(let i = activated_room_data.length - 1; i > -1; i--) {
 		const message_info = activated_room_data[i];
+		console.log(message_info);
 		if(message_info.id == 0) continue;
 		if(i == activated_room_data.length - 1) {
 			const date_line = document.createElement("div");
@@ -177,25 +216,100 @@ function addMessagesToRoom() {
 		
 		const line = document.createElement("div");
 		if(message_info.user_id != session_user_id) { 
+			const entered_users = origin_room_data.room_summary[activated_room_index].entered_users;
+			let sended_user_info;
+			for(let j = 0; j < entered_users.length; j++) {
+				if(entered_users[j].user_id == message_info.user_id) {
+					sended_user_info = entered_users[j];
+					break;
+				}
+			}
 			line.className =  "line receive";
 			line.innerHTML = `<div class="user-profile-image">
-											 	 <img src="/static/images/${message_info.has_profile_image == true ? 'user_profile_images/' + message_info.file_name : 'basic_profile_image.jpg'}">
+											 	 <img src="/static/images/${sended_user_info.has_profile_image == "true" ? 'user_profile_images/' + sended_user_info.file_name : 'basic_profile_image.jpg'}">
 											 </div>`;
 		} else {
 			line.className = "line send";
 		}
 		const message = document.createElement("div");
-		message.className = "message";
-		message.innerText = message_info.contents;
+		if(message_info.is_image == "true") {
+			message.className = "image";
+			message.innerHTML = `<img src="/static/images/message_images/${message_info.file_name}">`;
+		} else {
+			message.className = "message";
+			message.innerText = message_info.contents;
+		}
 		line.appendChild(message);
 		
 		message_description.appendChild(line);
 		
-		console.log(message_info);
+		message.ondblclick= toggleMessageLike;
 	}
 	new_target_modal.classList.remove("active");
 	main_content.classList.remove("active");
 	message_wrapper.classList.add("active");
+	message_description.classList.remove("flex-end");
+	if(message_description.scrollHeight > 697) {
+		message_description.scrollTop = message_description.scrollHeight;
+	} else {
+		message_description.classList.add("flex-end");
+	}
+}
+
+function collectMessagesExceptDate() {
+	const messages = message_description.children;
+	const except_date = new Array();
+	for(let i = 0; i < messages.length; i++) {
+		if(messages[i].className.includes("date")) continue;
+		except_date.push(messages[i]);
+	}
+	return except_date;
+}
+
+function toggleMessageLike(event) {
+	const lines = collectMessagesExceptDate();
+	let current_index = -1;
+	for(let i = 0; i < lines.length; i++) {
+		const message = lines[i].querySelector(".message");
+		const image = lines[i].querySelector(".image");
+		if(message != null) {
+			if(message == event.target) {
+				current_index = lines.length - i - 1;
+				break;
+			}
+		} else if(image != null) {
+			if(image == event.target) {
+				current_index = lines.length - i - 1;
+				break;
+			}
+		}
+	}
+	console.log(current_index);
+	if(current_index == -1) return;
+	const message_data = activated_room_data[current_index];
+	$.ajax({
+		type: "post",
+		url: "/direct/toggle-message-reaction",
+		data: { "message_id": message_data.id },
+		dataType: "text",
+		success: function (data) {
+			console.log(data);
+		},
+		error: function (xhr, status, error) {
+			console.log(xhr);
+			console.log(status);
+			console.log(error);
+		}
+	});
+	console.log(activated_room_data[current_index]);
+	const like = document.createElement("div");
+	like.className = "like";
+	like.innerHTML = `<img src="/static/images/message_reaction.png">`;
+	event.target.appendChild(like);
+	event.target.classList.add("liked");
+	if(event.target.parentElement.className.includes("receive")) {
+		event.target.previousElementSibling.classList.add("liked");
+	}
 }
 
 function makeMessageSendedDate(create_date) {

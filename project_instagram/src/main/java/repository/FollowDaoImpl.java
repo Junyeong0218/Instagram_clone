@@ -86,7 +86,7 @@ public class FollowDaoImpl implements FollowDao {
 		
 		try {
 			conn = db.getConnection();
-			sql = "insert into follow_mst values(0, ?, ?, 'COMMON', now(), now());";
+			sql = "insert into follow_mst values(0, ?, ?, null, 'COMMON', now(), now());";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, user_id);
 			pstmt.setInt(2, partner_user_id);
@@ -261,12 +261,12 @@ public class FollowDaoImpl implements FollowDao {
 						+ "user_mst um "
 						+ "left outer join user_profile_image up on(up.user_id = um.id) "
 						+ "left outer join article_mst am on(am.user_id = um.id) "
-						+ "left outer join article_media media on(media.article_id = am.id) "
+						+ "left outer join article_media media on(media.article_id = am.id and media.media_name like \"%01%\") "
 						+ "left outer join follow_mst fm on(fm.user_id = um.id) "
 						+ "left outer join follow_mst fm2 on(fm2.partner_user_id = um.id) "
 						+ "left outer join follow_mst fm3 on(fm3.user_id = ? and fm3.partner_user_id = um.id) "
 					+ "where "
-						+ "um.username = ? and media.media_name like \"%01%\" "
+						+ "um.username = ? "
 					+ "group by "
 						+ "am.id "
 					+ "order by "

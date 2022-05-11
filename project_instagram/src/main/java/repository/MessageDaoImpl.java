@@ -117,6 +117,58 @@ public class MessageDaoImpl implements MessageDao {
 	}
 	
 	@Override
+	public int insertDirectImageMessage(int user_id, int room_id, String file_name) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		final String contents = "메시지를 보냈습니다";
+		int result = 0;
+		
+		try {
+			conn = db.getConnection();
+			sql = "insert into direct_message_image values(0, ?, now(), now());";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, file_name);
+			result = pstmt.executeUpdate();
+			
+			if(result == 1) {
+				pstmt.close();
+				sql = "select id from direct_message_image where file_name = ?;";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, file_name);
+				rs = pstmt.executeQuery();
+				
+				int image_id = 0;
+				
+				while(rs.next()) {
+					image_id = rs.getInt("id");
+				}
+				
+				if(image_id != 0) {
+					pstmt.close();
+					sql = "insert into direct_message_mst values(0, ?, ?, ?, 1, ?, now(), now(), 0, null);";
+					pstmt = conn.prepareStatement(sql);
+					pstmt.setInt(1, user_id);
+					pstmt.setInt(2, room_id);
+					pstmt.setString(3, contents);
+					pstmt.setInt(4, image_id);
+					
+					result += pstmt.executeUpdate();
+				}
+			}
+		} catch (SQLDataException e) {
+			System.out.println("no row!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt, rs);
+		}
+		
+		return result;
+	}
+	
+	@Override
 	public int selectSpecificRoomId(int user_id, List<Integer> target_user_ids) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -357,5 +409,47 @@ public class MessageDaoImpl implements MessageDao {
 		
 		System.out.println(rooms);
 		return rooms;
+	}
+	
+	@Override
+	public List<Integer> toggleMessageReaction(int user_id, int message_id) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		List<Integer> like_users = new ArrayList<Integer>();
+		
+		try {
+			conn = db.getConnection();
+			sql = "select count(id) as like_flag from direct_message_reaction where user_id = ? and direct_message_id = ?;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, user_id);
+			pstmt.setInt(2, message_id);
+			rs = pstmt.executeQuery();
+			
+			boolean like_flag = false;
+			
+			if(rs.next()) {
+				like_flag  = rs.getInt("like_flag") > 0 ? true : false;
+			}
+			
+			if(! like_flag) {
+				pstmt.close();
+				sql = "insert into direct_message_reaction values(0, ?, ?, now(), now());";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, user_id);
+				pstmt.setInt(2, message_id);
+				
+				
+			}
+		} catch (SQLDataException e) {
+			System.out.println("no row!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt, rs);
+		}
+		
+		return like_users;
 	}
 }

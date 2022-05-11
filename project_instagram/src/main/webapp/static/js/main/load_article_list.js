@@ -205,7 +205,7 @@ function makeContentsTags(contents) {
 			let blank_index = contents.indexOf(" ", hash_tag_index) == -1 ? contents.length : contents.indexOf(" ", hash_tag_index);
 			console.log("blank_index : " + blank_index);
 			tag += contents.substring(0, hash_tag_index);
-			tag += `<a class="hash-tag-link" href="#">${contents.substring(hash_tag_index, blank_index)}</a> `;
+			tag += `<a class="hash-tag-link" href="/search?tag_name=${contents.substring(hash_tag_index + 1, blank_index)}">${contents.substring(hash_tag_index, blank_index)}</a> `;
 			contents = contents.substring(blank_index + 1, contents.length);
 		} else if(user_tag_index < hash_tag_index || hash_tag_index == -1) {
 			let blank_index = contents.indexOf(" ", user_tag_index) == -1 ? contents.length : contents.indexOf(" ", user_tag_index);

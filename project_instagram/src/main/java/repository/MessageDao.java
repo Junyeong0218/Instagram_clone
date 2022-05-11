@@ -11,6 +11,8 @@ public interface MessageDao {
 	public Map<String, List<?>> selectRecentMessages(int user_id);
 	
 	public int insertDirectTextMessage(int user_id, int room_id, String contents);
+
+	public int insertDirectImageMessage(int user_id, int room_id, String file_name);
 	
 	public int selectSpecificRoomId(int user_id, List<Integer> target_user_ids);
 	
@@ -19,4 +21,6 @@ public interface MessageDao {
 	public List<Message> selectMessages(int room_id);
 	
 	public List<RoomInfo> selectRoomInfoForInit(int user_id);
+	
+	public List<Integer> toggleMessageReaction(int user_id, int message_id);
 }
