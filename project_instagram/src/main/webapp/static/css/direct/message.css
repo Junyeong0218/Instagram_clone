@@ -234,6 +234,7 @@ main {
 }
 
 .line {
+	position: relative;
     margin-bottom: 8px;
     padding: 0 20px;
     display: flex;
@@ -284,7 +285,6 @@ main {
 }
 
 .line>.message {
-	position: relative;
     padding: 13px 16px;
     max-width: 236px;
     font-size: 14px;
@@ -295,7 +295,6 @@ main {
 }
 
 .line>.image {
-	position: relative;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -313,7 +312,7 @@ main {
 
 .line .like {
 	position: absolute;
-	bottom: -17px;
+	bottom: 3px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -325,11 +324,11 @@ main {
 }
 
 .receive .like {
-	left: -2px;
+	left: 48px;
 }
 
 .send .like {
-	right: -2px;
+	right: 18px;
 }
 
 .line>.image > img {

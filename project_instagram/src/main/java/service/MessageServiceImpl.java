@@ -2,14 +2,12 @@ package service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import entity.Message;
 import entity.RoomInfo;
 import entity.User;
 import repository.MessageDao;
+import response_dto.MessageResDto;
 import response_dto.RoomSummaryResDto;
 
 public class MessageServiceImpl implements MessageService {
@@ -18,12 +16,6 @@ public class MessageServiceImpl implements MessageService {
 	
 	public MessageServiceImpl(MessageDao messageDao) {
 		this.messageDao = messageDao;
-	}
-
-	@Override
-	public Map<String, List<?>> selectRecentMessages(int user_id) {
-		Map<String, List<?>> messageInfo = messageDao.selectRecentMessages(user_id);
-		return null;
 	}
 	
 	@Override
@@ -37,7 +29,7 @@ public class MessageServiceImpl implements MessageService {
 	}
 	
 	@Override
-	public List<Message> insertNewRoom(int user_id, List<Integer> target_user_ids) {
+	public List<MessageResDto> insertNewRoom(int user_id, List<Integer> target_user_ids) {
 		int room_id = messageDao.selectSpecificRoomId(user_id, target_user_ids);
 		
 		if(room_id == 0) {
@@ -86,8 +78,39 @@ public class MessageServiceImpl implements MessageService {
 	}
 	
 	@Override
-	public List<Message> selectMessages(int room_id) {
-		return messageDao.selectMessages(room_id);
+	public List<MessageResDto> selectMessages(int room_id) {
+		List<Message> messages = messageDao.selectMessages(room_id);
+		List<MessageResDto> dtos = new ArrayList<MessageResDto>();
+		
+		for(Message message : messages) {
+			MessageResDto message_id = MessageResDto.builder().id(message.getId()).build();
+			if(dtos.contains( message_id )) {
+				List<Integer> like_users = dtos.get(dtos.indexOf(message_id)).getLike_users();
+				int like_user_id = message.getLike_user_id();
+				if(like_user_id != 0) {
+					like_users.add(message.getLike_user_id());
+				}
+			} else {
+				MessageResDto dto = new MessageResDto();
+				dto.setId(message.getId());
+				dto.setRoom_id(message.getRoom_id());
+				dto.setUser_id(message.getUser_id());
+				dto.setContents(message.getContents());
+				dto.set_image(message.is_image());
+				dto.setImage_id(message.getImage_id());
+				dto.setFile_name(message.getFile_name());
+				dto.setCreate_date(message.getCreate_date());
+				List<Integer> like_users = new ArrayList<Integer>();
+				int like_user_id = message.getLike_user_id();
+				if(like_user_id != 0) {
+					like_users.add(message.getLike_user_id());
+				}
+				dto.setLike_users(like_users);
+				
+				dtos.add(dto);
+			}
+		}
+		return dtos;
 	}
 	
 	@Override

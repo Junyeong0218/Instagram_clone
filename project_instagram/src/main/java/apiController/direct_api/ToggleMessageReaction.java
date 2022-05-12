@@ -1,6 +1,7 @@
 package apiController.direct_api;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -36,6 +37,17 @@ public class ToggleMessageReaction extends HttpServlet{
 		
 		int message_id = Integer.parseInt(request.getParameter("message_id"));
 		
-		List<Integer> like_users = 
+		List<Integer> like_users = messageService.toggleMessageReaction(sessionUser.getId(), message_id);
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("[ ");
+		for(int user_id : like_users) {
+			sb.append(user_id + ", ");
+		}
+		if(like_users.size() > 0) sb.replace(sb.lastIndexOf(", "), sb.length(), "");
+		sb.append(" ]");
+		
+		response.setContentType("text/plain; charset=UTF-8");
+		response.getWriter().print(sb.toString());
 	}
 }

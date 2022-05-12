@@ -239,7 +239,19 @@ function addMessagesToRoom() {
 			message.className = "message";
 			message.innerText = message_info.contents;
 		}
+		
 		line.appendChild(message);
+		
+		if(message_info.like_users.length > 0) {
+			const like = document.createElement("div");
+			like.className = "like";
+			like.innerHTML = "<img src='/static/images/message_reaction.png'>";
+			message.appendChild(like);
+			message.classList.add("liked");
+			if(line.className.includes("receive")) {
+				message.previousElementSibling.classList.add("liked");
+			}
+		}
 		
 		message_description.appendChild(line);
 		
@@ -284,7 +296,6 @@ function toggleMessageLike(event) {
 			}
 		}
 	}
-	console.log(current_index);
 	if(current_index == -1) return;
 	const message_data = activated_room_data[current_index];
 	$.ajax({
@@ -293,7 +304,32 @@ function toggleMessageLike(event) {
 		data: { "message_id": message_data.id },
 		dataType: "text",
 		success: function (data) {
-			console.log(data);
+			data = JSON.parse(data);
+			activated_room_data[current_index].like_users = data;
+			const like_flag = data.length > 0 ? true : false;
+			console.log(like_flag);
+			console.log(lines[current_index].querySelector(".like"));
+			if(like_flag && lines[current_index].querySelector(".like") == null) {
+				console.log("create");
+				const like = document.createElement("div");
+				like.className = "like";
+				like.innerHTML = `<img src="/static/images/message_reaction.png">`;
+				event.target.appendChild(like);
+				event.target.classList.add("liked");
+				if(event.target.parentElement.className.includes("receive")) {
+					event.target.previousElementSibling.classList.add("liked");
+				}
+			} else if(like_flag == false) {
+				console.log("delete");
+				const exist_like = event.target.querySelector(".like");
+				if(exist_like != null) {
+					exist_like.remove();
+				}
+				event.target.classList.remove("liked");
+				if(event.target.parentElement.className.includes("receive")) {
+					event.target.previousElementSibling.classList.remove("liked");
+				}
+			}
 		},
 		error: function (xhr, status, error) {
 			console.log(xhr);
@@ -301,15 +337,6 @@ function toggleMessageLike(event) {
 			console.log(error);
 		}
 	});
-	console.log(activated_room_data[current_index]);
-	const like = document.createElement("div");
-	like.className = "like";
-	like.innerHTML = `<img src="/static/images/message_reaction.png">`;
-	event.target.appendChild(like);
-	event.target.classList.add("liked");
-	if(event.target.parentElement.className.includes("receive")) {
-		event.target.previousElementSibling.classList.add("liked");
-	}
 }
 
 function makeMessageSendedDate(create_date) {

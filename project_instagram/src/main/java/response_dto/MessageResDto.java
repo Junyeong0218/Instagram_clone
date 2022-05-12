@@ -1,4 +1,4 @@
-package entity;
+package response_dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,22 +16,28 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Message {
+public class MessageResDto {
 
+	// ------------------------------------ message_id
 	private int id;
 	private int room_id;
 	private int user_id;
 	private String contents;
-	private LocalDateTime create_date;
-	private LocalDateTime update_date;
-	private boolean delete_flag;
-	private LocalDateTime delete_date;
-	
-	// ------------------------------------- image_flag_and_image_id
 	private boolean is_image;
 	private int image_id;
 	private String file_name;
+	private List<Integer> like_users;
+	private LocalDateTime create_date;
 	
-	private int like_user_id;
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof MessageResDto) {
+			MessageResDto dto = (MessageResDto) obj;
+			if(dto.id == this.id) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 }

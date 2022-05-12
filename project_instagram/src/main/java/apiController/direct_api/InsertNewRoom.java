@@ -14,9 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import entity.Message;
 import entity.User;
 import repository.MessageDao;
+import response_dto.MessageResDto;
 import service.MessageService;
 import service.MessageServiceImpl;
 
@@ -43,12 +43,12 @@ public class InsertNewRoom extends HttpServlet {
 																															.collect(Collectors.toList());
 		System.out.println(target_user_ids);
 		
-		List<Message> messages = messageService.insertNewRoom(sessionUser.getId(), target_user_ids);
+		List<MessageResDto> messages = messageService.insertNewRoom(sessionUser.getId(), target_user_ids);
 		StringBuilder sb = new StringBuilder();
 		System.out.println(messages);
 		
 		sb.append("[ ");
-		for(Message message : messages) {
+		for(MessageResDto message : messages) {
 			sb.append(" { \"id\": \"" + message.getId() + "\", " + 
 									"\"room_id\": \"" + message.getRoom_id() + "\", " +
 									"\"user_id\": \"" + message.getUser_id() + "\", " +
@@ -56,8 +56,12 @@ public class InsertNewRoom extends HttpServlet {
 									"\"is_image\": \"" + message.is_image() + "\", " +
 									"\"image_id\": \"" + message.getImage_id() + "\", " +
 									"\"file_name\": \"" + message.getFile_name() + "\", " +
-									"\"reaction_flag\": \"" + message.isReaction_flag() + "\", " +
-									"\"create_date\": \"" + message.getCreate_date() + "\"} , ");
+									"\"create_date\": \"" + message.getCreate_date() + "\", \"like_users\": [ ");
+			for(int like_user : message.getLike_users()) {
+				sb.append(like_user + ", ");
+			}
+			if(message.getLike_users().size() > 0) sb.replace(sb.lastIndexOf(", "), sb.length(), "");
+			sb.append(" ] }, ");
 		}
 		if(messages.size() > 0) sb.replace(sb.lastIndexOf(","), sb.length(), "");
 		sb.append(" ]");
