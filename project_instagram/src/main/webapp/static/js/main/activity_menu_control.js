@@ -1,5 +1,12 @@
+const activity = document.querySelector(".activity");
 const activity_button = document.querySelector(".show-activity");
 const activity_menu_wrapper = document.querySelector(".activity-menu-wrapper");
+const direct_message = document.querySelector(".direct-message");
+
+let alert_data;
+
+// -----------------------------------------------
+// EventListeners
 
 activity_button.onclick = (event) => {
 	if(activity_menu_wrapper.children.length != 0) {
@@ -16,7 +23,10 @@ activity_button.onclick = (event) => {
 			console.log(data);
 			const activity_menu_tag = makeActivityMenuTag(data);
 			activity_menu_wrapper.appendChild(activity_menu_tag);
-			
+			const new_activity_alert = activity.querySelector(".new-activity-alert");
+			if(new_activity_alert != null) {
+				new_activity_alert.remove();
+			}
 		},
 		error: function (xhr, status, error) {
 			console.log(xhr);
@@ -26,15 +36,58 @@ activity_button.onclick = (event) => {
 	});
 };
 
-
-
-
-
-
-
+selectAlertData();
+setInterval(selectAlertData, 5000);
 
 // -----------------------------------------------
 // Functions
+
+function selectAlertData() {
+	$.ajax({
+		type: "get",
+		url: "/alert/new-logs",
+		dataType: "text",
+		success: function (data) {
+			if(data != "") {
+				alert_data = JSON.parse(data);
+				console.log(alert_data);
+				makeDirectMessageAlert();
+				makeActivityAlert();
+			}
+		},
+		error: function(xhr, status, error) {
+			console.log(xhr);
+			console.log(status);
+			console.log(error);
+		}
+	});
+}
+
+function makeDirectMessageAlert() {
+	if(alert_data.message_list.length > 0) {
+		const previous = direct_message.querySelector(".new-message-alert");
+		if(previous != null) {
+			previous.remove();
+		}
+		const new_message_count = alert_data.message_list.length > 9 ? 9 + "+" : alert_data.message_list.length;
+		const new_message_alert = document.createElement("div");
+		new_message_alert.className = "new-message-alert";
+		new_message_alert.innerHTML = `<span>${new_message_count}<span>`;
+		direct_message.appendChild(new_message_alert);
+	}
+}
+
+function makeActivityAlert() {
+	if(alert_data.activity_list.length > 0) {
+		const previous = activity.querySelector(".new-activity-alert");
+		if(previous != null) {
+			previous.remove();
+		}
+		const new_activity_alert = document.createElement("div");
+		new_activity_alert.className = "new-activity-alert";
+		activity.appendChild(new_activity_alert);
+	}
+}
 
 function makeActivityMenuTag(activity_list) {
 	const activity_menu = document.createElement("div");
@@ -95,7 +148,7 @@ function makeAgoTag(create_date) {
 	} else if(month > 1) {
 		return `<span class="ago">${month}개월</span>`;
 	} else if(date > 6) {
-		return `<span class="ago">${date/7}주</span>`;
+		return `<span class="ago">${Math.floor(date/7)}주</span>`;
 	} else if((date == 1 && activity_create_date.getDay() != now.getDay()) || date > 1) {
 		return `<span class="ago">${date}일</span>`;
 	} else if(hour > 0) {

@@ -17,7 +17,6 @@ function loadArticleList() {
 			if(data.length == 1 && data[0].id == 0) return;
 			for(let i = 0; i < data.length; i++) {
 				origin_article_list.push(data[i]);
-				console.log(origin_article_list);
 				const article_tag = makeArticleTag(data[i]);
 				article_wrapper.appendChild(article_tag);
 				
@@ -193,30 +192,24 @@ function makeContentsTags(contents) {
 	let tag = "";
 	let has_more_string = true;
 	while(has_more_string) {
-		console.log(contents);
 		let hash_tag_index = contents.indexOf("#");
 		let user_tag_index = contents.indexOf("@");
-		console.log(hash_tag_index);
-		console.log(user_tag_index);
 		if(hash_tag_index == -1 && user_tag_index == -1) {
 			tag += contents.substring(0, contents.length);
 			break;
 		} else if(hash_tag_index < user_tag_index || user_tag_index == -1) {
 			let blank_index = contents.indexOf(" ", hash_tag_index) == -1 ? contents.length : contents.indexOf(" ", hash_tag_index);
-			console.log("blank_index : " + blank_index);
 			tag += contents.substring(0, hash_tag_index);
 			tag += `<a class="hash-tag-link" href="/search?tag_name=${contents.substring(hash_tag_index + 1, blank_index)}">${contents.substring(hash_tag_index, blank_index)}</a> `;
 			contents = contents.substring(blank_index + 1, contents.length);
 		} else if(user_tag_index < hash_tag_index || hash_tag_index == -1) {
 			let blank_index = contents.indexOf(" ", user_tag_index) == -1 ? contents.length : contents.indexOf(" ", user_tag_index);
-			console.log("blank_index : " + blank_index);
 			tag += contents.substring(0, user_tag_index);
 			tag +=  `<a class="user-tag-link" href="/profile?username=${contents.substring(user_tag_index + 1, blank_index)}">${contents.substring(user_tag_index, blank_index)}</a> `;
 			contents = contents.substring(blank_index + 1, contents.length);
 		}
 		if(contents.length == 0) has_more_string = false;
 	}
-	console.log(tag);
 	return tag;
 }
 
@@ -325,7 +318,6 @@ function activeCurrentDot(ul, index) {
 }
 
 function showArticleMenu(event) {
-	console.log(event);
 	const offset = window.pageYOffset;
     pop_up.classList.remove("to-hidden");
     pop_up.classList.add("to-show");
@@ -426,7 +418,6 @@ function activeCommentSubmitButton(event) {
 }
 
 function submitComment(event) {
-	console.log(event);
 	const article_index = getArticleIndex(event.composedPath()[3]);
 	const wrapper = event.composedPath()[5];
 	let article_data;
@@ -435,14 +426,10 @@ function submitComment(event) {
 	} else {
 		article_data = origin_article_list[article_index];
 	}
-	console.log(article_data);
 	const article_id = article_data.id;
 	let comment = event.target.previousElementSibling.value;
-	console.log(article_id);
-	console.log(comment);
 	
 	if(relate_comment_flag == true) {
-		console.log("true 진입");
 		$.ajax({
 			type: "post",
 			url: "/article/insert-related-comment",
@@ -462,7 +449,6 @@ function submitComment(event) {
 			}
 		});
 	} else {
-		console.log("일반 insert");
 		$.ajax({
 			type: "post",
 			url: "/article/insert-comment",
@@ -470,7 +456,6 @@ function submitComment(event) {
 						  "comment": comment },
 			dataType: "text",
 			success: function (data) {
-				console.log(data);
 				if(data == "1") {
 					location.reload();
 				}
@@ -501,14 +486,12 @@ function showArticleDetail(event) {
 		async: "false",
 		success: function (data) {
 			data = JSON.parse(data);
-			console.log(data);
 			relate_comment_flag = false;
 			relate_comment_id = 0;
 			
 			origin_article_detail_data = data;
 			
 			const article_detail_tag = makeArticleDetail(data);
-			console.log(article_detail_tag);
 			container.appendChild(article_detail_tag);
 			
 			article_detail_tag.onclick = removeArticleDetail;
@@ -566,18 +549,14 @@ function toggleReplies(event) {
 	const index = getCurrentCommentIndex(show_reply_comment.previousElementSibling);
 	const current_comment_data = origin_article_detail_data.article_comment_list[index];
 	if(reply == null || typeof reply  == "undefined") {
-		console.log("select relpies");
 		$.ajax({
 			type: "get",
 			url: "/article/select-related-comments",
 			data: { "comment_id": current_comment_data.id },
 			dataType: "text",
 			success: function (data) {
-				// list 
 				data = JSON.parse(data);
 				origin_article_detail_data.article_comment_list[index].reply_list = data;
-				console.log(data);
-				console.log(origin_article_detail_data);
 				for(let i=0; i < data.length; i++) {
 					const related_comment_tag = makeRelatedCommentTag(data[i]);
 					show_reply_comment.appendChild(related_comment_tag);
@@ -681,8 +660,6 @@ function toggleCommentLike(event, isReply, reply_index, origin_comment_index) {
 	let comment_like_flag = comment_list[index].comment_like_flag;
 	
 	if(isReply == true) { 
-		console.log(reply_index);
-		console.log(comment_list[origin_comment_index]);
 		comment_id = comment_list[origin_comment_index].reply_list[reply_index].id;
 		comment_like_flag = comment_list[origin_comment_index].reply_list[reply_index].like_flag;
 	}
@@ -846,7 +823,6 @@ ${article_data.feature == "null" || article_data.feature == null ? '' : '<span c
 	// article added
 	
 	const comment_list = article_data.article_comment_list;
-	console.log(comment_list);
 	if(comment_list.length > 0) {
 		for(let i=0; i< comment_list.length; i++) {
 			const comment = comment_list[i];

@@ -18,6 +18,8 @@
 
 <body>
     <div class="container">
+    
+	    <jsp:include page="/WEB-INF/views/templates/new_file_picker.jsp" />
         
         <jsp:include page="/WEB-INF/views/templates/header.jsp" />
 
@@ -54,22 +56,7 @@
                     </div>
                     
                     <div class="message-description">
-<!--                         <div class="line date"> -->
-<!--                             2022년 4월 30일 오후 9:37 -->
-<!--                         </div> -->
-<!--                         <div class="line receive"> -->
-<!--                             <div class="user-profile-image"> -->
-<!--                                 <img src="/static/images/basic_profile_image.jpg"> -->
-<!--                             </div> -->
-<!--                             <div class="message"> -->
-<!--                                 차삿다 ㅎㅎㅎㅎㅎ -->
-<!--                             </div> -->
-<!--                         </div> -->
-<!--                         <div class="line send"> -->
-<!--                             <div class="message"> -->
-<!--                                 헐 뭐 샀어요??ㅋㅋ -->
-<!--                             </div> -->
-<!--                         </div> -->
+
 	                </div>
                     <div class="message-sender">
                         <div>
@@ -119,9 +106,12 @@
     		</div>
     	</div>
     </div>
-    <script src="/static/js/direct/message_control.js"></script>
-    <script src="/static/js/main/profile_menu_control.js"></script>
+    
     <script src="/static/js/main/searcher_control.js"></script>
+    <script src="/static/js/main/profile_menu_control.js"></script>
+    <script src="/static/js/main/activity_menu_control.js"></script>
+    <script src="/static/js/main/new_file_picker.js"></script>
+    <script src="/static/js/direct/message_control.js"></script>
 </body>
 
 </html>

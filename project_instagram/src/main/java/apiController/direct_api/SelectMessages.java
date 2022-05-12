@@ -10,8 +10,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import entity.User;
 import repository.MessageDao;
+import repository.NewActivityDao;
 import response_dto.MessageResDto;
 import service.MessageService;
 import service.MessageServiceImpl;
@@ -26,14 +29,17 @@ public class SelectMessages extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
 		super.init(getServletConfig());
 		ServletContext servletContext = config.getServletContext();
-		messageService = new MessageServiceImpl((MessageDao) servletContext.getAttribute("messageDao"));
+		messageService = new MessageServiceImpl((MessageDao) servletContext.getAttribute("messageDao"),
+																							   (NewActivityDao) servletContext.getAttribute("newActivityDao"));
 	}
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession();
+		User sessionUser = (User) session.getAttribute("user");
 		int room_id = Integer.parseInt(request.getParameter("room_id"));
 		
-		List<MessageResDto> messages = messageService.selectMessages(room_id);
+		List<MessageResDto> messages = messageService.selectMessages(sessionUser.getId(), room_id);
 		StringBuilder sb = new StringBuilder();
 		System.out.println(messages);
 		

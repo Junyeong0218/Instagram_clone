@@ -178,6 +178,15 @@ main {
     cursor: pointer;
 }
 
+.user.non-read .name {
+	font-weight: 600!important;
+}
+
+.user.non-read .recent-activity {
+	font-weight: 600!important;
+	color: black!important;
+}
+
 .user.active {
     background-color: rgb(239, 239, 239);
 }
@@ -193,12 +202,18 @@ main {
     border-radius: 50%;
 }
 
+.user > .non-read-dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background-color: rgb(0, 149, 246);
+}
+
 .user-description {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     flex-grow: 1;
-    width: 100%;
 }
 
 .user-description>.name,

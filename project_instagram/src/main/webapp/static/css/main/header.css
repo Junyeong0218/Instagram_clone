@@ -312,6 +312,7 @@ nav {
 }
 
 .nav-wrapper>div:not(:last-child) {
+	position: relative;
 	display: flex;
 	align-items: center;
 	width: auto;
@@ -601,6 +602,37 @@ nav {
 	height: 1px;
 	background-color: rgb(219, 219, 219);
 	border: none;
+}
+
+.new-message-alert {
+	position: absolute;
+	top: -6px;
+	right: -6px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	background-color: rgb(237, 73, 86);
+	pointer-events: none;
+}
+
+.new-activity-alert {
+	position: absolute;
+	bottom: -10px;
+	right: 10px;
+	width: 4px;
+	height: 4px;
+	border-radius: 50%;
+	background-color: rgb(237, 73, 86);
+	pointer-events: none;
+}
+
+.new-message-alert > span {
+	font-size: 11px;
+	color: white;
+	line-height: 18px;
 }
 
 .hidden {

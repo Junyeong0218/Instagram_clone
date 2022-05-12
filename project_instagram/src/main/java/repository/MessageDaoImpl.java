@@ -359,7 +359,9 @@ public class MessageDaoImpl implements MessageDao {
 						+ "um.has_profile_image, "
 						+ "up.file_name, "
 						+ "dm.`contents`, "
-						+ "dm.create_date "
+						+ "dm.create_date,"
+						+ "count(dm2.id) as all_message_count, "
+						+ "count(flags.id) as read_message_count "
 					+ "from "
 						+ "direct_message_room_entered_users room_users "
 						+ "left outer join direct_message_room_entered_users room_users2 on(room_users2.room_id = room_users.room_id) "
@@ -375,6 +377,8 @@ public class MessageDaoImpl implements MessageDao {
 																+ "order by "
 																	+ "create_date desc "
 																+ "limit 1)) "
+						+ "left outer join direct_message_mst dm2 on(dm2.room_id = room_users2.room_id) "
+						+ "left outer join direct_message_read_flags flags on(flags.direct_message_id = dm2.id) "
 					+ "where "
 						+ "room_users.user_id = ? "
 					+ "group by "
@@ -397,6 +401,8 @@ public class MessageDaoImpl implements MessageDao {
 				room.setFile_name(rs.getString("file_name"));
 				room.setContents(rs.getString("contents"));
 				room.setCreate_date(rs.getTimestamp("create_date") != null ? rs.getTimestamp("create_date").toLocalDateTime() : null);
+				room.setAll_message_count(rs.getInt("all_message_count"));
+				room.setRead_message_count(rs.getInt("read_message_count"));
 				
 				rooms.add(room);
 			}

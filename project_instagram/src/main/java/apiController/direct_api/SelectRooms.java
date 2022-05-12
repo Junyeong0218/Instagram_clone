@@ -57,7 +57,9 @@ public class SelectRooms extends HttpServlet {
 			sb.append(" ], \"message\": { " +
 									"\"message_id\": \"" + room.getMessage().getId() + "\", " + 
 									"\"contents\": \"" + room.getMessage().getContents() + "\", " + 
-									"\"create_date\": \"" + room.getMessage().getCreate_date() + "\"} }, ");
+									"\"create_date\": \"" + room.getMessage().getCreate_date() + "\"}, " +
+									"\"all_message_count\": \"" + room.getAll_message_count() + "\", " + 
+									"\"read_message_count\": \"" + room.getRead_message_count() + "\" }, ");
 		}
 		if(rooms.size() > 0) sb.replace(sb.lastIndexOf(","), sb.length(), "");
 		sb.append(" ] }");

@@ -5,9 +5,11 @@ import java.util.List;
 
 import entity.Activity;
 import entity.ArticleMedia;
+import entity.NonReadActivities;
 import entity.User;
 import entity.UserProfile;
 import repository.FollowDao;
+import repository.NewActivityDao;
 import response_dto.ArticleResDto;
 import response_dto.UserProfileResDto;
 import response_dto.UserRecommendResDto;
@@ -15,9 +17,15 @@ import response_dto.UserRecommendResDto;
 public class FollowServiceImpl implements FollowService {
 	
 	private FollowDao followDao;
+	private NewActivityDao newActivityDao;
 	
 	public FollowServiceImpl(FollowDao followDao) {
 		this.followDao = followDao;
+	}
+	
+	public FollowServiceImpl(FollowDao followDao, NewActivityDao newActivityDao) {
+		this.followDao = followDao;
+		this.newActivityDao = newActivityDao;
 	}
 
 	@Override
@@ -37,6 +45,14 @@ public class FollowServiceImpl implements FollowService {
 	
 	@Override
 	public List<Activity> selectActivities(int user_id) {
+		if(NonReadActivities.getNonReadActivityCount(user_id) > 0) {
+			int result = newActivityDao.updateActivityReadFlag(user_id);
+			System.out.println("update read flag");
+			if(result > 0) {
+				System.out.println("complete update");
+				NonReadActivities.readAllActivities(user_id);
+			}
+		}
 		return followDao.selectActivities(user_id);
 	}
 	

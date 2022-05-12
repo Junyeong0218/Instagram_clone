@@ -6,7 +6,7 @@ const modal_closer = new_target_modal.querySelector(".close-modal");
 const receivers = new_target_modal.querySelector(".receivers");
 const receiver = receivers.querySelector(".receiver");
 const recommend_receivers = document.querySelector(".recommend-receivers");
-const next_button = new_target_modal.querySelector(".next");
+const new_target_next_button = new_target_modal.querySelector(".next");
 const main_content = document.querySelector(".main-content");
 const message_wrapper = document.querySelector(".message-wrapper");
 const message_description = document.querySelector(".message-description");
@@ -51,7 +51,7 @@ new_message.onclick = activeNewTargetModal;
 main_new_message.onclick = activeNewTargetModal;
 modal_closer.onclick = () => new_target_modal.classList.remove("active");
 receiver.oninput = selectUser;
-next_button.onclick = makeNewRoom;
+new_target_next_button.onclick = makeNewRoom;
 
 send_image_button.onclick = () => image_input.click();
 image_input.onchange = () => {
@@ -142,6 +142,8 @@ function addRoomListTags(data) {
 	
 	for(let i = 0; i < room_summary.length; i++) {
 		const user_list = room_summary[i].entered_users;
+		const all_message_count = Number(room_summary[i].all_message_count);
+		const read_message_count = Number(room_summary[i].read_message_count);
 		let represent_user_index;
 		let names = "";
 		for(let j = 0; j < user_list.length; j++) {
@@ -157,12 +159,13 @@ function addRoomListTags(data) {
 		const date = makeRecentMessageDate(room_summary[i].message.create_date);
 		const button = document.createElement("button");
 		button.type = "button";
-		button.className = "user";
+		button.className = all_message_count > read_message_count ? "user non-read" : "user";
 		button.innerHTML = `<img src="/static/images/${user_list[represent_user_index].has_profile_image == true ? 'user_profile_image/' + user_list[represent_user_index].file_name : 'basic_profile_image.jpg'}">
 												<div class="user-description">
 													<span class="name">${names}</span>
 													<span class="recent-activity">${message}<span class="date">${date == "" ? "" : " · " + date}</span></span>
-												</div>`;
+												</div>
+		${all_message_count > read_message_count ? "<div class='non-read-dot'></div>" : ""}`;
 		user_list_tag.appendChild(button);
 		
 		button.onclick = activeRoom;
@@ -202,6 +205,11 @@ function addMessagesToRoom() {
 		const message_info = activated_room_data[i];
 		console.log(message_info);
 		if(message_info.id == 0) continue;
+		if(i == 0) {
+			const room_tag = user_list_tag.children[room_index];
+			const last_message_date = makeRecentMessageDate(message_info.create_date);
+			room_tag.querySelector(".recent-activity").innerHTML = `${message_info.contents}<span class="date"> · ${last_message_date}</span>`;
+		}
 		if(i == activated_room_data.length - 1) {
 			const date_line = document.createElement("div");
 			date_line.className = "line date";
@@ -257,6 +265,8 @@ function addMessagesToRoom() {
 		
 		message.ondblclick= toggleMessageLike;
 	}
+	user_list_tag.children[room_index].classList.remove("non-read");
+	user_list_tag.children[room_index].querySelector(".non-read-dot").remove();
 	new_target_modal.classList.remove("active");
 	main_content.classList.remove("active");
 	message_wrapper.classList.add("active");
@@ -350,7 +360,7 @@ function makeMessageSendedDate(create_date) {
 	let hour = upload_time.getHours();
 	let am_pm = hour > 11 ? "오후" : "오전";
 	hour = hour > 12 ? hour - 12 : hour;
-	let minute = upload_time.getMinutes();
+	let minute = String(upload_time.getMinutes()).padStart(2, "0");
 	
 	return `${year}년 ${month}월 ${date}일 ${am_pm} ${hour}:${minute}`;
 }
@@ -685,8 +695,8 @@ function initializeArrays() {
 
 function activeNextButton() {
 	if(target_users.length > 0) {
-		next_button.disabled = false;
+		new_target_next_button.disabled = false;
 	} else {
-		next_button.disabled = true;
+		new_target_next_button.disabled = true;
 	}
 }

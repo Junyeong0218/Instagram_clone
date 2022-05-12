@@ -15,7 +15,7 @@ public interface MessageService {
 	
 	public List<RoomSummaryResDto> selectRoomInfoForInit(int user_id);
 	
-	public List<MessageResDto> selectMessages(int room_id);
+	public List<MessageResDto> selectMessages(int user_id, int room_id);
 	
 	public List<Integer> toggleMessageReaction(int user_id, int message_id);
 }

@@ -22,6 +22,8 @@ public class RoomSummaryResDto {
 	private int room_id;
 	private List<User> entered_users;
 	private Message message;
+	private int all_message_count;
+	private int read_message_count;
 	
 	@Override
 	public boolean equals(Object obj) {

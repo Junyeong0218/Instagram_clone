@@ -4,18 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import entity.Message;
+import entity.NonReadActivities;
 import entity.RoomInfo;
 import entity.User;
 import repository.MessageDao;
+import repository.NewActivityDao;
 import response_dto.MessageResDto;
 import response_dto.RoomSummaryResDto;
 
 public class MessageServiceImpl implements MessageService {
 	
 	private MessageDao messageDao;
+	private NewActivityDao newActivityDao;
 	
 	public MessageServiceImpl(MessageDao messageDao) {
 		this.messageDao = messageDao;
+	}
+	
+	public MessageServiceImpl(MessageDao messageDao, NewActivityDao newActivityDao) {
+		this.messageDao = messageDao;
+		this.newActivityDao = newActivityDao;
 	}
 	
 	@Override
@@ -35,7 +43,7 @@ public class MessageServiceImpl implements MessageService {
 		if(room_id == 0) {
 			room_id = messageDao.insertNewRoom(user_id, target_user_ids);	
 		}
-		return selectMessages(room_id);
+		return selectMessages(user_id, room_id);
 	}
 	
 	@Override
@@ -71,6 +79,9 @@ public class MessageServiceImpl implements MessageService {
 																						 .create_date(room.getCreate_date())
 																						 .build();
 				dto.setMessage(message);
+				dto.setAll_message_count(room.getAll_message_count());
+				dto.setRead_message_count(room.getRead_message_count());
+				
 				dtos.add(dto);
 			}
 		}
@@ -78,7 +89,12 @@ public class MessageServiceImpl implements MessageService {
 	}
 	
 	@Override
-	public List<MessageResDto> selectMessages(int room_id) {
+	public List<MessageResDto> selectMessages(int user_id, int room_id) {
+		List<Integer> message_ids = newActivityDao.insertMessageReadFlag(user_id, room_id);
+		if(message_ids.size() > 0) {
+			NonReadActivities.readMessage(user_id, message_ids);
+		}
+		
 		List<Message> messages = messageDao.selectMessages(room_id);
 		List<MessageResDto> dtos = new ArrayList<MessageResDto>();
 		

@@ -32,4 +32,8 @@ public class RoomInfo {
 	private String contents;
 	private LocalDateTime create_date;
 	
+	// ----------------------------------- non_read_message_info
+	private int all_message_count;
+	private int read_message_count;
+	
 }

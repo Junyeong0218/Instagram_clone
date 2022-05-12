@@ -11,12 +11,15 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 
+import entity.NonReadActivities;
 import repository.ArticleDao;
 import repository.ArticleDaoImpl;
 import repository.FollowDao;
 import repository.FollowDaoImpl;
 import repository.MessageDao;
 import repository.MessageDaoImpl;
+import repository.NewActivityDao;
+import repository.NewActivityDaoImpl;
 import repository.SearchDao;
 import repository.SearchDaoImpl;
 import repository.StoryDao;
@@ -36,12 +39,15 @@ public class CharsetEncodingFilter implements Filter {
 		StoryDao storyDao = new StoryDaoImpl();
 		SearchDao searchDao = new SearchDaoImpl();
 		MessageDao messageDao = new MessageDaoImpl();
+		NewActivityDao newActivityDao = new NewActivityDaoImpl();
+		NonReadActivities.createInstance();
 		servletContext.setAttribute("userDao", userDao);
 		servletContext.setAttribute("articleDao", articleDao);
 		servletContext.setAttribute("followDao", followDao);
 		servletContext.setAttribute("storyDao", storyDao);
 		servletContext.setAttribute("searchDao", searchDao);
 		servletContext.setAttribute("messageDao", messageDao);
+		servletContext.setAttribute("newActivityDao", newActivityDao);
 	}
 
 	@Override
