@@ -175,13 +175,14 @@ public class FollowDaoImpl implements FollowDao {
 						+ "LEFT OUTER JOIN article_comment ac ON(ac.id = al.comment_id) "
 						+ "LEFT OUTER JOIN follow_mst fm ON(fm.id = al.follow_id) "
 					+ "WHERE  "
-						+ "al.related_user_id = ? "
+						+ "al.related_user_id = ? and al.user_id != ? "
 					+ "GROUP BY "
 						+ "al.id "
 					+ "ORDER BY "
 						+ "al.create_date desc;";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, user_id);
+			pstmt.setInt(2, user_id);
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {

@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `activity_logs` (
   CONSTRAINT `follow_id_for_activity` FOREIGN KEY (`follow_id`) REFERENCES `follow_mst` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `user_id_for_did_user` FOREIGN KEY (`user_id`) REFERENCES `user_mst` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `user_id_for_related_user` FOREIGN KEY (`related_user_id`) REFERENCES `user_mst` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb3;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
 
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `article_comment` (
   CONSTRAINT `article_id_for_comment` FOREIGN KEY (`article_id`) REFERENCES `article_mst` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `commented_user_id` FOREIGN KEY (`commented_user_id`) REFERENCES `user_mst` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `related_comment_id` FOREIGN KEY (`related_comment_id`) REFERENCES `article_comment` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb3;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
 
@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS `article_reaction` (
   KEY `like_user_id` (`like_user_id`),
   CONSTRAINT `article_id_for_like` FOREIGN KEY (`article_id`) REFERENCES `article_mst` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `like_user_id` FOREIGN KEY (`like_user_id`) REFERENCES `user_mst` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb3;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
 
@@ -140,7 +140,7 @@ CREATE TABLE IF NOT EXISTS `direct_message_image` (
   `create_date` datetime NOT NULL,
   `update_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
 
@@ -164,7 +164,7 @@ CREATE TABLE IF NOT EXISTS `direct_message_mst` (
   CONSTRAINT `image_id_for_direct_message` FOREIGN KEY (`image_id`) REFERENCES `direct_message_image` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `room_id_for_direct_message` FOREIGN KEY (`room_id`) REFERENCES `direct_message_room_mst` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `user_id_for_direct_message` FOREIGN KEY (`user_id`) REFERENCES `user_mst` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb3;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
 
@@ -181,7 +181,7 @@ CREATE TABLE IF NOT EXISTS `direct_message_reaction` (
   KEY `direct_message_id_for_reaction` (`direct_message_id`),
   CONSTRAINT `direct_message_id_for_reaction` FOREIGN KEY (`direct_message_id`) REFERENCES `direct_message_mst` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `user_id_for_direct_message_reaction` FOREIGN KEY (`user_id`) REFERENCES `user_mst` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb3;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
 
@@ -198,7 +198,7 @@ CREATE TABLE IF NOT EXISTS `direct_message_read_flags` (
   KEY `direct_message_id_for_message_read_flag` (`direct_message_id`),
   CONSTRAINT `direct_message_id_for_message_read_flag` FOREIGN KEY (`direct_message_id`) REFERENCES `direct_message_mst` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `user_id_for_message_read_flag` FOREIGN KEY (`user_id`) REFERENCES `user_mst` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=125 DEFAULT CHARSET=utf8mb3;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
 
@@ -250,7 +250,7 @@ CREATE TABLE IF NOT EXISTS `follow_mst` (
   CONSTRAINT `followed_hash_tag_id_for_follow` FOREIGN KEY (`followed_hash_tag_id`) REFERENCES `hash_tag_mst` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `partner_id_for_follow` FOREIGN KEY (`partner_user_id`) REFERENCES `user_mst` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `user_id_for_follow` FOREIGN KEY (`user_id`) REFERENCES `user_mst` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
 
@@ -375,6 +375,32 @@ CREATE TRIGGER `default_profile_image_insert` AFTER INSERT ON `user_mst` FOR EAC
 		NOW(), 
 		NOW()
 	);
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
+
+-- 트리거 project_instagram.delete_article_reaction 구조 내보내기
+DROP TRIGGER IF EXISTS `delete_article_reaction`;
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE TRIGGER `delete_article_reaction` BEFORE DELETE ON `article_reaction` FOR EACH ROW BEGIN
+	DELETE from
+		activity_logs 
+	WHERE 
+		activity_logs.user_id = OLD.like_user_id AND activity_logs.article_id = OLD.article_id AND activity_logs.activity_flag = "article_reaction";
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
+
+-- 트리거 project_instagram.delete_comment_reaction_log 구조 내보내기
+DROP TRIGGER IF EXISTS `delete_comment_reaction_log`;
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE TRIGGER `delete_comment_reaction_log` BEFORE DELETE ON `article_comment_reaction` FOR EACH ROW BEGIN
+	DELETE FROM 
+		activity_logs
+	WHERE 
+		user_id = OLD.like_user_id AND comment_id = OLD.article_comment_id AND activity_flag = "comment_reaction";
 END//
 DELIMITER ;
 SET SQL_MODE=@OLDTMP_SQL_MODE;

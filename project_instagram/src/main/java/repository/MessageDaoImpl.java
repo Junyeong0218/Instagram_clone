@@ -378,7 +378,7 @@ public class MessageDaoImpl implements MessageDao {
 																	+ "create_date desc "
 																+ "limit 1)) "
 						+ "left outer join direct_message_mst dm2 on(dm2.room_id = room_users2.room_id) "
-						+ "left outer join direct_message_read_flags flags on(flags.direct_message_id = dm2.id) "
+						+ "left outer join direct_message_read_flags flags on(flags.direct_message_id = dm2.id and flags.user_id = ?) "
 					+ "where "
 						+ "room_users.user_id = ? "
 					+ "group by "
@@ -388,6 +388,7 @@ public class MessageDaoImpl implements MessageDao {
 						+ "dm.create_date desc;";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, user_id);
+			pstmt.setInt(2, user_id);
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
@@ -477,5 +478,38 @@ public class MessageDaoImpl implements MessageDao {
 		}
 		
 		return like_users;
+	}
+	
+	@Override
+	public List<Integer> selectRoomIdByMessageId(List<Integer> message_ids) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		List<Integer> room_ids = new ArrayList<Integer>();
+		
+		try {
+			conn = db.getConnection();
+			sql  = "select room_id from direct_message_mst where id in(";
+			for(int id : message_ids) {
+				sql += id + ", ";
+			}
+			if(message_ids.size() > 0) sql = sql.substring(0, sql.lastIndexOf(","));
+			sql += ");";
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				room_ids.add(rs.getInt("room_id"));
+			}
+		} catch (SQLDataException e) {
+			System.out.println("no row!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt, rs);
+		}
+		
+		return room_ids;
 	}
 }

@@ -6,11 +6,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import entity.Activity;
 import entity.Article;
 import entity.ArticleComment;
 import entity.ArticleDetail;
 import entity.ArticleMedia;
+import entity.NonReadActivities;
 import repository.ArticleDao;
+import repository.NewActivityDao;
 import request_dto.InsertArticleReqDto;
 import response_dto.ArticleDetailResDto;
 import response_dto.ArticleResDto;
@@ -18,15 +21,25 @@ import response_dto.ArticleResDto;
 public class ArticleServiceImpl implements ArticleService {
 	
 	private ArticleDao articleDao;
+	private NewActivityDao newActivityDao;
 	
 	public ArticleServiceImpl(ArticleDao articleDao) {
 		this.articleDao = articleDao;
+	}
+	
+	public ArticleServiceImpl(ArticleDao articleDao, NewActivityDao newActivityDao) {
+		this.articleDao = articleDao;
+		this.newActivityDao = newActivityDao;
 	}
 	
 	@Override
 	public boolean insertArticle(InsertArticleReqDto insertArticleReqDto) {
 		Article article = insertArticleReqDto.toArticleEntity();
 		int article_id = articleDao.insertArticle(article);
+		List<Activity> taggedUsers = newActivityDao.selectRelatedUserIdsAboutArticle(article_id, Activity.ARTICLE_TAG);
+		if(taggedUsers.size() > 0) {
+			NonReadActivities.addNonReadActivities(taggedUsers);
+		}
 		
 		if(article_id == 0) return false;
 		insertArticleReqDto.setArticle_id(article_id);
@@ -38,6 +51,21 @@ public class ArticleServiceImpl implements ArticleService {
 		if(result > 0) return true;
 		else					 return false;
 	}
+	
+//	private List<String> splitContentUserTag(String contents) {
+//		List<String> userTags = new ArrayList<String>();
+//		String[] split = contents.split("@");
+//		if(split.length > 0) {
+//			for(String string : split) {
+//				System.out.println(string);
+//				if(string == null || string == "" || string.replace(" ", "") == "") continue;
+//				int blankIndex = string.indexOf(" ");
+//				if(blankIndex == -1) continue;
+//				userTags.add(string.substring(0, blankIndex));
+//			}
+//		}
+//		return userTags;
+//	}
 	
 	@SuppressWarnings("unlikely-arg-type")
 	@Override
@@ -90,7 +118,15 @@ public class ArticleServiceImpl implements ArticleService {
 	
 	@Override
 	public int insertLikeArticle(int article_id, int user_id) {
-		return articleDao.insertLikeArtice(article_id, user_id);
+		int result = articleDao.insertLikeArtice(article_id, user_id);
+		if(result == 1) {
+			List<Activity> activities = newActivityDao.selectRelatedUserIdsAboutArticle(article_id, Activity.ARTICLE_REACTION);
+			System.out.println(activities);
+			if(activities.size() > 0) {
+				NonReadActivities.addNonReadActivities(activities);
+			}
+		}
+		return result;
 	}
 	
 	@Override
@@ -100,13 +136,34 @@ public class ArticleServiceImpl implements ArticleService {
 	
 	@Override
 	public int insertComment(int article_id, String contents, int user_id) {
-		System.out.println("service 진입");
-		return articleDao.insertComment(article_id, contents, user_id);
+		int result = articleDao.insertComment(article_id, contents, user_id);
+		if(result == 1) {
+			List<Activity> commentActivities = newActivityDao.selectRelatedUserIdsAboutArticle(article_id, Activity.COMMENT);
+			if(commentActivities.size() > 0) {
+				NonReadActivities.addNonReadActivities(commentActivities);
+			}
+			List<Activity> commentTagActivities = newActivityDao.selectRelatedUserIdsAboutArticle(article_id, Activity.COMMENT_TAG);
+			if(commentTagActivities.size() > 0) {
+				NonReadActivities.addNonReadActivities(commentTagActivities);
+			}
+		}
+		return result;
 	}
 	
 	@Override
 	public int insertRelatedComment(int article_id, String contents, int user_id, int related_comment_id) {
-		return articleDao.insertRelatedComment(article_id, contents, user_id, related_comment_id);
+		int result = articleDao.insertRelatedComment(article_id, contents, user_id, related_comment_id);
+		if(result == 1) {
+			List<Activity> commentActivities = newActivityDao.selectRelatedUserIdsAboutArticle(article_id, Activity.COMMENT);
+			if(commentActivities.size() > 0) {
+				NonReadActivities.addNonReadActivities(commentActivities);
+			}
+			List<Activity> commentTagActivities = newActivityDao.selectRelatedUserIdsAboutArticle(article_id, Activity.COMMENT_TAG);
+			if(commentTagActivities.size() > 0) {
+				NonReadActivities.addNonReadActivities(commentTagActivities);
+			}
+		}
+		return result;
 	}
 	
 	@Override
@@ -181,7 +238,14 @@ public class ArticleServiceImpl implements ArticleService {
 	
 	@Override
 	public int insertCommentLike(int comment_id, int user_id) {
-		return articleDao.insertCommentLike(comment_id, user_id);
+		int result = articleDao.insertCommentLike(comment_id, user_id);
+		if(result == 1) {
+			List<Activity> activities = newActivityDao.selectRelatedUserIdsAboutComment(comment_id, Activity.COMMENT_REACTION);
+			if(activities.size() > 0) {
+				NonReadActivities.addNonReadActivities(activities);
+			}
+		}
+		return result;
 	}
 	
 	@Override

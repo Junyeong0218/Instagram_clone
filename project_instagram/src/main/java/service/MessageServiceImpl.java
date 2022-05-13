@@ -28,12 +28,26 @@ public class MessageServiceImpl implements MessageService {
 	
 	@Override
 	public boolean insertDirectTextMessage(int user_id, int room_id, String contents) {
-		return messageDao.insertDirectTextMessage(user_id, room_id, contents) > 0 ? true : false;
+		int result = messageDao.insertDirectTextMessage(user_id, room_id, contents);
+		if(result == 1) {
+			List<Message> messages = newActivityDao.selectNewMessage(user_id, room_id);
+			if(messages.size() > 0) {
+				NonReadActivities.addNonReadMessages(messages);
+			}
+		}
+		return result > 0 ? true : false;
 	}
 	
 	@Override
 	public boolean insertDirectImageMessage(int user_id, int room_id, String file_name) {
-		return messageDao.insertDirectImageMessage(user_id, room_id, file_name) > 1 ? true : false;
+		int result = messageDao.insertDirectImageMessage(user_id, room_id, file_name);
+		if(result > 1) {
+			List<Message> messages = newActivityDao.selectNewMessage(user_id, room_id);
+			if(messages.size() > 0) {
+				NonReadActivities.addNonReadMessages(messages);
+			}
+		}
+		return result > 1 ? true : false;
 	}
 	
 	@Override
@@ -132,5 +146,18 @@ public class MessageServiceImpl implements MessageService {
 	@Override
 	public List<Integer> toggleMessageReaction(int user_id, int message_id) {
 		return messageDao.toggleMessageReaction(user_id, message_id);
+	}
+	
+	@Override
+	public List<Boolean> checkRoomIdByMessageId(int room_id, List<Integer> message_ids) {
+		List<Integer> room_ids = messageDao.selectRoomIdByMessageId(message_ids);
+		List<Boolean> flags = new ArrayList<Boolean>();
+		
+		for(int each_room_id : room_ids) {
+			if(each_room_id == room_id) flags.add(true);
+			else												  flags.add(false);
+		}
+		
+		return flags;
 	}
 }

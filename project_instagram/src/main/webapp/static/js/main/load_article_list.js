@@ -355,7 +355,8 @@ function toggleLikeArticle(event) {
 			success: function (data) {
 				if(data == "1") {
 					span.classList.remove("pressed");
-					const how_many_likes = event.composedPath()[3].querySelector(".how-many-likes");
+					console.log(event.path[3]);
+					const how_many_likes = event.path[3].querySelector(".how-many-likes");
 					article_data.like_flag = "false";
 					
 					article_data.total_like_count = Number(article_data.total_like_count) - 1;
@@ -378,7 +379,8 @@ function toggleLikeArticle(event) {
 			success: function (data) {
 				if(data == "1") {
 					span.classList.add("pressed");
-					const how_many_likes = event.composedPath()[3].querySelector(".how-many-likes");
+					console.log(event.path[3]);
+					const how_many_likes = event.path[3].querySelector(".how-many-likes");
 					article_data.like_flag = "true";
 					
 					article_data.total_like_count = Number(article_data.total_like_count) + 1;

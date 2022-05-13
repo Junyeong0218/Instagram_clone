@@ -23,6 +23,7 @@ import javax.servlet.http.Part;
 
 import entity.User;
 import repository.MessageDao;
+import repository.NewActivityDao;
 import service.MessageService;
 import service.MessageServiceImpl;
 
@@ -41,7 +42,8 @@ public class InsertDirectImageMessage extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
 		super.init(getServletConfig());
 		ServletContext servletContext = config.getServletContext();
-		messageService = new MessageServiceImpl((MessageDao) servletContext.getAttribute("messageDao"));
+		messageService = new MessageServiceImpl((MessageDao) servletContext.getAttribute("messageDao"),
+																							  (NewActivityDao) servletContext.getAttribute("newActivityDao"));
 	}
 	
 	@Override

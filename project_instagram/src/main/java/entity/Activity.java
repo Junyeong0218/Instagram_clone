@@ -14,6 +14,13 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Activity {
+	
+	public static final String FOLLOW = "follow";
+	public static final String ARTICLE_TAG = "article_tag";
+	public static final String ARTICLE_REACTION = "article_reaction";
+	public static final String COMMENT = "comment";
+	public static final String COMMENT_TAG = "comment_tag";
+	public static final String COMMENT_REACTION = "comment_reaction";
 
 	private int id;
 	//--------------------------- acted_user 

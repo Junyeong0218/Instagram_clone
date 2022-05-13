@@ -18,4 +18,6 @@ public interface MessageService {
 	public List<MessageResDto> selectMessages(int user_id, int room_id);
 	
 	public List<Integer> toggleMessageReaction(int user_id, int message_id);
+	
+	public List<Boolean> checkRoomIdByMessageId(int room_id, List<Integer> message_ids);
 }

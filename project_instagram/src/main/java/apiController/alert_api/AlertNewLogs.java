@@ -22,8 +22,11 @@ public class AlertNewLogs extends HttpServlet {
 		User sessionUser = (User) session.getAttribute("user");
 		
 		response.setContentType("text/plain; charset=UTF-8");
+		System.out.println(NonReadActivities.isChanged(sessionUser.getId()));
 		if(NonReadActivities.isChanged(sessionUser.getId()) != null) {
-			response.getWriter().print(NonReadActivities.getNonReadMessage(sessionUser.getId()));
+			String array = NonReadActivities.getNonReadMessage(sessionUser.getId());
+			System.out.println(array);
+			response.getWriter().print(array);
 		}
 	}
 }

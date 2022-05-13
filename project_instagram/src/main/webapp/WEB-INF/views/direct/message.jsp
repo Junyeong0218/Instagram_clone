@@ -109,9 +109,9 @@
     
     <script src="/static/js/main/searcher_control.js"></script>
     <script src="/static/js/main/profile_menu_control.js"></script>
-    <script src="/static/js/main/activity_menu_control.js"></script>
     <script src="/static/js/main/new_file_picker.js"></script>
     <script src="/static/js/direct/message_control.js"></script>
+    <script src="/static/js/main/activity_menu_control.js"></script>
 </body>
 
 </html>

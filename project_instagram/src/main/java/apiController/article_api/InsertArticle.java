@@ -26,6 +26,7 @@ import com.oreilly.servlet.MultipartRequest;
 
 import entity.User;
 import repository.ArticleDao;
+import repository.NewActivityDao;
 import request_dto.InsertArticleReqDto;
 import service.ArticleService;
 import service.ArticleServiceImpl;
@@ -45,7 +46,8 @@ public class InsertArticle extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
 		super.init(getServletConfig());
 		ServletContext servletContext = config.getServletContext();
-		articleService = new ArticleServiceImpl((ArticleDao) servletContext.getAttribute("articleDao"));
+		articleService = new ArticleServiceImpl((ArticleDao) servletContext.getAttribute("articleDao"),
+																					  (NewActivityDao) servletContext.getAttribute("newActivityDao"));
 	}
 	
 	@Override

@@ -29,7 +29,10 @@ let activated_room_index;
 // EventListeners
 
 window.onload = () => {
-	loadMessageData();
+	origin_room_data = loadMessageData();
+	for(let i = 0; i < origin_room_data.room_summary.length; i++) {
+		addRoomListTag(origin_room_data.room_summary[i]);
+	}
 }
 
 textarea.onkeypress = (event) => {
@@ -58,7 +61,7 @@ image_input.onchange = () => {
 	const file_reader = new FileReader();
 	const file = image_input.files[0];
 	
-	file_reader.onloadend = (event) => {
+	file_reader.onloadend = () => {
 		const formData = new FormData();
 		formData.append("room_id", origin_room_data.room_summary[activated_room_index].room_id);
 		formData.append("file", file);
@@ -71,7 +74,6 @@ image_input.onchange = () => {
 			contentType: false,
 			dataType: "text",
 			success: function (data) {
-				console.log(data);
 				if(data == "true") {
 					selectMessages();
 				} else {
@@ -94,8 +96,6 @@ image_input.onchange = () => {
 
 function insertNewMessage(event) {
 	const room_id = activated_room_data[0].room_id;
-	console.log(event.target.value);
-	
 	$.ajax({
 		type: "post",
 		url: "/direct/insert-direct-text-message",
@@ -103,7 +103,6 @@ function insertNewMessage(event) {
 					  "contents": event.target.value },
 		dataType: "text",
 		success: function (data) {
-			console.log(data);
 			if(data == "true") {
 				selectMessages();
 			} else {
@@ -119,14 +118,14 @@ function insertNewMessage(event) {
 }
 
 function loadMessageData() {
+	let room_data;
 	$.ajax({
 		type: "get",
 		url: "/direct/select-rooms",
+		async: false,
 		dataType: "text",
 		success: function (data) {
-			origin_room_data = JSON.parse(data);
-			console.log(origin_room_data);
-			addRoomListTags(origin_room_data);
+			room_data = JSON.parse(data);
 		},
 		error: function (xhr, status, error) {
 			console.log(xhr);
@@ -134,42 +133,94 @@ function loadMessageData() {
 			console.log(error);
 		}
 	});
+	return room_data;
 }
 
-function addRoomListTags(data) {
-	const session_user_id = data.user_id;
-	const room_summary = data.room_summary;
-	
-	for(let i = 0; i < room_summary.length; i++) {
-		const user_list = room_summary[i].entered_users;
-		const all_message_count = Number(room_summary[i].all_message_count);
-		const read_message_count = Number(room_summary[i].read_message_count);
-		let represent_user_index;
-		let names = "";
-		for(let j = 0; j < user_list.length; j++) {
-			if(user_list[j].user_id != session_user_id) {
-				represent_user_index = j;
-				names += user_list[j].name + ", ";
+function reloadMessageListTags() {
+	const room_data = loadMessageData();
+	if(origin_room_data != null) {
+		const room_summary = origin_room_data.room_summary;
+		if(room_data.room_summary.length != room_summary.length) {
+			const new_rooms = new Array();
+			let is_exist = false;
+			for(let i = 0; i < room_data.room_summary.length; i++) {
+				for(let j = 0; j < room_summary.length; j++) {
+					if(room_data.room_summary[i].room_id == room_summary.room_id) {
+						origin_room_data.room_summary[j] = room_data.room_summary[i];
+						is_exist = true;
+						break;
+					}
+				}
+				if(! is_exist) {
+					new_rooms.push(i);
+				}
+				is_exist = false;
+			}
+			for(let i = 0; i < new_rooms.length; i++) {
+				addRoomListTag(room_data.room_summary[new_rooms[i]]);
+				origin_room_data.room_summary.push(room_data.room_summary[new_rooms[i]]);
 			}
 		}
-		names = names.substring(0, names.lastIndexOf(","));
-		if(user_list.length == 2) names += "님";
-		
-		const message = room_summary[i].message.message_id != 0 ? room_summary[i].message.contents : "";
-		const date = makeRecentMessageDate(room_summary[i].message.create_date);
-		const button = document.createElement("button");
-		button.type = "button";
-		button.className = all_message_count > read_message_count ? "user non-read" : "user";
-		button.innerHTML = `<img src="/static/images/${user_list[represent_user_index].has_profile_image == true ? 'user_profile_image/' + user_list[represent_user_index].file_name : 'basic_profile_image.jpg'}">
-												<div class="user-description">
-													<span class="name">${names}</span>
-													<span class="recent-activity">${message}<span class="date">${date == "" ? "" : " · " + date}</span></span>
-												</div>
-		${all_message_count > read_message_count ? "<div class='non-read-dot'></div>" : ""}`;
-		user_list_tag.appendChild(button);
-		
-		button.onclick = activeRoom;
+		if(activated_room_index != null) {
+			const current_room_id = room_summary[activated_room_index].room_id;
+			for(let i = 0; i < room_summary.length; i++) {
+				if(room_summary[i].room_id == current_room_id) {
+					user_list_tag.children[i].click();
+					break;
+				}
+			}
+		}
+		console.log(room_summary);
+		console.log(room_data.room_summary);
+		for(let i = 0; i < room_summary.length; i++) {
+			for(let j  = 0; j < room_data.room_summary.length; j++) {
+				if(room_summary[i].room_id == room_data.room_summary[j].room_id) {
+					if(room_data.room_summary[j].message.contents == room_summary[i].message.contents) {
+						break;
+					} else {
+						const contents = room_data.room_summary[j].message.contents == "null" ? "" : room_data.room_summary[j].message.contents.length > 14 ? room_data.room_summary[j].message.contents.substring(0, 15) + "..." : room_data.room_summary[j].message.contents;
+						user_list_tag.children[i].querySelector(".recent-activity").innerHTML = contents != "" ? `${contents}<span class="date"> · ${makeRecentMessageDate(room_data.room_summary[j].message.create_date)}</span>` : "";
+						user_list_tag.children[i].classList.add("non-read");
+						origin_room_data.room_summary[i] = room_data.room_summary[j];
+						break;
+					}
+				}
+			}
+		}
 	}
+}
+
+function addRoomListTag(room_data) {
+	const session_user_id = origin_room_data.user_id;
+	
+	const user_list = room_data.entered_users;
+	const all_message_count = Number(room_data.all_message_count);
+	const read_message_count = Number(room_data.read_message_count);
+	let represent_user_index;
+	let names = "";
+	for(let j = 0; j < user_list.length; j++) {
+		if(user_list[j].user_id != session_user_id) {
+			represent_user_index = j;
+			names += user_list[j].name + ", ";
+		}
+	}
+	names = names.substring(0, names.lastIndexOf(","));
+	if(user_list.length == 2) names += "님";
+	
+	const message = room_data.message.message_id == 0 ? "" : room_data.message.contents.length > 14 ? room_data.message.contents.substring(0, 15) + "..." : room_data.message.contents;
+	const date = makeRecentMessageDate(room_data.message.create_date);
+	const button = document.createElement("button");
+	button.type = "button";
+	button.className = all_message_count > read_message_count ? "user non-read" : "user";
+	button.innerHTML = `<img src="/static/images/${user_list[represent_user_index].has_profile_image == true ? 'user_profile_image/' + user_list[represent_user_index].file_name : 'basic_profile_image.jpg'}">
+											<div class="user-description">
+												<span class="name">${names}</span>
+												<span class="recent-activity">${message}<span class="date">${date == "" ? "" : " · " + date}</span></span>
+											</div>
+	${all_message_count > read_message_count ? "<div class='non-read-dot'></div>" : ""}`;
+	user_list_tag.appendChild(button);
+	
+	button.onclick = activeRoom;
 }
 
 function findSelectedRoomIndex() {
@@ -266,7 +317,10 @@ function addMessagesToRoom() {
 		message.ondblclick= toggleMessageLike;
 	}
 	user_list_tag.children[room_index].classList.remove("non-read");
-	user_list_tag.children[room_index].querySelector(".non-read-dot").remove();
+	const dot = user_list_tag.children[room_index].querySelector(".non-read-dot");
+	if(dot != null) {
+		dot.remove();
+	}
 	new_target_modal.classList.remove("active");
 	main_content.classList.remove("active");
 	message_wrapper.classList.add("active");

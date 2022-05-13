@@ -20,7 +20,6 @@ activity_button.onclick = (event) => {
 		dataType: "text",
 		success: function (data) {
 			data = JSON.parse(data);
-			console.log(data);
 			const activity_menu_tag = makeActivityMenuTag(data);
 			activity_menu_wrapper.appendChild(activity_menu_tag);
 			const new_activity_alert = activity.querySelector(".new-activity-alert");
@@ -47,12 +46,20 @@ function selectAlertData() {
 		type: "get",
 		url: "/alert/new-logs",
 		dataType: "text",
+		async: false,
 		success: function (data) {
 			if(data != "") {
 				alert_data = JSON.parse(data);
-				console.log(alert_data);
-				makeDirectMessageAlert();
 				makeActivityAlert();
+				if(location.pathname == "/direct/message") {
+					// only execute if pathname == "/direct/message" with message_control.js
+					reloadMessageListTags();
+					makeDirectMessageAlert();
+				} else {
+					makeDirectMessageAlert();
+				}
+			} else {
+				readMessages();
 			}
 		},
 		error: function(xhr, status, error) {
@@ -61,6 +68,11 @@ function selectAlertData() {
 			console.log(error);
 		}
 	});
+}
+
+function readMessages() {
+	const new_message_alert = direct_message.querySelector(".new-message-alert");
+	if(new_message_alert != null) new_message_alert.remove();
 }
 
 function makeDirectMessageAlert() {
@@ -175,57 +187,3 @@ function makeATags(contents) {
 	tag += contents;
 	return tag;
 }
-
-
-
-
-/*<div class="activity-menu">
-							<div class="activity-arrow"></div>
-							<div class="activities">
-								<span class="this-month">이번 달</span>
-								<div class="row">
-								
-									<div class="profile-image"><img src="/static/images/user_profile_images/hippo2003.ico" alt=""></div>
-									<div class="activity-message">
-										<span class="target-username">hippo2003</span>님이 댓글에서 회원님을 언급했습니다:<span class="message"> <span class="tag">@hippo2003</span> 댓글 -> 답글 -> 답글 test22</span><span class="ago">1주</span>
-									</div>
-									<div class="origin-image"><img src="/static/images/article_medias/1/media01.webp" alt=""></div>
-								
-								</div>
-								<div class="row">
-									<div class="profile-image"><img src="/static/images/user_profile_images/hippo2003.ico" alt=""></div>
-									<div class="activity-message">
-										<span class="target-username">hippo2003</span>님이 댓글에서 회원님을 언급했습니다:<span class="message"> <span class="tag">@hippo2003</span> 댓글 -> 답글 -> 답글 test22</span><span class="ago">1주</span>
-									</div>
-									<div class="origin-image"><img src="/static/images/article_medias/1/media01.webp" alt=""></div>
-								</div>
-								<div class="row">
-									<div class="profile-image"><img src="/static/images/user_profile_images/hippo2003.ico" alt=""></div>
-									<div class="activity-message">
-										<span class="target-username">hippo2003</span>님이 댓글에서 회원님을 언급했습니다:<span class="message"> <span class="tag">@hippo2003</span> 댓글 -> 답글 -> 답글 test22</span><span class="ago">1주</span>
-									</div>
-									<div class="origin-image"><img src="/static/images/article_medias/1/media01.webp" alt=""></div>
-								</div>
-								<div class="row">
-									<div class="profile-image"><img src="/static/images/user_profile_images/hippo2003.ico" alt=""></div>
-									<div class="activity-message">
-										<span class="target-username">hippo2003</span>님이 댓글에서 회원님을 언급했습니다:<span class="message"> <span class="tag">@hippo2003</span> 댓글 -> 답글 -> 답글 test22</span><span class="ago">1주</span>
-									</div>
-									<div class="origin-image"><img src="/static/images/article_medias/1/media01.webp" alt=""></div>
-								</div>
-								<div class="row">
-									<div class="profile-image"><img src="/static/images/user_profile_images/hippo2003.ico" alt=""></div>
-									<div class="activity-message">
-										<span class="target-username">hippo2003</span>님이 댓글에서 회원님을 언급했습니다:<span class="message"> <span class="tag">@hippo2003</span> 댓글 -> 답글 -> 답글 test22</span><span class="ago">1주</span>
-									</div>
-									<div class="origin-image"><img src="/static/images/article_medias/1/media01.webp" alt=""></div>
-								</div>
-								<div class="row">
-									<div class="profile-image"><img src="/static/images/user_profile_images/hippo2003.ico" alt=""></div>
-									<div class="activity-message">
-										<span class="target-username">hippo2003</span>님이 댓글에서 회원님을 언급했습니다:<span class="message"> <span class="tag">@hippo2003</span> 댓글 -> 답글 -> 답글 test22</span><span class="ago">1주</span>
-									</div>
-									<div class="origin-image"><img src="/static/images/article_medias/1/media01.webp" alt=""></div>
-								</div>
-							</div>
-						</div>*/

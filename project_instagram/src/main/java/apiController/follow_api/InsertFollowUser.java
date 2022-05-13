@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import entity.User;
 import repository.FollowDao;
+import repository.NewActivityDao;
 import service.FollowService;
 import service.FollowServiceImpl;
 
@@ -26,7 +27,8 @@ public class InsertFollowUser extends HttpServlet{
 	public void init(ServletConfig config) throws ServletException {
 		super.init(getServletConfig());
 		ServletContext servletContext = config.getServletContext();
-		followService = new FollowServiceImpl((FollowDao) servletContext.getAttribute("followDao"));
+		followService = new FollowServiceImpl((FollowDao) servletContext.getAttribute("followDao"),
+																					(NewActivityDao) servletContext.getAttribute("newActivityDao"));
 	}
 
 	@Override

@@ -35,7 +35,14 @@ public class FollowServiceImpl implements FollowService {
 	
 	@Override
 	public int insertFollowUser(int partner_user_id, int user_id) {
-		return followDao.insertFollowUser(partner_user_id, user_id);
+		int result = followDao.insertFollowUser(partner_user_id, user_id);
+		if(result == 1) {
+			List<Activity> followActivity = newActivityDao.selectFollowActivity(partner_user_id, user_id, Activity.FOLLOW);
+			if(followActivity.size() > 0) {
+				NonReadActivities.addNonReadActivities(followActivity);
+			}
+		}
+		return result;
 	}
 	
 	@Override

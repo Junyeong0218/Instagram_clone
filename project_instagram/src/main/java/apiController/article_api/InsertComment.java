@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import entity.User;
 import repository.ArticleDao;
+import repository.NewActivityDao;
 import service.ArticleService;
 import service.ArticleServiceImpl;
 
@@ -26,7 +27,8 @@ public class InsertComment extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
 		super.init(getServletConfig());
 		ServletContext servletContext = config.getServletContext();
-		articleService = new ArticleServiceImpl((ArticleDao) servletContext.getAttribute("articleDao"));
+		articleService = new ArticleServiceImpl((ArticleDao) servletContext.getAttribute("articleDao"),
+																					  (NewActivityDao) servletContext.getAttribute("newActivityDao"));
 	}
 	
 	@Override
