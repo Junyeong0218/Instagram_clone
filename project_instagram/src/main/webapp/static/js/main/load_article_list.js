@@ -62,7 +62,7 @@ function makeArticleTag(articleData) {
 	const header = document.createElement("div");
 	header.className = "article-header";
 	header.innerHTML = `<div class="writer-image">
-												<img src="/static/images/${articleData.has_profile_image == "true" ? articleData.file_name : 'basic_profile_image.jpg'}" alt="게시글 작성자 프로필 이미지">
+												<img src="${articleData.has_profile_image == "true" ? '../../../../file_upload/user_profile_images/' + articleData.file_name : '/static/images/basic_profile_image.jpg'}" alt="게시글 작성자 프로필 이미지">
 											</div>
 											<div class="writer-info">
 												<a href="/profile?username=${articleData.username}" class="writer-username">${articleData.username}</a>
@@ -86,9 +86,9 @@ function makeArticleTag(articleData) {
 		const li = document.createElement("li");
 		li.className = i == 0 ? "picture current" : "picture";
 		if(mediaList[i].media_type == "image") {
-			li.innerHTML = `<img src="/static/images/article_medias/${articleData.id}/${mediaList[i].media_name}" alt="게시글 이미지">`;
+			li.innerHTML = `<img src="../../../../file_upload/article_medias/${articleData.id}/${mediaList[i].media_name}" alt="게시글 이미지">`;
 		} else if(mediaList[i].media_type == "video") {
-			li.innerHTML = `<video src="/static/images/article_medias/${articleData.id}/${mediaList[i].media_name}" autoplay alt="게시글 동영상">`;
+			li.innerHTML = `<video src="../../../../file_upload/article_medias/${articleData.id}/${mediaList[i].media_name}" autoplay alt="게시글 동영상">`;
 		}
 		ul.appendChild(li);
 		
@@ -608,7 +608,7 @@ function makeRelatedCommentTag(related_comment) {
 	detail_contents.className = "detail-contents";
 	detail_contents.innerHTML = `<div>
 									                            <div class="writer-image">
-									                                <img src="/static/images/${related_comment.has_profile_image == 'true' ? 'user_profile_images/' + related_comment.file_name : 'basic_profile_image.jpg'}" alt="">
+									                                <img src="${related_comment.has_profile_image == 'true' ? '../../../../file_upload/user_profile_images/' + related_comment.file_name : '/static/images/basic_profile_image.jpg'}" alt="">
 									                            </div>
 									                            <div class="detail-texts">
 									                                <div class="detail-content">
@@ -739,12 +739,12 @@ function makeArticleDetail(article_data) {
 	for(let i=0; i< media_list.length; i++) {
 		if(media_list[i].media_type == "image") {
 			const image = document.createElement("img");
-			image.src = `/static/images/article_medias/${article_data.id}/${article_data.media_list[i].media_name}`;
+			image.src = `../../../../file_upload/article_medias/${article_data.id}/${article_data.media_list[i].media_name}`;
 			if(i == 0) image.className = "current";
 			detail_images.appendChild(image);
 		} else if(media_list[i].media_type == "video") {
 			const video = document.createElement("video");
-			video.src = `/static/images/article_medias/${article_data.id}/${article_data.media_name_list[i].media_name}`;
+			video.src = `../../../../file_upload/article_medias/${article_data.id}/${article_data.media_name_list[i].media_name}`;
 			video.autoplay = "autoplay";
 			if(i == 0) video.className = "current";
 			detail_images.appendChild(video);
@@ -781,7 +781,7 @@ function makeArticleDetail(article_data) {
 	const article_header = document.createElement("div");
 	article_header.className = "article-header";
 	article_header.innerHTML = `<div class="writer-image">
-										                        <img src="/static/images/${article_data.has_profile_image == 'true' ? 'user_profile_image/' + article_data.file_name : 'basic_profile_image.jpg'}" alt="게시글 작성자 프로필 이미지">
+										                        <img src="${article_data.has_profile_image == 'true' ? '../../../../file_upload/user_profile_image/' + article_data.file_name : '/static/images/basic_profile_image.jpg'}" alt="게시글 작성자 프로필 이미지">
 										                    </div>
 										                    <div class="writer-info">
 										                        <a href="#" class="writer-username">${article_data.username}</a>
@@ -805,7 +805,7 @@ ${article_data.feature == "null" || article_data.feature == null ? '' : '<span c
 	article.className = "detail-contents";
 	article.innerHTML = `<div>
 					                            <div class="writer-image">
-					                                <img src="/static/images/${article_data.has_profile_image == 'true' ? 'user_profile_images/' + article_data.file_name : 'basic_profile_image.jpg'}" alt="">
+					                                <img src="${article_data.has_profile_image == 'true' ? '../../../../file_upload/user_profile_images/' + article_data.file_name : '/static/images/basic_profile_image.jpg'}" alt="">
 					                            </div>
 					                            <div class="detail-texts">
 					                                <div class="detail-content">
@@ -833,7 +833,7 @@ ${article_data.feature == "null" || article_data.feature == null ? '' : '<span c
 			detail_contents.className = "detail-contents";
 			detail_contents.innerHTML = `<div>
 											                            <div class="writer-image">
-											                                <img src="/static/images/${comment.has_profile_image == 'true' ? 'user_profile_images/' + comment.file_name : 'basic_profile_image.jpg'}" alt="">
+											                                <img src="${comment.has_profile_image == 'true' ? '../../../../file_upload/user_profile_images/' + comment.file_name : '/static/images/basic_profile_image.jpg'}" alt="">
 											                            </div>
 											                            <div class="detail-texts">
 											                                <div class="detail-content">

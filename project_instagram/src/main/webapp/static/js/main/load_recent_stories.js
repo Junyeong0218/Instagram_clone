@@ -29,7 +29,7 @@ function makeStoryTag(userData) {
 	const li = document.createElement("li");
 	li.className = "story";
 	li.innerHTML = `<button type="button" class="story-image" id="${userData.id}">
-						<img src="/static/images/${userData.has_profile_image == "true" ? 'user_profile_images/' + userData.file_name : 'basic_profile_image.jpg'}" alt="스토리 프로필 이미지">
+						<img src="${userData.has_profile_image == "true" ? '../../../../file_upload/user_profile_images/' + userData.file_name : '/static/images/basic_profile_image.jpg'}" alt="스토리 프로필 이미지">
 					</button> <span class="story-username">${userData.username}</span>`;
 	
 	return li;						

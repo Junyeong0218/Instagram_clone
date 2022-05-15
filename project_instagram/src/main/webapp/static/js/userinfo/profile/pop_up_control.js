@@ -203,7 +203,7 @@ function makePeopleTag(user_data) {
 	const row = document.createElement("div");
 	row.className = "row";
 	row.innerHTML = `<div class="user-profile-image">
-											<img src="/static/images/${user_data.has_profile_image == 'true' ? 'user_profile_images/' + user_data.file_name : 'basic_profile_image.jpg'}" alt="">
+											<img src="${user_data.has_profile_image == 'true' ? '../../../../file_upload/user_profile_images/' + user_data.file_name : '/static/images/basic_profile_image.jpg'}" alt="">
 										</div>
 										<div class="summary">
 											<span class="user-summary-username">${user_data.username}</span>

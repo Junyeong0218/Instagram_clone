@@ -60,7 +60,7 @@ public class InsertDirectImageMessage extends HttpServlet {
 			Part part = iterator.next();
 			if(part.getName().equals("file")) {
 				InputStream fis = part.getInputStream();
-				String path = "C:\\Users\\wbfld\\Desktop\\backend 수업_instagram\\project_instagram\\project_instagram\\src\\main\\webapp\\static\\images\\message_images";
+				String path = "C:\\Users\\wbfld\\Desktop\\backend 수업_instagram\\project_instagram\\file_upload\\message_images";
 				fileName = UUID.randomUUID().toString().replace("-", "") + "-" + part.getSubmittedFileName();
 				Path filePath = Paths.get(path + File.separator + fileName);
 				

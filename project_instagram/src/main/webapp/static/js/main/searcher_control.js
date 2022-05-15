@@ -148,7 +148,7 @@ function addSearchResults(search_results) {
 	for(let i = 0; i < search_results.length; i++) {
 		const div = document.createElement("div");
 		div.className = "result";
-		div.innerHTML = `<img src="/static/images/${search_results[i].hash_tag_id == 0 ? search_results[i].has_profile_image == true ? 'user_profile_images/' + search_results[i].file_name : 'basic_profile_image.jpg' : 'search_result_hash_tag.png'}" alt='유저 프로필 이미지'>
+		div.innerHTML = `<img src="${search_results[i].hash_tag_id == 0 ? search_results[i].has_profile_image == true ? '../../../../file_upload/user_profile_images/' + search_results[i].file_name : '/static/images/basic_profile_image.jpg' : '/static/images/search_result_hash_tag.png'}" alt='유저 프로필 이미지'>
 										<div class="name-wrapper"></div>`;
 		const name_wrapper = div.querySelector(".name-wrapper");
 		if(search_results[i].hash_tag_id == 0) {
@@ -181,7 +181,7 @@ function makeResultBox(latest_searches) {
 		for(let i = 0; i < latest_searches.length; i++) {
 			const div = document.createElement("div");
 			div.className = "result";
-			div.innerHTML = `<img src="/static/images/${latest_searches[i].hash_tag_id != 0 ? 'search_result_hash_tag.png' : latest_searches[i].has_profile_image == true ? 'user_profile_images/' + latest_searches[i].file_name : 'basic_profile_image.jpg'}" alt='유저 프로필 이미지'>
+			div.innerHTML = `<img src="${latest_searches[i].hash_tag_id != 0 ? '/static/images/search_result_hash_tag.png' : latest_searches[i].has_profile_image == true ? '../../../../file_upload/user_profile_images/' + latest_searches[i].file_name : '/static/images/basic_profile_image.jpg'}" alt='유저 프로필 이미지'>
 											<div class="name-wrapper"></div>
 											<button class="remove-latest-result" type="button">
 												<img src="/static/images/remove_search_result.png">

@@ -46,7 +46,6 @@ function selectAlertData() {
 		type: "get",
 		url: "/alert/new-logs",
 		dataType: "text",
-		async: false,
 		success: function (data) {
 			if(data != "") {
 				alert_data = JSON.parse(data);

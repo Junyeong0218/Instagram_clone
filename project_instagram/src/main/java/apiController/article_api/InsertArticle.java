@@ -55,7 +55,7 @@ public class InsertArticle extends HttpServlet {
 		HttpSession session = request.getSession();
 		User sessionUser = (User)session.getAttribute("user");
 		
-		String dir = "C:\\Users\\wbfld\\Desktop\\backend 수업_instagram\\project_instagram\\project_instagram\\src\\main\\webapp\\static\\images\\article_medias\\";
+		String dir = "C:\\Users\\wbfld\\Desktop\\backend 수업_instagram\\project_instagram\\file_upload\\article_medias\\";
 		File file = new File(dir + sessionUser.getUsername());
 		if(!file.exists()) file.mkdirs();
 		MultipartRequest multipartRequest = new MultipartRequest(request, dir + sessionUser.getUsername(), 1024 * 1024 * 50, "UTF-8");

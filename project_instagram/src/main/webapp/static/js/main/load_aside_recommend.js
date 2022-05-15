@@ -51,7 +51,7 @@ function makeRecommendUserTag(userData) {
 	const div = document.createElement("div");
 	div.className = "recommend-user";
 	div.innerHTML = `<div class="user-image">
-										<img src="/static/images/${userData.has_profile_image == "true" ? 'user_profile_images/' + userData.file_name : 'basic_profile_image.jpg'}" alt="추천 유저 프로필 이미지">
+										<img src="${userData.has_profile_image == "true" ? '../../../../file_upload/user_profile_images/' + userData.file_name : '/static/images/basic_profile_image.jpg'}" alt="추천 유저 프로필 이미지">
 									</div>
 									<div class="user-description">
 										<span class="recommend-username">${userData.username}</span>
