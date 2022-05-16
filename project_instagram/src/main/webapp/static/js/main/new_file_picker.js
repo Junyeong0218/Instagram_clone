@@ -160,7 +160,7 @@ submit_article_button.onclick = (event) => {
 	console.log(formdata);
 	$.ajax({
 		type: "post",
-		url: "/article/insert-article",
+		url: "/article",
 		data: formdata,
 		encType: "multipart/form-data",
 		processData: false,

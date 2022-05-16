@@ -1,7 +1,6 @@
 package apiController.search_api;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletConfig;
@@ -21,8 +20,8 @@ import response_dto.LatestSearchResDto;
 import service.SearchService;
 import service.SearchServiceImpl;
 
-@WebServlet("/search/latest-searches")
-public class SelectLatestSearches extends HttpServlet {
+@WebServlet("/search/log")
+public class LatestSearchesController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	private SearchService searchService;
@@ -67,6 +66,19 @@ public class SelectLatestSearches extends HttpServlet {
 		
 		response.setContentType("text/plain; charset=UTF-8");
 		response.getWriter().print(sb.toString());
+	}
+	
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession();
+		User sessionUser = (User) session.getAttribute("user");
 		
+		boolean isUser = Boolean.parseBoolean(request.getParameter("isUser"));
+		int id = Integer.parseInt(request.getParameter("id"));
+		
+		boolean result = searchService.insertLatestSearch(isUser, id, sessionUser.getId());
+		
+		response.setContentType("text/plain; charset=UTF-8");
+		response.getWriter().print(result);
 	}
 }

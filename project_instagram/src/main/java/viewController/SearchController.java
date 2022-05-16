@@ -30,7 +30,7 @@ public class SearchController extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String tagName = request.getParameter("tag_name");
+		String tagName = (String) request.getAttribute("tag_name");
 		SearchResultResDto dto = searchService.selectAboutHashTag(tagName);
 		request.setAttribute("tag_name", tagName);
 		request.setAttribute("result", dto);

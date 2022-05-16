@@ -11,6 +11,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 
+import config.FileUploadPathConfig;
 import entity.NonReadActivities;
 import repository.ArticleDao;
 import repository.ArticleDaoImpl;
@@ -33,6 +34,8 @@ public class CharsetEncodingFilter implements Filter {
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		ServletContext servletContext = filterConfig.getServletContext();
+		FileUploadPathConfig.setFile_upload_path(filterConfig.getServletContext().getRealPath("/static/file_upload"));
+		System.out.println(FileUploadPathConfig.getFileUploadPath());
 		UserDao userDao = new UserDaoImpl();
 		ArticleDao articleDao = new ArticleDaoImpl();
 		FollowDao followDao = new FollowDaoImpl();

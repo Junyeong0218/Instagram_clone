@@ -62,7 +62,7 @@ function makeArticleTag(articleData) {
 	const header = document.createElement("div");
 	header.className = "article-header";
 	header.innerHTML = `<div class="writer-image">
-												<img src="${articleData.has_profile_image == "true" ? '../../../../file_upload/user_profile_images/' + articleData.file_name : '/static/images/basic_profile_image.jpg'}" alt="게시글 작성자 프로필 이미지">
+												<img src="${articleData.has_profile_image == "true" ? '/static/file_upload' + articleData.file_name : '/static/images/basic_profile_image.jpg'}" alt="게시글 작성자 프로필 이미지">
 											</div>
 											<div class="writer-info">
 												<a href="/profile?username=${articleData.username}" class="writer-username">${articleData.username}</a>
@@ -86,9 +86,9 @@ function makeArticleTag(articleData) {
 		const li = document.createElement("li");
 		li.className = i == 0 ? "picture current" : "picture";
 		if(mediaList[i].media_type == "image") {
-			li.innerHTML = `<img src="../../../../file_upload/article_medias/${articleData.id}/${mediaList[i].media_name}" alt="게시글 이미지">`;
+			li.innerHTML = `<img src="/static/file_upload${mediaList[i].media_name}" alt="게시글 이미지">`;
 		} else if(mediaList[i].media_type == "video") {
-			li.innerHTML = `<video src="../../../../file_upload/article_medias/${articleData.id}/${mediaList[i].media_name}" autoplay alt="게시글 동영상">`;
+			li.innerHTML = `<video src="/static/file_upload${mediaList[i].media_name}" autoplay alt="게시글 동영상">`;
 		}
 		ul.appendChild(li);
 		
@@ -200,7 +200,7 @@ function makeContentsTags(contents) {
 		} else if(hash_tag_index < user_tag_index || user_tag_index == -1) {
 			let blank_index = contents.indexOf(" ", hash_tag_index) == -1 ? contents.length : contents.indexOf(" ", hash_tag_index);
 			tag += contents.substring(0, hash_tag_index);
-			tag += `<a class="hash-tag-link" href="/search?tag_name=${contents.substring(hash_tag_index + 1, blank_index)}">${contents.substring(hash_tag_index, blank_index)}</a> `;
+			tag += `<a class="hash-tag-link" href="/search/${contents.substring(hash_tag_index + 1, blank_index)}">${contents.substring(hash_tag_index, blank_index)}</a> `;
 			contents = contents.substring(blank_index + 1, contents.length);
 		} else if(user_tag_index < hash_tag_index || hash_tag_index == -1) {
 			let blank_index = contents.indexOf(" ", user_tag_index) == -1 ? contents.length : contents.indexOf(" ", user_tag_index);
@@ -346,14 +346,14 @@ function toggleLikeArticle(event) {
 		article_data = origin_article_list[article_index];
 	}
 	let article_id = article_data.id;
-	if(article_data.like_flag == "true") {
-		$.ajax({
-			type: "post",
-			url: "/article/delete-like-article",
-			data: { "article_id": article_id },
-			dataType: "text",
-			success: function (data) {
-				if(data == "1") {
+	let type = article_data.like_flag == "true" ? "delete" : "post";
+	$.ajax({
+		type: type,
+		url: "/article/" + article_id + "/reaction",
+		dataType: "text",
+		success: function (data) {
+			if(data == "1") {
+				if(article_data.like_flag == "true") {
 					span.classList.remove("pressed");
 					console.log(event.path[3]);
 					const how_many_likes = event.path[3].querySelector(".how-many-likes");
@@ -362,22 +362,7 @@ function toggleLikeArticle(event) {
 					article_data.total_like_count = Number(article_data.total_like_count) - 1;
 					
 					how_many_likes.innerText = `좋아요 ${article_data.total_like_count}개`;
-				}
-			},
-			error: function (xhr, status, error) {
-				console.log(xhr);
-				console.log(status);
-				console.log(error);
-			}
-		});
-	} else {
-		$.ajax({
-			type: "post",
-			url: "/article/insert-like-article",
-			data: { "article_id": article_data.id },
-			dataType: "text",
-			success: function (data) {
-				if(data == "1") {
+				} else {
 					span.classList.add("pressed");
 					console.log(event.path[3]);
 					const how_many_likes = event.path[3].querySelector(".how-many-likes");
@@ -387,14 +372,14 @@ function toggleLikeArticle(event) {
 					
 					how_many_likes.innerText = `좋아요 ${article_data.total_like_count}개`;
 				}
-			},
-			error: function (xhr, status, error) {
-				console.log(xhr);
-				console.log(status);
-				console.log(error);
 			}
-		});
-	}
+		},
+		error: function (xhr, status, error) {
+			console.log(xhr);
+			console.log(status);
+			console.log(error);
+		}
+	});
 }
 
 function getArticleIndex(article) {
@@ -431,44 +416,27 @@ function submitComment(event) {
 	const article_id = article_data.id;
 	let comment = event.target.previousElementSibling.value;
 	
+	const data = { "comment" : comment };
 	if(relate_comment_flag == true) {
-		$.ajax({
-			type: "post",
-			url: "/article/insert-related-comment",
-			data: { "article_id": article_id,
-						  "comment": comment,
-						  "related_comment_id": relate_comment_id },
-			dataType: "text",
-			success: function (data) {
-				if(data == "1") {
-					location.reload();
-				}
-			},
-			error: function (xhr, status, error) {
-				console.log(xhr);
-				console.log(status);
-				console.log(error);
-			}
-		});
-	} else {
-		$.ajax({
-			type: "post",
-			url: "/article/insert-comment",
-			data: { "article_id": article_id, 
-						  "comment": comment },
-			dataType: "text",
-			success: function (data) {
-				if(data == "1") {
-					location.reload();
-				}
-			},
-			error: function (xhr, status, error) {
-				console.log(xhr);
-				console.log(status);
-				console.log(error);
-			} 
-		});
+		data["related_comment_id"] = relate_comment_id;
 	}
+	
+	$.ajax({
+		type: "post",
+		url: "/article/" + article_id + "/comment",
+		data: data,
+		dataType: "text",
+		success: function (data) {
+			if(data == "1") {
+				location.reload();
+			}
+		},
+		error: function (xhr, status, error) {
+			console.log(xhr);
+			console.log(status);
+			console.log(error);
+		}
+	});
 }
 
 function showArticleDetail(event) {
@@ -482,8 +450,7 @@ function showArticleDetail(event) {
 	}
 	$.ajax({
 		type: "get",
-		url: "/article/select-article-detail",
-		data: { "article_id": article_id },
+		url: "/article/" + article_id,
 		dataType: "text",
 		async: "false",
 		success: function (data) {
@@ -550,11 +517,11 @@ function toggleReplies(event) {
 	const show_reply_comment = event.target.parentElement;
 	const index = getCurrentCommentIndex(show_reply_comment.previousElementSibling);
 	const current_comment_data = origin_article_detail_data.article_comment_list[index];
+	const article_id = origin_article_detail_data.id;
 	if(reply == null || typeof reply  == "undefined") {
 		$.ajax({
 			type: "get",
-			url: "/article/select-related-comments",
-			data: { "comment_id": current_comment_data.id },
+			url: "/article/" + article_id + "/comment/" + current_comment_data.id,
 			dataType: "text",
 			success: function (data) {
 				data = JSON.parse(data);
@@ -608,7 +575,7 @@ function makeRelatedCommentTag(related_comment) {
 	detail_contents.className = "detail-contents";
 	detail_contents.innerHTML = `<div>
 									                            <div class="writer-image">
-									                                <img src="${related_comment.has_profile_image == 'true' ? '../../../../file_upload/user_profile_images/' + related_comment.file_name : '/static/images/basic_profile_image.jpg'}" alt="">
+									                                <img src="${related_comment.has_profile_image == 'true' ? '/static/file_upload' + related_comment.file_name : '/static/images/basic_profile_image.jpg'}" alt="">
 									                            </div>
 									                            <div class="detail-texts">
 									                                <div class="detail-content">
@@ -657,6 +624,7 @@ function toggleCommentLike(event, isReply, reply_index, origin_comment_index) {
 		}
 	}
 	
+	const article_id = origin_article_detail_data.id;
 	const comment_list = origin_article_detail_data.article_comment_list;
 	let comment_id = comment_list[index].id;
 	let comment_like_flag = comment_list[index].comment_like_flag;
@@ -666,15 +634,14 @@ function toggleCommentLike(event, isReply, reply_index, origin_comment_index) {
 		comment_like_flag = comment_list[origin_comment_index].reply_list[reply_index].like_flag;
 	}
 	
-	if(comment_like_flag == "true") {
-		// delete
-		$.ajax({
-			type: "post",
-			url: "/article/delete-comment-like",
-			data: { "comment_id": comment_id },
-			dataType: "text",
-			success: function (data) {
-				if(data == "1") {
+	let type = comment_like_flag == "true" ? "delete" : "post";
+	$.ajax({
+		type: type,
+		url: "/article" + article_id + "/comment/" + commet_id + "/reaction",
+		dataType: "text",
+		success: function (data) {
+			if(data == "1") {
+				if(comment_like_flag == "true") {
 					if(isReply == true) {
 						origin_article_detail_data.article_comment_list[origin_comment_index].reply_list[reply_index].like_flag = false;
 					} else {
@@ -682,23 +649,7 @@ function toggleCommentLike(event, isReply, reply_index, origin_comment_index) {
 					}
 					
 					img.src = "/static/images/article_detail_like_comment_button.png";
-				}
-			},
-			error: function (xhr, status, error) {
-				console.log(xhr);
-				console.log(status);
-				console.log(error);
-			}
-		});
-	} else {
-		// insert
-		$.ajax({
-			type: "post",
-			url: "/article/insert-comment-like",
-			data: { "comment_id": comment_id },
-			dataType: "text",
-			success: function (data) {
-				if(data == "1") {
+				} else {
 					if(isReply == true) {
 						origin_article_detail_data.article_comment_list[origin_comment_index].reply_list[reply_index].like_flag = true;			
 					} else {
@@ -707,14 +658,14 @@ function toggleCommentLike(event, isReply, reply_index, origin_comment_index) {
 					
 					img.src = "/static/images/article_detail_like_comment_button_pressed.png";
 				}
-			},
-			error: function (xhr, status, error) {
-				console.log(xhr);
-				console.log(status);
-				console.log(error);
 			}
-		});
-	}
+		},
+		error: function (xhr, status, error) {
+			console.log(xhr);
+			console.log(status);
+			console.log(error);
+		}
+	});
 }
 
 function removeArticleDetail(event) {
@@ -739,12 +690,12 @@ function makeArticleDetail(article_data) {
 	for(let i=0; i< media_list.length; i++) {
 		if(media_list[i].media_type == "image") {
 			const image = document.createElement("img");
-			image.src = `../../../../file_upload/article_medias/${article_data.id}/${article_data.media_list[i].media_name}`;
+			image.src = `/static/file_upload${article_data.media_list[i].media_name}`;
 			if(i == 0) image.className = "current";
 			detail_images.appendChild(image);
 		} else if(media_list[i].media_type == "video") {
 			const video = document.createElement("video");
-			video.src = `../../../../file_upload/article_medias/${article_data.id}/${article_data.media_name_list[i].media_name}`;
+			video.src = `/static/file_upload${article_data.media_name_list[i].media_name}`;
 			video.autoplay = "autoplay";
 			if(i == 0) video.className = "current";
 			detail_images.appendChild(video);
@@ -781,7 +732,7 @@ function makeArticleDetail(article_data) {
 	const article_header = document.createElement("div");
 	article_header.className = "article-header";
 	article_header.innerHTML = `<div class="writer-image">
-										                        <img src="${article_data.has_profile_image == 'true' ? '../../../../file_upload/user_profile_image/' + article_data.file_name : '/static/images/basic_profile_image.jpg'}" alt="게시글 작성자 프로필 이미지">
+										                        <img src="${article_data.has_profile_image == 'true' ? '/static/file_upload' + article_data.file_name : '/static/images/basic_profile_image.jpg'}" alt="게시글 작성자 프로필 이미지">
 										                    </div>
 										                    <div class="writer-info">
 										                        <a href="#" class="writer-username">${article_data.username}</a>
@@ -805,7 +756,7 @@ ${article_data.feature == "null" || article_data.feature == null ? '' : '<span c
 	article.className = "detail-contents";
 	article.innerHTML = `<div>
 					                            <div class="writer-image">
-					                                <img src="${article_data.has_profile_image == 'true' ? '../../../../file_upload/user_profile_images/' + article_data.file_name : '/static/images/basic_profile_image.jpg'}" alt="">
+					                                <img src="${article_data.has_profile_image == 'true' ? '/static/file_upload' + article_data.file_name : '/static/images/basic_profile_image.jpg'}" alt="">
 					                            </div>
 					                            <div class="detail-texts">
 					                                <div class="detail-content">
@@ -833,7 +784,7 @@ ${article_data.feature == "null" || article_data.feature == null ? '' : '<span c
 			detail_contents.className = "detail-contents";
 			detail_contents.innerHTML = `<div>
 											                            <div class="writer-image">
-											                                <img src="${comment.has_profile_image == 'true' ? '../../../../file_upload/user_profile_images/' + comment.file_name : '/static/images/basic_profile_image.jpg'}" alt="">
+											                                <img src="${comment.has_profile_image == 'true' ? '/static/file_upload' + comment.file_name : '/static/images/basic_profile_image.jpg'}" alt="">
 											                            </div>
 											                            <div class="detail-texts">
 											                                <div class="detail-content">

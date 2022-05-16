@@ -3,6 +3,7 @@ package service;
 import java.util.ArrayList;
 import java.util.List;
 
+import config.FileUploadPathConfig;
 import entity.ArticleDetail;
 import entity.HashTag;
 import entity.LatestSearchDetail;
@@ -44,7 +45,11 @@ public class SearchServiceImpl implements SearchService {
 			user.setUsername(detail.getUsername());
 			user.setName(detail.getName());
 			user.setHas_profile_image(detail.isHas_profile_image());
-			user.setFile_name(detail.getFile_name());
+			if(detail.getFile_name() == null) {
+				user.setFile_name(null);
+			} else {
+				user.setFile_name(FileUploadPathConfig.getProfileImagePath(detail.getFile_name()));
+			}
 			user.setUser_follow_flag(detail.isUser_follow_flag());
 			
 			hashTag.setId(detail.getHash_tag_id());
@@ -135,6 +140,12 @@ public class SearchServiceImpl implements SearchService {
 	
 	@Override
 	public List<User> selectUsers(String keyword, int user_id) {
-		return searchDao.selectUsers(keyword, user_id);
+		List<User> users = searchDao.selectUsers(keyword, user_id);
+		for(User user : users) {
+			if(user.getFile_name() != null) {
+				user.setFile_name(FileUploadPathConfig.getProfileImagePath(user.getFile_name()));
+			}
+		}
+		return users;
 	}
 }

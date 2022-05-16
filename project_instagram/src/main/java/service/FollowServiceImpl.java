@@ -3,6 +3,7 @@ package service;
 import java.util.ArrayList;
 import java.util.List;
 
+import config.FileUploadPathConfig;
 import entity.Activity;
 import entity.ArticleMedia;
 import entity.NonReadActivities;
@@ -30,7 +31,13 @@ public class FollowServiceImpl implements FollowService {
 
 	@Override
 	public List<UserRecommendResDto> selectRecommendUsers(int user_id) {
-		return followDao.selectRecommendUsers(user_id);
+		List<UserRecommendResDto> recommendUsers =  followDao.selectRecommendUsers(user_id);
+		for(UserRecommendResDto dto : recommendUsers) {
+			if(dto.getFile_name() != null) {
+				dto.setFile_name(FileUploadPathConfig.getProfileImagePath(dto.getFile_name()));
+			}
+		}
+		return recommendUsers;
 	}
 	
 	@Override
@@ -60,7 +67,19 @@ public class FollowServiceImpl implements FollowService {
 				NonReadActivities.readAllActivities(user_id);
 			}
 		}
-		return followDao.selectActivities(user_id);
+		List<Activity> activities = followDao.selectActivities(user_id);
+		for(Activity activity : activities) {
+			if(activity.getFile_name() != null) {
+				activity.setFile_name(FileUploadPathConfig.getProfileImagePath(activity.getFile_name()));
+			}
+			if(activity.getRelated_user_file_name() != null) {
+				activity.setRelated_user_file_name(FileUploadPathConfig.getProfileImagePath(activity.getRelated_user_file_name()));
+			}
+			if(activity.getArticleDetail().getMedia_name() != null) {
+				activity.getArticleDetail().setMedia_name(FileUploadPathConfig.getArticleImagePath(activity.getArticleDetail().getArticle_id(), activity.getArticleDetail().getMedia_name()));
+			}
+		}
+		return activities;
 	}
 	
 	@Override
@@ -72,7 +91,11 @@ public class FollowServiceImpl implements FollowService {
 		dto.setUsername(userProfile.get(0).getUsername());
 		dto.setName(userProfile.get(0).getName());
 		dto.setHas_profile_image(userProfile.get(0).isHas_profile_image());
-		dto.setFile_name(userProfile.get(0).getFile_name());
+		if(userProfile.get(0).getFile_name() == null) {
+			dto.setFile_name(null);
+		} else {
+			dto.setFile_name(FileUploadPathConfig.getProfileImagePath(userProfile.get(0).getFile_name()));
+		}
 		dto.setFollow_flag(userProfile.get(0).isFollow_flag());
 		dto.setFollower(userProfile.get(0).getFollower());
 		dto.setFollowing(userProfile.get(0).getFollowing());
@@ -90,7 +113,11 @@ public class FollowServiceImpl implements FollowService {
 			
 			ArticleMedia media = new ArticleMedia();
 			media.setMedia_type(profile.getMedia_type());
-			media.setMedia_name(profile.getMedia_name());
+			if(profile.getMedia_name() == null) {
+				media.setMedia_name(null);
+			} else {
+				media.setMedia_name(FileUploadPathConfig.getArticleImagePath(profile.getArticle_id(), profile.getMedia_name()));
+			}
 			article.getMedia_list().add(media);
 			article.setArticle_create_date(profile.getCreate_date());
 			articleList.add(article);

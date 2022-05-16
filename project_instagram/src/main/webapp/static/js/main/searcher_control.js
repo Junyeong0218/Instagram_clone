@@ -12,8 +12,7 @@ searcher_input.oninput = (event) => {
 	if(searcher_input.value == null || searcher_input.value == "" || searcher_input.value.trim() == "") return;
 	$.ajax({
 		type: "get",
-		url: "/search/select-keyword",
-		data: { "keyword": searcher_input.value },
+		url: "/search/keyword/" + searcher_input.value,
 		dataType: "text",
 		success: function (data) {
 			data = JSON.parse(data);
@@ -43,7 +42,7 @@ searcher_input.oninput = (event) => {
 					console.log(insertData);
 					$.ajax({
 						type: "post",
-						url: "/search/insert-latest-search",
+						url: "/search/log",
 						data: insertData,
 						dataType: "text",
 						success: function (data) {
@@ -78,7 +77,7 @@ function focusSearchInput(event) {
         const eraseButton = makeEraseKeywordButton();
         $.ajax({
 			type: "get",
-			url: "/search/latest-searches",
+			url: "/search/log",
 			dataType: "text",
 			success: function (data) {
 				data = JSON.parse(data);
@@ -148,14 +147,14 @@ function addSearchResults(search_results) {
 	for(let i = 0; i < search_results.length; i++) {
 		const div = document.createElement("div");
 		div.className = "result";
-		div.innerHTML = `<img src="${search_results[i].hash_tag_id == 0 ? search_results[i].has_profile_image == true ? '../../../../file_upload/user_profile_images/' + search_results[i].file_name : '/static/images/basic_profile_image.jpg' : '/static/images/search_result_hash_tag.png'}" alt='유저 프로필 이미지'>
+		div.innerHTML = `<img src="${search_results[i].hash_tag_id == 0 ? search_results[i].has_profile_image == true ? '/static/file_upload/user_profile_images/' + search_results[i].file_name : '/static/images/basic_profile_image.jpg' : '/static/images/search_result_hash_tag.png'}" alt='유저 프로필 이미지'>
 										<div class="name-wrapper"></div>`;
 		const name_wrapper = div.querySelector(".name-wrapper");
 		if(search_results[i].hash_tag_id == 0) {
 			name_wrapper.innerHTML = `<a class="username" href="/profile?username=${search_results[i].username}">${search_results[i].username}</a>
 																    <span class="follow-info">${search_results[i].user_follow_flag == true ? search_results[i].name + ' • 팔로잉' : search_results[i].name}</span>`;
 		} else {
-			name_wrapper.innerHTML = `<a class="tag-name" href="/search?tag_name=${search_results[i].tag_name}">${search_results[i].tag_name}</a>
+			name_wrapper.innerHTML = `<a class="tag-name" href="/search/${search_results[i].tag_name}">${search_results[i].tag_name}</a>
 																    <span class="follow-info">${search_results[i].hash_tag_follow_flag == true ? '팔로잉' : ''}</span>`;
 		}
 		results.appendChild(div);
@@ -181,7 +180,7 @@ function makeResultBox(latest_searches) {
 		for(let i = 0; i < latest_searches.length; i++) {
 			const div = document.createElement("div");
 			div.className = "result";
-			div.innerHTML = `<img src="${latest_searches[i].hash_tag_id != 0 ? '/static/images/search_result_hash_tag.png' : latest_searches[i].has_profile_image == true ? '../../../../file_upload/user_profile_images/' + latest_searches[i].file_name : '/static/images/basic_profile_image.jpg'}" alt='유저 프로필 이미지'>
+			div.innerHTML = `<img src="${latest_searches[i].hash_tag_id != 0 ? '/static/images/search_result_hash_tag.png' : latest_searches[i].has_profile_image == true ? '/static/file_upload/user_profile_images/' + latest_searches[i].file_name : '/static/images/basic_profile_image.jpg'}" alt='유저 프로필 이미지'>
 											<div class="name-wrapper"></div>
 											<button class="remove-latest-result" type="button">
 												<img src="/static/images/remove_search_result.png">
@@ -191,7 +190,7 @@ function makeResultBox(latest_searches) {
 				name_wrapper.innerHTML = `<a class="username" href="/profile?username=${latest_searches[i].username}">${latest_searches[i].username}</a>
 																	    <span class="follow-info">${latest_searches[i].user_follow_flag == true ? latest_searches[i].name + ' • 팔로잉' : latest_searches[i].name}</span>`;
 			} else {
-				name_wrapper.innerHTML = `<a class="tag-name" href="/search?tag_name=${latest_searches[i].tag_name}">#${latest_searches[i].tag_name}</a>
+				name_wrapper.innerHTML = `<a class="tag-name" href="/search/${latest_searches[i].tag_name}">#${latest_searches[i].tag_name}</a>
 																	    <span class="follow-info">${latest_searches[i].hash_tag_follow_flag == true ? '팔로잉' : ''}</span>`;
 			}
 			results.appendChild(div);

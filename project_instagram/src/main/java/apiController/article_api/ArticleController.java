@@ -1,44 +1,56 @@
 package apiController.article_api;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import config.FileUploadPathConfig;
 import entity.ArticleComment;
 import entity.ArticleMedia;
 import entity.User;
 import repository.ArticleDao;
+import repository.NewActivityDao;
+import request_dto.InsertArticleReqDto;
 import response_dto.ArticleDetailResDto;
 import service.ArticleService;
 import service.ArticleServiceImpl;
+import service.FileService;
 
-@WebServlet("/article/select-article-detail")
-public class SelectArticleDetail extends HttpServlet {
+@WebServlet("/article")
+@MultipartConfig(
+		fileSizeThreshold = 1024 * 1024,
+		maxFileSize = 1024 * 1024 * 10,
+		maxRequestSize = 1024 * 1024 * 50
+	)
+public class ArticleController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
+
 	private ArticleService articleService;
 	
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(getServletConfig());
 		ServletContext servletContext = config.getServletContext();
-		articleService = new ArticleServiceImpl((ArticleDao) servletContext.getAttribute("articleDao"));
+		articleService = new ArticleServiceImpl((ArticleDao) servletContext.getAttribute("articleDao"),
+																					  (NewActivityDao) servletContext.getAttribute("newActivityDao"));
 	}
-
+	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		User sessionUser = (User) session.getAttribute("user");
 		
-		int article_id = Integer.parseInt(request.getParameter("article_id"));
+		int article_id = (Integer) request.getAttribute("article_id");
 		
 		ArticleDetailResDto articleDetailResDto = articleService.selectArticleDetail(article_id, sessionUser.getId());
 		List<ArticleMedia> media_list = articleDetailResDto.getMedia_list();
@@ -83,22 +95,44 @@ public class SelectArticleDetail extends HttpServlet {
 		response.setContentType("text/plain; charset=UTF-8");
 		response.getWriter().print(sb.toString());
 	}
+	
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession();
+		User sessionUser = (User)session.getAttribute("user");
+		
+		String dir = FileUploadPathConfig.getFileUploadPath() + "/article_medias/";
+		List<String> fileNames = FileService.uploadArticleMedias(request.getParts(), dir, sessionUser.getUsername());
+		
+		InsertArticleReqDto dto = new InsertArticleReqDto();
+		dto.setUser_id(sessionUser.getId());
+		dto.setFeature(request.getParameter("feature"));
+		dto.setContents(request.getParameter("contents"));
+		
+		String[] types = request.getParameterValues("type");
+		dto.setMedia_type_list(Arrays.asList(types));
+		
+		dto.setMedia_name_list(fileNames);
+		
+		boolean result = articleService.insertArticle(dto);
+		
+		if(result) {
+			FileService.moveFileToNewFolder(fileNames, dir, sessionUser.getUsername(), dto.getArticle_id());
+		}
+		
+		response.setContentType("text/plain; charset=UTF-8");
+		response.getWriter().print(result);
+	}
+	
+	@Override
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// 게시글 수정
+		
+	}
+	
+	@Override
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// 게시글 삭제
+		
+	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

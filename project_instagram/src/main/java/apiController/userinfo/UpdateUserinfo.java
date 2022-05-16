@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 
 import com.oreilly.servlet.MultipartRequest;
 
+import config.FileUploadPathConfig;
 import entity.User;
 import repository.UserDao;
 import service.AuthService;
@@ -47,7 +48,7 @@ public class UpdateUserinfo extends HttpServlet{
 		HttpSession session = request.getSession();
 		User sessionUser = (User)session.getAttribute("user");
 		
-		String dir = "C:\\Users\\wbfld\\Desktop\\backend 수업_instagram\\project_instagram\\file_upload\\user_profile_images";
+		String dir = FileUploadPathConfig.getFileUploadPath() + "/user_profile_images/";
 		MultipartRequest multipartRequest = new MultipartRequest(request, dir, 1024 * 1024 * 3, "UTF-8");
 		Enumeration params = multipartRequest.getParameterNames();
 		

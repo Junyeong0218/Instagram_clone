@@ -285,7 +285,7 @@ function addMessagesToRoom() {
 			}
 			line.className =  "line receive";
 			line.innerHTML = `<div class="user-profile-image">
-											 	 <img src="/static/images/${sended_user_info.has_profile_image == "true" ? 'user_profile_images/' + sended_user_info.file_name : 'basic_profile_image.jpg'}">
+											 	 <img src="${sended_user_info.has_profile_image == "true" ? '/static/file_upload' + sended_user_info.file_name : '/static/images/basic_profile_image.jpg'}">
 											 </div>`;
 		} else {
 			line.className = "line send";
@@ -293,7 +293,7 @@ function addMessagesToRoom() {
 		const message = document.createElement("div");
 		if(message_info.is_image == "true") {
 			message.className = "image";
-			message.innerHTML = `<img src="/static/images/message_images/${message_info.file_name}">`;
+			message.innerHTML = `<img src="/static/file_upload${message_info.file_name}">`;
 		} else {
 			message.className = "message";
 			message.innerText = message_info.contents;
@@ -588,8 +588,7 @@ function selectUser(event) {
 	if(keyword == null || keyword == "" || typeof keyword == "undefined") return;
 	$.ajax({
 		type: "get",
-		url: "/search/select-users",
-		data: { "keyword": keyword },
+		url: "/search/users/" + keyword,
 		dataType: "text",
 		async: false,
 		success: function (data) {

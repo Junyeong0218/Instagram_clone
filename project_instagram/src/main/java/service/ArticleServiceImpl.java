@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import config.FileUploadPathConfig;
 import entity.Activity;
 import entity.Article;
 import entity.ArticleComment;
@@ -52,21 +53,6 @@ public class ArticleServiceImpl implements ArticleService {
 		else					 return false;
 	}
 	
-//	private List<String> splitContentUserTag(String contents) {
-//		List<String> userTags = new ArrayList<String>();
-//		String[] split = contents.split("@");
-//		if(split.length > 0) {
-//			for(String string : split) {
-//				System.out.println(string);
-//				if(string == null || string == "" || string.replace(" ", "") == "") continue;
-//				int blankIndex = string.indexOf(" ");
-//				if(blankIndex == -1) continue;
-//				userTags.add(string.substring(0, blankIndex));
-//			}
-//		}
-//		return userTags;
-//	}
-	
 	@SuppressWarnings("unlikely-arg-type")
 	@Override
 	public List<ArticleResDto> selectArticles(int user_id) {
@@ -85,7 +71,11 @@ public class ArticleServiceImpl implements ArticleService {
 				dto.setUser_id(detail.getArticle_user_id());
 				dto.setUsername(detail.getArticle_username());
 				dto.setHas_profile_image(detail.isArticle_user_has_profile_image());
-				dto.setFile_name(detail.getArticle_user_file_name());
+				if(detail.getArticle_user_file_name() == null) {
+					dto.setFile_name(null);
+				} else {
+					dto.setFile_name(FileUploadPathConfig.getProfileImagePath(detail.getArticle_user_file_name()));
+				}
 				dto.setFeature(detail.getFeature());
 				dto.setContents(detail.getContents());
 				dto.setStored(detail.is_stored());
@@ -95,7 +85,7 @@ public class ArticleServiceImpl implements ArticleService {
 				dto.setMedia_list(new ArrayList<ArticleMedia>());
 				ArticleMedia media = new ArticleMedia();
 				media.setMedia_type(detail.getMedia_type());
-				media.setMedia_name(detail.getMedia_name());
+				media.setMedia_name(FileUploadPathConfig.getArticleImagePath(detail.getArticle_id(), detail.getMedia_name()));
 				dto.getMedia_list().add(media);
 				
 				dto.setTotal_like_count(detail.getLike_user_count());
@@ -107,7 +97,11 @@ public class ArticleServiceImpl implements ArticleService {
 				if(!mediaNameList.contains(detail.getMedia_name())) {
 					ArticleMedia media = new ArticleMedia();
 					media.setMedia_type(detail.getMedia_type());
-					media.setMedia_name(detail.getMedia_name());
+					if(detail.getMedia_name() == null) {
+						media.setMedia_name(null);
+					} else {
+						media.setMedia_name(FileUploadPathConfig.getArticleImagePath(detail.getArticle_id(), detail.getMedia_name()));
+					}
 					dto.getMedia_list().add(media);
 				}
 			}
@@ -184,7 +178,11 @@ public class ArticleServiceImpl implements ArticleService {
 				articleDetailResDto.setUser_id(detail.getArticle_user_id());
 				articleDetailResDto.setUsername(detail.getArticle_username());
 				articleDetailResDto.setHas_profile_image(detail.isArticle_user_has_profile_image());
-				articleDetailResDto.setFile_name(detail.getArticle_user_file_name());
+				if(detail.getArticle_user_file_name() == null) {
+					articleDetailResDto.setFile_name(null);
+				} else {
+					articleDetailResDto.setFile_name(FileUploadPathConfig.getProfileImagePath(detail.getArticle_user_file_name()));
+				}
 				articleDetailResDto.setFeature(detail.getFeature());
 				articleDetailResDto.setContents(detail.getContents());
 				articleDetailResDto.setArticle_create_date(detail.getCreate_date());
@@ -198,7 +196,11 @@ public class ArticleServiceImpl implements ArticleService {
 			ArticleMedia media = new ArticleMedia();
 			media.setArticle_id(detail.getArticle_id());
 			media.setMedia_type(detail.getMedia_type());
-			media.setMedia_name(detail.getMedia_name());
+			if(detail.getMedia_name() == null) {
+				media.setMedia_name(null);
+			} else {
+				media.setMedia_name(FileUploadPathConfig.getArticleImagePath(detail.getArticle_id(), detail.getMedia_name()));
+			}
 			media_list.add(media);
 			
 			List<ArticleComment> article_comment_list = articleDetailResDto.getArticle_comment_list();
@@ -211,7 +213,11 @@ public class ArticleServiceImpl implements ArticleService {
 				comment.setUser_id(detail.getCommented_user_id());
 				comment.setUsername(detail.getCommented_username());
 				comment.setHas_profile_image(detail.isCommented_user_has_profile_image());
-				comment.setFile_name(detail.getCommented_user_file_name());
+				if(detail.getCommented_user_file_name() == null) {
+					comment.setFile_name(null);
+				} else {
+					comment.setFile_name(FileUploadPathConfig.getProfileImagePath(detail.getCommented_user_file_name()));
+				}
 				comment.setContents(detail.getComment_contents());
 				comment.setCreate_date(detail.getComment_create_date());
 				comment.setRelated_comment_count(detail.getRelated_comment_count());
@@ -227,8 +233,11 @@ public class ArticleServiceImpl implements ArticleService {
 		media_list.sort(new Comparator<ArticleMedia>() {
 			@Override
 			public int compare(ArticleMedia o1, ArticleMedia o2) {
-				int prevIndex = Integer.parseInt(o1.getMedia_name().substring(5, 7));
-				int nextIndex = Integer.parseInt(o2.getMedia_name().substring(5,  7));
+				int prevIndex = Integer.parseInt(o1.getMedia_name().substring(o1.getMedia_name().lastIndexOf("/media") + 6, o1.getMedia_name().lastIndexOf("/media") + 8));
+				int nextIndex = Integer.parseInt(o2.getMedia_name().substring(o2.getMedia_name().lastIndexOf("/media") + 6, o2.getMedia_name().lastIndexOf("/media") + 8));
+//				int nextIndex = Integer.parseInt(o2.getMedia_name().substring(5, 7));
+//				int prevIndex = Integer.parseInt(o1.getMedia_name().substring(5, 7));
+//				int nextIndex = Integer.parseInt(o2.getMedia_name().substring(5, 7));
 				return prevIndex - nextIndex;
 			}
 		});

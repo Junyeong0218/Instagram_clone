@@ -17,10 +17,10 @@ import repository.NewActivityDao;
 import service.ArticleService;
 import service.ArticleServiceImpl;
 
-@WebServlet("/article/insert-related-comment")
-public class InsertRelatedComment extends HttpServlet {
+@WebServlet("/article/comment/reaction")
+public class CommentReactionController extends HttpServlet{
 	private static final long serialVersionUID = 1L;
-
+	
 	private ArticleService articleService;
 	
 	@Override
@@ -30,17 +30,28 @@ public class InsertRelatedComment extends HttpServlet {
 		articleService = new ArticleServiceImpl((ArticleDao) servletContext.getAttribute("articleDao"),
 																					  (NewActivityDao) servletContext.getAttribute("newActivityDao"));
 	}
-	
+
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		User sessionUser = (User) session.getAttribute("user");
-
-		int article_id = Integer.parseInt(request.getParameter("article_id"));
-		String contents = request.getParameter("comment");
-		int related_comment_id = Integer.parseInt(request.getParameter("related_comment_id"));
 		
-		int result = articleService.insertRelatedComment(article_id, contents, sessionUser.getId(), related_comment_id);
+		int comment_id = Integer.parseInt(request.getParameter("comment_id"));
+		
+		int result = articleService.insertCommentLike(comment_id, sessionUser.getId());
+		
+		response.setContentType("text/plain; charset=UTF-8");
+		response.getWriter().print(result);
+	}
+	
+	@Override
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession();
+		User sessionUser = (User) session.getAttribute("user");
+		
+		int comment_id = Integer.parseInt(request.getParameter("comment_id"));
+		
+		int result = articleService.deleteCommentLike(comment_id, sessionUser.getId());
 		
 		response.setContentType("text/plain; charset=UTF-8");
 		response.getWriter().print(result);

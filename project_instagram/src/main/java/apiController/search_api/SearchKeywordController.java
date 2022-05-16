@@ -12,13 +12,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import entity.SearchKeyword;
 import entity.User;
 import repository.SearchDao;
 import service.SearchService;
 import service.SearchServiceImpl;
 
-@WebServlet("/search/select-users")
-public class SelectUsers extends HttpServlet {
+@WebServlet("/search/keyword")
+public class SearchKeywordController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private SearchService searchService;
@@ -35,20 +36,24 @@ public class SelectUsers extends HttpServlet {
 		HttpSession session = request.getSession();
 		User sessionUser = (User) session.getAttribute("user");
 		
-		String keyword = request.getParameter("keyword");
+		String keyword = (String) request.getAttribute("keyword");
 		
-		List<User> users = searchService.selectUsers(keyword, sessionUser.getId());
+		List<SearchKeyword> searchResult = searchService.selectKeyword(keyword, sessionUser.getId());
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append("[ ");
-		for(User user: users) {
-			sb.append(" { \"id\": \"" + user.getId() + "\", " + 
-									"\"username\": \"" + user.getUsername() + "\", " + 
-									"\"name\": \"" + user.getName() + "\", " + 
-									"\"has_profile_image\": \"" + user.isHas_profile_image() + "\", " + 
-									"\"file_name\": \"" + user.getFile_name() + "\" }, ");
+		sb.append(" [ ");
+		for(SearchKeyword result : searchResult) {
+			sb.append(" { \"user_id\": \"" + result.getSearched_user_id() +  "\", " + 
+									"\"username\" : \"" + result.getUsername() + "\", " + 
+									"\"name\" : \"" + result.getName() + "\", " + 
+									"\"has_profile_image\" : \"" + result.isUser_follow_flag() + "\", " + 
+									"\"file_name\" : \"" + result.getFile_name() + "\", " + 
+									"\"user_follow_flag\" : \"" + result.isUser_follow_flag() + "\", " + 
+									"\"hash_tag_id\" : \"" + result.getHash_tag_id() + "\", " + 
+									"\"tag_name\" : \"" + result.getTag_name() + "\", " + 
+									"\"hash_tag_follow_flag\" : \"" + result.isHash_tag_follow_flag() + "\" }, ");
 		}
-		if(users.size() > 0) sb.replace(sb.lastIndexOf(","), sb.length(), "");
+		if(searchResult.size() > 0) sb.replace(sb.lastIndexOf(","), sb.length(), "");
 		sb.append(" ]");
 		
 		response.setContentType("text/plain; charset=UTF-8");

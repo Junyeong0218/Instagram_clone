@@ -3,6 +3,7 @@ package service;
 import java.util.ArrayList;
 import java.util.List;
 
+import config.FileUploadPathConfig;
 import entity.Message;
 import entity.NonReadActivities;
 import entity.RoomInfo;
@@ -128,7 +129,7 @@ public class MessageServiceImpl implements MessageService {
 				dto.setContents(message.getContents());
 				dto.set_image(message.is_image());
 				dto.setImage_id(message.getImage_id());
-				dto.setFile_name(message.getFile_name());
+				dto.setFile_name(FileUploadPathConfig.getMessageImagePath(message.getFile_name()));
 				dto.setCreate_date(message.getCreate_date());
 				List<Integer> like_users = new ArrayList<Integer>();
 				int like_user_id = message.getLike_user_id();

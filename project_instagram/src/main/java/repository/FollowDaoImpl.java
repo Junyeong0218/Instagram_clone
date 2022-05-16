@@ -62,7 +62,7 @@ public class FollowDaoImpl implements FollowDao {
 				resDto.setUsername(rs.getString("username"));
 				resDto.setName(rs.getString("name"));
 				resDto.setHas_profile_image(rs.getInt("has_profile_image") == 1 ? true : false);
-				resDto.setFile_name(rs.getString("file_name"));
+				resDto.setFile_name(rs.getString("file_name") == "null" || rs.getString("file_name") == null ? null : rs.getString("file_name"));
 				
 				userList.add(resDto);
 			}
@@ -286,7 +286,7 @@ public class FollowDaoImpl implements FollowDao {
 				profile.setUsername(rs.getString("username"));
 				profile.setName(rs.getString("name"));
 				profile.setHas_profile_image(rs.getInt("has_profile_image") == 0 ? false : true);
-				profile.setFile_name(rs.getString("file_name"));
+				profile.setFile_name(rs.getString("file_name") == "null" || rs.getString("file_name") == null ? null : rs.getString("file_name"));
 				profile.setMedia_type(rs.getString("media_type"));
 				profile.setMedia_name(rs.getString("media_name"));
 				profile.set_stored(rs.getBoolean("is_stored"));

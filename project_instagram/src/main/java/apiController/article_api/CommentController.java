@@ -15,11 +15,12 @@ import javax.servlet.http.HttpSession;
 import entity.ArticleComment;
 import entity.User;
 import repository.ArticleDao;
+import repository.NewActivityDao;
 import service.ArticleService;
 import service.ArticleServiceImpl;
 
-@WebServlet("/article/select-related-comments")
-public class SelectRelatedComments extends HttpServlet {
+@WebServlet("/article/comment")
+public class CommentController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private ArticleService articleService;
@@ -28,7 +29,8 @@ public class SelectRelatedComments extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
 		super.init(getServletConfig());
 		ServletContext servletContext = config.getServletContext();
-		articleService = new ArticleServiceImpl((ArticleDao) servletContext.getAttribute("articleDao"));
+		articleService = new ArticleServiceImpl((ArticleDao) servletContext.getAttribute("articleDao"),
+																					  (NewActivityDao) servletContext.getAttribute("newActivityDao"));
 	}
 	
 	@Override
@@ -36,7 +38,8 @@ public class SelectRelatedComments extends HttpServlet {
 		HttpSession session = request.getSession();
 		User sessionUser = (User) session.getAttribute("user");
 		
-		int comment_id = Integer.parseInt(request.getParameter("comment_id"));
+		int comment_id = (Integer) request.getAttribute("comment_id");
+		System.out.println("/article/integer/comment/integer get : " + comment_id);
 		
 		List<ArticleComment> comments = articleService.selectRelatedComments(comment_id, sessionUser.getId());
 		StringBuilder sb = new StringBuilder();
@@ -58,5 +61,41 @@ public class SelectRelatedComments extends HttpServlet {
 		
 		response.setContentType("text/plain; charset=UTF-8");
 		response.getWriter().print(sb.toString());
+	}
+	
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession();
+		User sessionUser = (User) session.getAttribute("user");
+		
+		int article_id = (Integer) request.getAttribute("article_id");
+		String contents = request.getParameter("comment");
+		String _related_comment_id = request.getParameter("related_comment_id");
+		
+		System.out.println("article_id : " + article_id);
+		System.out.println("contents : " + contents);
+		System.out.println("_related_comment_id : " + _related_comment_id);
+		
+		int result = 0;
+		
+		if(_related_comment_id == null) {
+			result = articleService.insertComment(article_id, contents, sessionUser.getId());
+		} else {
+			int related_comment_id = Integer.parseInt(_related_comment_id);
+			result = articleService.insertRelatedComment(article_id, contents, sessionUser.getId(), related_comment_id);
+		}
+		
+		response.setContentType("text/plain; charset=UTF-8");
+		response.getWriter().print(result);
+	}
+	
+	@Override
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+	}
+	
+	@Override
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 	}
 }

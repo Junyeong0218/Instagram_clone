@@ -2,6 +2,7 @@ package service;
 
 import org.mindrot.jbcrypt.BCrypt;
 
+import config.FileUploadPathConfig;
 import entity.User;
 import repository.UserDao;
 import request_dto.CheckInputReqDto;
@@ -33,7 +34,11 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public User getUser(String username) {
-		return userDao.getUser(username);
+		User user = userDao.getUser(username);
+		if(user.getFile_name() != null) {
+			user.setFile_name(FileUploadPathConfig.getProfileImagePath(user.getFile_name()));
+		}
+		return user;
 	}
 
 	@Override
@@ -41,6 +46,9 @@ public class AuthServiceImpl implements AuthService {
 		String db_password = userDao.selectPassword(user.getUsername());
 		if(BCrypt.checkpw(user.getPassword(), db_password)) {
 			User userDetail = userDao.getUser(user.getUsername());
+			if(userDetail.getFile_name() != null) {
+				userDetail.setFile_name(FileUploadPathConfig.getProfileImagePath(userDetail.getFile_name()));
+			}
 			return userDetail;
 		}
 		return null;
