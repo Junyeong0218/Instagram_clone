@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.Part;
 
@@ -19,6 +20,43 @@ public class FileService {
 	private static InputStream fis;
 	private static Path path;
 	private static File file;
+	
+	public static boolean hasFile(Collection<Part> collection) {
+		Iterator<Part> iterator = collection.iterator();
+		boolean isExist = false;
+		while(iterator.hasNext()) {
+			Part part = iterator.next();
+			if(part.getName().equals("file")) {
+				isExist = true;
+				break;
+			}
+		}
+		return isExist;
+	}
+	
+	public static String uploadImageMessage(Collection<Part> collection, String dir) throws IOException {
+		file = new File(dir);
+		if(!file.exists()) file.mkdirs();
+		String fileName = null;
+		
+		Iterator<Part> iterator = collection.iterator();
+		while(iterator.hasNext()) {
+			Part part = iterator.next();
+			if(part.getName().equals("file")) {
+				InputStream fis = part.getInputStream();
+				fileName = UUID.randomUUID().toString().replace("-", "") + "-" + part.getSubmittedFileName();
+				Path filePath = Paths.get(dir + fileName);
+				
+				try {
+					Files.write(filePath, fis.readAllBytes());
+				} catch (Exception e) {
+					System.out.println("file upload failed!");
+					return null;
+				}
+			}
+		}
+		return fileName;
+	}
 	
 	public static List<String> uploadArticleMedias(Collection<Part> collection, String dir, String username) throws IOException {
 		List<String> fileNameList = new ArrayList<String>();

@@ -67,7 +67,7 @@
 				</div>
 			</ul>
 			<div class="userinfo-wrapper">
-				<form class="userinfo-form" action="/update-userinfo" method="post" enctype="multipart/form-data">
+				<form class="userinfo-form" enctype="multipart/form-data">
 					<div class="userinfo-profile-image">
 						
 						<c:if test="${sessionScope.user.has_profile_image == true}">

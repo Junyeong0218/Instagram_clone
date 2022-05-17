@@ -5,7 +5,7 @@ public class Test {
 	public static void main(String[] args) {
 		String uri = "/article";
 		uri = uri.replace("/article", "");
-		System.out.println(uri);
+		System.out.println("uri : " + uri);
 		
 		String[] words = uri.split("/");
 		System.out.println(words.length);
