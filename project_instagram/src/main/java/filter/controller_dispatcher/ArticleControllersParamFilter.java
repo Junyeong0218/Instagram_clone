@@ -30,7 +30,7 @@ public class ArticleControllersParamFilter implements Filter {
 		String uri = req.getRequestURI();
 		System.out.println("uri : " + uri);
 		
-		if(uri.equals(ARTICLE) || uri.equals(ARTICLE_REACTION) || uri.equals(ARTICLE_COMMENT)) {
+		if(uri.equals(ARTICLE) || uri.equals(ARTICLE_REACTION) || uri.equals(ARTICLE_COMMENT) || uri.equals(ARTICLE_LIST)) {
 			chain.doFilter(request, response);
 			return;
 		}
@@ -89,11 +89,13 @@ public class ArticleControllersParamFilter implements Filter {
 				resp.sendError(404, "not supported method!");
 			}
 		} catch (NumberFormatException e) {
+			System.out.println("exception catched!");
 			if(uris[1].equals("list")) {
+				System.out.println("equals : true");
 				try {
 					int page_indicator = Integer.parseInt(uris[2]);
 					request.setAttribute("page_indicator", page_indicator);
-					
+					System.out.println("page_indicator catch! : " + page_indicator);
 					if(method.equals(RequestMethod.GET)) {
 						request.getRequestDispatcher(ARTICLE_LIST).forward(request, response);
 					} else {
@@ -105,9 +107,6 @@ public class ArticleControllersParamFilter implements Filter {
 			} else {
 				resp.sendError(404, "bad request");
 			}
-//			System.out.println("/article/comments/* filter :::: throws NumberFormatException");
-//			System.out.println("/article/comments/" + uri + " :::: is not number!");
-//			resp.sendError(409, "wrong comment id");
 		}
 	}
 }

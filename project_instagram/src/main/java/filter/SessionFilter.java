@@ -24,7 +24,8 @@ public class SessionFilter implements Filter {
 		String uri = req.getRequestURI();
 		String[] uris = uri.split("/");
 		
-		if(uris.length > 1 && !uris[1].equals("index") && !uris[1].equals("signup") && !uris[1].equals("signin") && !uris[1].equals("static")
+		System.out.println(uri);
+		if(uris.length > 1 && !uris[1].equals("index") && !uris[1].equals("signup") && !uri.contains("signin") && !uris[1].equals("static")
 				 && !uris[1].contains("check") && !uris[1].equals("templates")) {
 			User user = (User) req.getSession().getAttribute("user");
 			if(user == null) {

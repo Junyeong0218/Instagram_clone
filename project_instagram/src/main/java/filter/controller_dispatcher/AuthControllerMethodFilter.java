@@ -36,6 +36,8 @@ public class AuthControllerMethodFilter implements Filter{
 			chain.doFilter(request, response);
 		} else if(uri.equals("/auth/userinfo") && (method.equals(RequestMethod.GET) || method.equals(RequestMethod.PUT))) {
 			chain.doFilter(request, response);
+		} else if(uri.equals("/auth/principal") && method.equals(RequestMethod.GET)) {
+			chain.doFilter(request, response);
 		} else {
 			resp.sendError(404, "invalid method");
 		}

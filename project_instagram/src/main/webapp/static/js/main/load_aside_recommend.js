@@ -4,7 +4,7 @@ let recommend_user_data;
 function loadRecommendUsers() {
 	$.ajax({
 		type: "get",
-		url: "/load-recommend-users",
+		url: "/follow/recommendation",
 		dataType: "text",
 		success: function (data) {
 			data = JSON.parse(data);
@@ -31,7 +31,7 @@ function loadRecommendUsers() {
 function followUser(event, index) {
 	$.ajax({
 		type: "post",
-		url: "/follow/insert-follow-user",
+		url: "/follow",
 		data: { "partner_user_id": recommend_user_data[index].id },
 		dataType: "text",
 		success: function (data) {

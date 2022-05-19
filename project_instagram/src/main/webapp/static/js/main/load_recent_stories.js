@@ -3,7 +3,7 @@ const story_area = document.querySelector(".story-area");
 function loadRecentStories() {
 	$.ajax({
 		type: "get",
-		url: "/load-recent-stories",
+		url: "/story/recent",
 		dataType: "text",
 		success: function (data) {
 			data = JSON.parse(data);

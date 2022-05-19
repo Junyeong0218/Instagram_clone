@@ -10,7 +10,7 @@ let relate_comment_id;
 function loadArticleList() {
 	$.ajax({
 		type: "get",
-		url: "/load-articles",
+		url: "/article/list/1",
 		dataType: "text",
 		success: function (data) {
 			data = JSON.parse(data);

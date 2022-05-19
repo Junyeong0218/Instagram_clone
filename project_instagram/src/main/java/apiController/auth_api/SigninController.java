@@ -1,6 +1,7 @@
 package apiController.auth_api;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -37,7 +38,7 @@ public class SigninController extends HttpServlet{
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		User user = User.builder().username(request.getParameter("username"))
-					  			  .password(request.getParameter("password")).build();
+					  			  						.password(request.getParameter("password")).build();
 		User userDetail = authService.signin(user);
 		System.out.println(userDetail);
 		if(userDetail == null) {

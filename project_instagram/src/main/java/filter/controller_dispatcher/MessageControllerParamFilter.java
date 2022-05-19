@@ -116,7 +116,7 @@ public class MessageControllerParamFilter implements Filter {
 					} else {
 						resp.sendError(404, "invalid Method");
 					}
-				} catch (Exception e) {
+				} catch (NumberFormatException e) {
 					System.out.println(this.getClass().getName() + " :::: Integer parseInt Error occured!");
 					resp.sendError(409, "invalid params");
 				}

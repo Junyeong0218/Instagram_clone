@@ -39,6 +39,7 @@ public class FollowControllersParamFilter implements Filter {
 			return;
 		} else if(uri.equals(FOLLOW_RECOMMENDATION) && method.equals(RequestMethod.GET)) {
 			chain.doFilter(request, response);
+			return;
 		} else if(uri.equals("/follow")) {
 			resp.sendError(404, "bad request");
 		}
