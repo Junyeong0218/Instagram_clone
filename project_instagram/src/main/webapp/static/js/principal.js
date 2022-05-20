@@ -1,4 +1,5 @@
-const principal = getPrincipal(); 
+let token;
+let principal;
 
 function getPrincipal() {
 	let userdata;

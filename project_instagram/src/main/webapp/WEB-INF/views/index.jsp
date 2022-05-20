@@ -11,6 +11,7 @@
 	<link rel="shortcut icon" href="/static/images/shortcut.ico" type="image/x-icon">
 	<link rel="stylesheet" href="/static/css/container.css">
 	<link rel="stylesheet" href="/static/css/index.css">
+	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 
 <body>
@@ -27,7 +28,7 @@
 			<div class="main-form">
 				<div class="login">
 					<h1 class="logo"></h1>
-					<form action="/signin" method="post">
+					<form action="">
 						<div>
 							<span>전화번호, 사용자 이름 또는 이메일</span>
 							<input type="text" name="username" required>
@@ -42,7 +43,7 @@
 								<span></span>
 							</div>
 						</div>
-						<button type="submit" disabled>로그인</button>
+						<button class="submit-button" type="button" disabled>로그인</button>
 					</form>
 					<div class="separator">
 						<span class="liner"></span>

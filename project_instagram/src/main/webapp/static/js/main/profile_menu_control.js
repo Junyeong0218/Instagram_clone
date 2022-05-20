@@ -22,7 +22,7 @@ function toggleProfileMenu(event) {
 }
 
 function toLogout() {
-    location.href = "/logout";
+    location.href = "/auth/logout";
 }
 
 function makeProfileFloating() {
@@ -30,7 +30,7 @@ function makeProfileFloating() {
     menu_box.className = "profile-menu-box";
     menu_box.innerHTML = `<div class="profile-menu-arrow"></div>
                                                 <div class="profile-menu">
-                                                        <a href="/profile" class="profile-menu-link">
+                                                        <a href="/profile/${principal.username}" class="profile-menu-link">
                                                                 <span class="profile-menu-icon"></span>
                                                                 <span class="profile-menu-text">프로필</span>
                                                         </a>

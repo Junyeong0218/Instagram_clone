@@ -32,7 +32,7 @@ public class ArticleDaoImpl implements ArticleDao {
 		
 		try {
 			conn = db.getConnection();
-			sql = "insert into article_mst values(0, ?, ?, ?, 0, now(), now()); ";
+			sql = "insert into article_mst values(0, ?, ?, ?, 0, now(), now(), 0, null); ";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, article.getUser_id());
 			pstmt.setString(2, article.getFeature());
@@ -140,6 +140,7 @@ public class ArticleDaoImpl implements ArticleDao {
 					+ "left outer join article_comment ac on(am.id = ac.article_id) "
 				+ "where "
 					+ "am.user_id != ? and "
+					+ "am.deleted_flag = false and "
 					+ "am.user_id in(select fm.partner_user_id from follow_mst fm where fm.user_id = ?) "
 				+ "group by "
 					+ "media.id "

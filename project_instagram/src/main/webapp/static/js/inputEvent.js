@@ -3,7 +3,7 @@ const usernameTag = document.querySelector("input[name='username']");
 const passwordTag = document.querySelector("input[name='password']");
 const usernameSpan = document.querySelectorAll("form span")[0];
 const passwordSpan = document.querySelectorAll("form span")[1];
-const submit_button = document.querySelector("button[type='submit'");
+const submit_button = document.querySelector(".submit-button");
 
 const username_regex = /^[a-z][A-Za-z0-9]{1,15}$/;
 const symbol_regex = /[!@#$%^&*`~=+_]{1,16}/;
@@ -21,6 +21,43 @@ passwordTag.onpaste = keydownEvent;
 usernameTag.onkeyup = keyupEvent;
 passwordTag.onkeyup = keyupEvent;
 // ------------------------------------
+submit_button.onclick = () => {
+	$.ajax({
+		type: "post",
+		url: "/auth/signin",
+		data: { "username": usernameTag.value,
+					  "password": passwordTag.value },
+		async: false,
+		dataType: "text",
+		success: function (xhr, status, data) {
+			console.log(data);
+			
+			if(data == null || data == "") {
+				alert("아이디 혹은 비밀번호를 확인해주세요.");
+			} else {
+				const token = data.getResponseHeader("Authorization");
+				const request = new XMLHttpRequest();
+				request.open("GET", "http://localhost:8080/verify/token/main", true);
+				request.setRequestHeader("Authorization", token);
+				
+				request.send();
+				console.log(request);
+				request.onloadend = (event) => {
+					console.log(event);
+					if(request.response == "true") {
+						console.log("asdfasdf");
+						location.replace("/main");
+					}
+				}
+			}
+		},
+		error: function (xhr, status, error) {
+			console.log(xhr);
+			console.log(status);
+			console.log(error);
+		}
+	});
+}
 
 function keyupEvent(event) {
     if (isLengthZero(event)) {

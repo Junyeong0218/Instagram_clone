@@ -41,15 +41,12 @@ public class SigninController extends HttpServlet{
 					  			  						.password(request.getParameter("password")).build();
 		User userDetail = authService.signin(user);
 		System.out.println(userDetail);
-		if(userDetail == null) {
-			response.setCharacterEncoding("UTF-8");
-			response.getWriter().print("<script>alert(\"아이디 혹은 비밀번호가 틀렸습니다.\"); location.href = \"/index\";</script>");
-		} else {
+		if(userDetail != null) {
 			// 로그인 인증 성공 시 NonReadActivities 객체에도 세션 정보 저장
 			NonReadActivities.setUser(userDetail.getId(), newActivityService.selectNonReadActivities(userDetail.getId()));
 			
-			request.getSession().setAttribute("user", userDetail);
-			response.sendRedirect("/main");
+			request.setAttribute("user", userDetail);
+//			response.set ("user", userDetail);
 		}
 	}
 }

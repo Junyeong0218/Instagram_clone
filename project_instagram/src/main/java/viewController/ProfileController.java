@@ -9,9 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import entity.User;
 import repository.FollowDao;
 import response_dto.UserProfileResDto;
 import service.FollowService;
@@ -32,17 +30,10 @@ public class ProfileController extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		User sessionUser = (User) session.getAttribute("user");
-		String username = request.getParameter("username");
+		int sessionUserId = (int) request.getAttribute("sessionUserId");
+		String username = (String) request.getAttribute("username");
 		
-		if(username == null || username.equals("")) {
-			username = sessionUser.getUsername();
-		}
-		
-		System.out.println("username : " + username);
-		
-		UserProfileResDto resDto = followService.selectUserProfileInfo(username, sessionUser.getId());
+		UserProfileResDto resDto = followService.selectUserProfileInfo(username, sessionUserId);
 		request.setAttribute("userProfile", resDto);
 		System.out.println(resDto);
 		

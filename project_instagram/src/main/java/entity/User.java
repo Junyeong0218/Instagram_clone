@@ -30,6 +30,7 @@ public class User {
 	private LocalDateTime last_username_update_date;
 	private LocalDateTime create_date;
 	private LocalDateTime update_date;
+	private String role;
 	
 	// ---------------------------- profile_file_name
 	private String file_name;

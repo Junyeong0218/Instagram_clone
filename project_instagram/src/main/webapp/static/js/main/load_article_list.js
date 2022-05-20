@@ -6,11 +6,12 @@ let origin_article_detail_data;
 let article_load_count = 0;
 let relate_comment_flag = false;
 let relate_comment_id;
+let article_pager = 1;
 
 function loadArticleList() {
 	$.ajax({
 		type: "get",
-		url: "/article/list/1",
+		url: "/article/list/" + article_pager++,
 		dataType: "text",
 		success: function (data) {
 			data = JSON.parse(data);
@@ -205,7 +206,7 @@ function makeContentsTags(contents) {
 		} else if(user_tag_index < hash_tag_index || hash_tag_index == -1) {
 			let blank_index = contents.indexOf(" ", user_tag_index) == -1 ? contents.length : contents.indexOf(" ", user_tag_index);
 			tag += contents.substring(0, user_tag_index);
-			tag +=  `<a class="user-tag-link" href="/profile?username=${contents.substring(user_tag_index + 1, blank_index)}">${contents.substring(user_tag_index, blank_index)}</a> `;
+			tag +=  `<a class="user-tag-link" href="/profile/${contents.substring(user_tag_index + 1, blank_index)}">${contents.substring(user_tag_index, blank_index)}</a> `;
 			contents = contents.substring(blank_index + 1, contents.length);
 		}
 		if(contents.length == 0) has_more_string = false;
