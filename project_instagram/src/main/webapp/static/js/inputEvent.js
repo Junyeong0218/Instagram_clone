@@ -9,6 +9,8 @@ const username_regex = /^[a-z][A-Za-z0-9]{1,15}$/;
 const symbol_regex = /[!@#$%^&*`~=+_]{1,16}/;
 const password_regex = /^[A-za-z0-9!@#$%^&*`~=+_]{8,16}$/;
 
+console.log(window.navigator.plugins);
+
 // ------------------------------------
 usernameTag.onkeydown = keydownEvent;
 usernameTag.oninput = keydownEvent;
@@ -25,7 +27,8 @@ submit_button.onclick = () => {
 	$.ajax({
 		type: "post",
 		url: "/auth/signin",
-		data: { "username": usernameTag.value,
+		data: { "plugins" : window.navigator.plugins.length,
+					  "username": usernameTag.value,
 					  "password": passwordTag.value },
 		async: false,
 		dataType: "text",
@@ -41,11 +44,9 @@ submit_button.onclick = () => {
 				request.setRequestHeader("Authorization", token);
 				
 				request.send();
-				console.log(request);
 				request.onloadend = (event) => {
 					console.log(event);
 					if(request.response == "true") {
-						console.log("asdfasdf");
 						location.replace("/main");
 					}
 				}

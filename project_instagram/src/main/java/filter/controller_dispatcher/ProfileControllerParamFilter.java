@@ -45,7 +45,7 @@ public class ProfileControllerParamFilter implements Filter {
 			String username = uris[1];
 			request.setAttribute("username", username);
 			request.setAttribute("sessionUserId", sessionUser.getId());
-			request.getRequestDispatcher(PROFILE);
+			chain.doFilter(request, response);
 		} else {
 			resp.sendError(409, "wrong uri");
 		}

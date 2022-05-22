@@ -1,4 +1,4 @@
-package viewController;
+package apiController.security_api;
 
 import java.io.IOException;
 
@@ -8,12 +8,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/direct/message")
-public class DMController extends HttpServlet {
+@WebServlet("/security/uuid")
+public class UUIDController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getRequestDispatcher("/WEB-INF/views/direct/message.jsp").forward(request, response);
+		response.setContentType("text/plain; charset=UTF-8");
+		response.getWriter().print((String) request.getSession().getAttribute("UUID"));
 	}
 }
