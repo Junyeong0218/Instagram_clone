@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <head>
     <link rel="stylesheet" href="/static/css/new_article_modal.css">
 </head>
@@ -42,15 +41,8 @@
             </div>
             <div class="contents-form">
             	<div class="principal-user">
-            		
-            		<c:if test="${sessionScope.user.has_profile_image == true}">
-            			<img src="/static/images/user_profile_images/${sessionScope.user.file_name}" alt="">
-            		</c:if>
-            		<c:if test="${sessionScope.user.has_profile_image == false}">
-            			<img src="/static/images/basic_profile_image.jpg" alt="">
-            		</c:if>
-            		
-            		<span>${sessionScope.user.username}</span>
+           			<img src="/static/images/basic_profile_image.jpg" alt="">
+            		<span></span>
             	</div>
             	<textarea class="article-contents" placeholder="문구 입력..."></textarea>
             	<div class="contents-helper">

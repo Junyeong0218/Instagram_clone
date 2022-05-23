@@ -17,6 +17,7 @@ activity_button.onclick = (event) => {
 	$.ajax({
 		type: "get",
 		url: "/follow/select-activities",
+		headers: { "Authorization" : token },
 		dataType: "text",
 		success: function (data) {
 			data = JSON.parse(data);
@@ -45,6 +46,7 @@ function selectAlertData() {
 	$.ajax({
 		type: "get",
 		url: "/alert/new-logs",
+		headers: { "Authorization" : token },
 		dataType: "text",
 		success: function (data) {
 			if(data != "") {

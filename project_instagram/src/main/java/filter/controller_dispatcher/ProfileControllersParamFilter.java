@@ -7,28 +7,24 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import entity.User;
-
-@WebFilter("/profile/*")
-public class ProfileControllerParamFilter implements Filter {
+public class ProfileControllersParamFilter implements Filter {
 	
 	private final String PROFILE = "/profile";
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
+		System.out.println("ProfileFilter executed!");
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse resp = (HttpServletResponse) response;
 		
 		String uri = req.getRequestURI();
 		System.out.println("uri : " + uri);
 		
-		if(uri.contains(PROFILE)) {
+		if(uri.equals(PROFILE)) {
 			chain.doFilter(request, response);
 			return;
 		}
@@ -39,13 +35,15 @@ public class ProfileControllerParamFilter implements Filter {
 		String method = req.getMethod();
 		System.out.println("method : " + method);
 		
+		for(String s : uris) {
+			System.out.println(s);
+		}
+		
 		if(uris.length > 1) {
-			HttpSession session = req.getSession();
-			User sessionUser = (User) session.getAttribute("user");
 			String username = uris[1];
 			request.setAttribute("username", username);
-			request.setAttribute("sessionUserId", sessionUser.getId());
-			chain.doFilter(request, response);
+			System.out.println("target_username : " + username);
+			req.getRequestDispatcher(PROFILE).forward(request, response);
 		} else {
 			resp.sendError(409, "wrong uri");
 		}

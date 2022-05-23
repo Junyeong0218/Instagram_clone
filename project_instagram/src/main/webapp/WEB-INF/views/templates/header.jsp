@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <header>
 	<div class="header-wrapper">
 		<div class="logo">
@@ -39,14 +38,7 @@
 				</div>
 				<div class="profile">
 					<button type="button" class="nonclicked-nav-profile">
-					
-					<c:if test="${sessionScope.user.has_profile_image == true}">
-						<img src="/static/images/user_profile_images/${sessionScope.user.file_name}" alt="프로필">					
-					</c:if>
-					<c:if test="${sessionScope.user.has_profile_image == false}">
 						<img src="/static/images/basic_profile_image.jpg" alt="프로필">
-					</c:if>
-					
 					</button>
 					<div class="profile-menu-wrapper"></div>
 				</div>

@@ -63,12 +63,12 @@ public class UserinfoController extends HttpServlet{
 		
 		String dir = FileUploadPathConfig.getFileUploadPath() + "/user_profile_images/";
 		MultipartRequest multipartRequest = new MultipartRequest(request, dir, 1024 * 1024 * 3, "UTF-8");
-		Enumeration params = multipartRequest.getParameterNames();
+		Enumeration<String> params = multipartRequest.getParameterNames();
 		
 		User user = new User();
 		user.setId(sessionUser.getId());
 		while(params.hasMoreElements()) {
-			user = setParameters(multipartRequest, (String) params.nextElement(), user);
+			user = setParameters(multipartRequest, params.nextElement(), user);
 		}
 		user.setFile_name(multipartRequest.getOriginalFileName("file"));
 		

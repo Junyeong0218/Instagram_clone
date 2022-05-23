@@ -7,14 +7,12 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import config.RequestMethod;
 
-@WebServlet("/message/*")
-public class MessageControllerParamFilter implements Filter {
+public class MessageControllersParamFilter implements Filter {
 	
 	private final String MESSAGE = "/message";
 	private final String MESSAGE_ROOMS = "/message/rooms";
@@ -25,6 +23,7 @@ public class MessageControllerParamFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
+		System.out.println("MessageFilter executed!");
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse resp = (HttpServletResponse) response;
 		

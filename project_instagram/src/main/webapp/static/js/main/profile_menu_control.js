@@ -1,6 +1,10 @@
 const nav_profile_button = document.querySelector(".profile > button");
 const profile_menu_wrapper = document.querySelector(".profile-menu-wrapper");
+const profile_image = document.querySelector(".profile img");
 
+if(principal.has_profile_image == "true") {
+	profile_image.src = "/static/file_upload/user_profile_images/" + principal.file_name;
+}
 nav_profile_button.onclick = toggleProfileMenu;
 
 function toggleProfileMenu(event) {

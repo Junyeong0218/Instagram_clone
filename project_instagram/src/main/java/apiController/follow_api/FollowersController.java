@@ -10,8 +10,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
+import entity.JwtProperties;
+import entity.SecurityContext;
 import entity.User;
 import repository.FollowDao;
 import service.FollowService;
@@ -32,12 +33,14 @@ public class FollowersController extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		User sessionUser = (User) session.getAttribute("user");
+		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
+		int page_indicator = (int) request.getAttribute("page_indicator");
+
+		System.out.println(sessionUser);
+		System.out.println(page_indicator);
 		
-		int count_indicator = Integer.parseInt(request.getParameter("count_indicator"));
-		
-		List<User> followerList = followService.selectFollowers(sessionUser.getId(), count_indicator);
+		List<User> followerList = followService.selectFollowers(sessionUser.getId(), page_indicator);
+		System.out.println(followerList);
 		boolean has_more_followers = false;
 		if(followerList.size() > 10) {
 			has_more_followers = true;

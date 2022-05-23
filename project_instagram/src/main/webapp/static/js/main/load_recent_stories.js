@@ -4,6 +4,7 @@ function loadRecentStories() {
 	$.ajax({
 		type: "get",
 		url: "/story/recent",
+		headers: { "Authorization" : token },
 		dataType: "text",
 		success: function (data) {
 			data = JSON.parse(data);

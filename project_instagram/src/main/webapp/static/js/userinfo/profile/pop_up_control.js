@@ -28,6 +28,7 @@ for (let i = 0; i < buttons.length; i++) {
 }
 
 function showFollowInfo(event) {
+	document.body.style = "overflow: hidden;";
 	const span = event.target.children[0];
 	if(span.className == "following") {
 		people_tab_count = 0;
@@ -77,6 +78,7 @@ function showFollowInfo(event) {
 	follow_info.querySelector(".modal-closer").onclick = () => {
 		follow_info.classList.add("to-hidden");
 		follow_info.classList.remove("to-show");
+		document.body.style = "";
 	}
 }
 
@@ -91,17 +93,19 @@ function changeTabForFollowing(event) {
 		follow_info.querySelector(".follow-hashtag").classList.add("active");
 		follow_info.querySelector(".people-info").classList.remove("active");
 		follow_info.querySelector(".hashtag-info").classList.add("active");
+		loadFollowingHashTag();n
 	}
 }
 
 function loadFollowers() {
 	$.ajax({
 		type: "get",
-		url: "/follow/select-followers",
-		data: { "count_indicator": follower_tab_count },
+		url: "/follow/followers/" + follower_tab_count,
+		headers: { "Authorization" : token},
 		dataType: "text",
 		success: function (data) {
 			data = JSON.parse(data);
+			console.log(data);
 			follower_tab_count++;
 			has_more_followers = data.has_more_followers == "true" ? true : false;
 			
@@ -125,8 +129,8 @@ function loadFollowers() {
 function loadFollowingHashTag() {
 	$.ajax({
 		type: "get",
-		url: "/follow/select-following-hashtags",
-		data: { "count_indicator": hashtag_tab_count },
+		url: "/follow/hashtag/" + hashtag_tab_count,
+		headers: { "Authorization" : token},
 		dataType: "text",
 		success: function (data) {
 			data = JSON.parse(data);
@@ -151,8 +155,8 @@ function loadFollowing() {
 	if(has_more_users == false) return;
 	$.ajax({
 		type: "get",
-		url: "/follow/select-following-users",
-		data: { "count_indicator": people_tab_count },
+		url: "/follow/followings/" + people_tab_count,
+		headers: { "Authorization" : token},
 		dataType: "text",
 		success: function (data) {
 			data = JSON.parse(data);
@@ -182,9 +186,9 @@ function loadFollowing() {
 function unfollowUser(event, index) {
 	console.log(event);
 	$.ajax({
-		type: "post",
-		url: "/follow/delete-follow-user",
-		data: { "partner_user_id": origin_following_list[index].id },
+		type: "delete",
+		url: "/follow/user/" + origin_following_list[index].id,
+		headers: { "Authorization" : token},
 		dataType: "text",
 		success: function (data) {
 			if(data == "1") {
@@ -203,7 +207,7 @@ function makePeopleTag(user_data) {
 	const row = document.createElement("div");
 	row.className = "row";
 	row.innerHTML = `<div class="user-profile-image">
-											<img src="${user_data.has_profile_image == 'true' ? '../../../../file_upload/user_profile_images/' + user_data.file_name : '/static/images/basic_profile_image.jpg'}" alt="">
+											<img src="${user_data.has_profile_image == 'true' ? '/static/file_upload/user_profile_images/' + user_data.file_name : '/static/images/basic_profile_image.jpg'}" alt="">
 										</div>
 										<div class="summary">
 											<span class="user-summary-username">${user_data.username}</span>

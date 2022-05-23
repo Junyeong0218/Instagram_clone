@@ -10,10 +10,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import entity.HashTag;
+import entity.JwtProperties;
 import entity.LatestSearchRecord;
+import entity.SecurityContext;
 import entity.User;
 import repository.SearchDao;
 import response_dto.LatestSearchResDto;
@@ -35,8 +36,7 @@ public class LatestSearchesController extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		User sessionUser = (User) session.getAttribute("user");
+		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
 		
 		LatestSearchResDto dto = searchService.selectLatestSearches(sessionUser.getId());
 		StringBuilder sb = new StringBuilder();
@@ -70,8 +70,7 @@ public class LatestSearchesController extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		User sessionUser = (User) session.getAttribute("user");
+		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
 		
 		boolean isUser = Boolean.parseBoolean(request.getParameter("isUser"));
 		int id = Integer.parseInt(request.getParameter("id"));

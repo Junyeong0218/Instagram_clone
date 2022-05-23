@@ -1,7 +1,6 @@
 package apiController.auth_api;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -46,7 +45,6 @@ public class SigninController extends HttpServlet{
 			NonReadActivities.setUser(userDetail.getId(), newActivityService.selectNonReadActivities(userDetail.getId()));
 			
 			request.setAttribute("user", userDetail);
-//			response.set ("user", userDetail);
 		}
 	}
 }

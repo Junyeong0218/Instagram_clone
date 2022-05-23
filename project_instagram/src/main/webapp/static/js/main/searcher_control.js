@@ -13,6 +13,7 @@ searcher_input.oninput = (event) => {
 	$.ajax({
 		type: "get",
 		url: "/search/keyword/" + searcher_input.value,
+		headers: { "Authorization": token },
 		dataType: "text",
 		success: function (data) {
 			data = JSON.parse(data);
@@ -43,6 +44,7 @@ searcher_input.oninput = (event) => {
 					$.ajax({
 						type: "post",
 						url: "/search/log",
+						headers: { "Authorization" : token },
 						data: insertData,
 						dataType: "text",
 						success: function (data) {
@@ -78,6 +80,7 @@ function focusSearchInput(event) {
         $.ajax({
 			type: "get",
 			url: "/search/log",
+			headers: { "Authorization": token },
 			dataType: "text",
 			success: function (data) {
 				data = JSON.parse(data);
@@ -151,7 +154,7 @@ function addSearchResults(search_results) {
 										<div class="name-wrapper"></div>`;
 		const name_wrapper = div.querySelector(".name-wrapper");
 		if(search_results[i].hash_tag_id == 0) {
-			name_wrapper.innerHTML = `<a class="username" href="/profile?username=${search_results[i].username}">${search_results[i].username}</a>
+			name_wrapper.innerHTML = `<a class="username" href="/profile/${search_results[i].username}">${search_results[i].username}</a>
 																    <span class="follow-info">${search_results[i].user_follow_flag == true ? search_results[i].name + ' • 팔로잉' : search_results[i].name}</span>`;
 		} else {
 			name_wrapper.innerHTML = `<a class="tag-name" href="/search/${search_results[i].tag_name}">${search_results[i].tag_name}</a>
@@ -187,7 +190,7 @@ function makeResultBox(latest_searches) {
 											</button>`;
 			const name_wrapper = div.querySelector(".name-wrapper");
 			if(latest_searches[i].hash_tag_id == 0) {
-				name_wrapper.innerHTML = `<a class="username" href="/profile?username=${latest_searches[i].username}">${latest_searches[i].username}</a>
+				name_wrapper.innerHTML = `<a class="username" href="/profile/${latest_searches[i].username}">${latest_searches[i].username}</a>
 																	    <span class="follow-info">${latest_searches[i].user_follow_flag == true ? latest_searches[i].name + ' • 팔로잉' : latest_searches[i].name}</span>`;
 			} else {
 				name_wrapper.innerHTML = `<a class="tag-name" href="/search/${latest_searches[i].tag_name}">#${latest_searches[i].tag_name}</a>

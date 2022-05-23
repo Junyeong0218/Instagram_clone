@@ -12,6 +12,7 @@ import entity.Activity;
 import entity.ArticleComment;
 import entity.ArticleDetail;
 import entity.Follow;
+import entity.HashTag;
 import entity.User;
 import entity.UserProfile;
 import response_dto.UserRecommendResDto;
@@ -116,6 +117,58 @@ public class FollowDaoImpl implements FollowDao {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, user_id);
 			pstmt.setInt(2, partner_user_id);
+			
+			result = pstmt.executeUpdate();
+		} catch(SQLDataException e1) {
+			System.out.println("no row!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt);
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public int insertFollowHashTag(int hash_tag_id, int user_id) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String sql = null;
+		int result = 0;
+		
+		try {
+			conn = db.getConnection();
+			sql = "insert into follow_mst values(0, ?, null, ?, null, now(), now());";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, user_id);
+			pstmt.setInt(2, hash_tag_id);
+			
+			result = pstmt.executeUpdate();
+		} catch(SQLDataException e1) {
+			System.out.println("no row!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt);
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public int deleteFollowHashTag(int hash_tag_id, int user_id) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String sql = null;
+		int result = 0;
+		
+		try {
+			conn = db.getConnection();
+			sql = "delete from follow_mst where user_id = ? and followed_hash_tag_id = ?;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, user_id);
+			pstmt.setInt(2, hash_tag_id);
 			
 			result = pstmt.executeUpdate();
 		} catch(SQLDataException e1) {
@@ -275,6 +328,8 @@ public class FollowDaoImpl implements FollowDao {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, session_user_id);
 			pstmt.setString(2, username);
+			System.out.println("session_user_id : " + session_user_id);
+			System.out.println("target_username : " + username);
 			
 			rs = pstmt.executeQuery();
 			
@@ -294,7 +349,7 @@ public class FollowDaoImpl implements FollowDao {
 				profile.setFollow_flag(rs.getInt("partner_user_id") > 0 ? true : false);
 				profile.setFollower(rs.getInt("follower"));
 				profile.setFollowing(rs.getInt("following"));
-				
+				System.out.println(profile);
 				userProfile.add(profile);
 			}
 		} catch(SQLDataException e1) {
@@ -309,7 +364,7 @@ public class FollowDaoImpl implements FollowDao {
 	}
 	
 	@Override
-	public List<User> selectFollowingUsers(int user_id, int count_indicator) {
+	public List<User> selectFollowingUsers(int user_id, int page_indicator) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -336,7 +391,7 @@ public class FollowDaoImpl implements FollowDao {
 					+ "limit ?, 11;";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, user_id);
-			pstmt.setInt(2, count_indicator * 10);
+			pstmt.setInt(2, page_indicator * 10);
 			
 			rs = pstmt.executeQuery();
 			
@@ -362,7 +417,55 @@ public class FollowDaoImpl implements FollowDao {
 	}
 	
 	@Override
-	public List<User> selectFollwers(int user_id, int count_indicator) {
+	public List<HashTag> selectFollowingHashTags(int user_id, int page_indicator) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		List<HashTag> followingHashTagList = new ArrayList<HashTag>();
+		
+		try {
+			conn = db.getConnection();
+			sql = "SELECT "
+						+ "htm.id, "
+						+ "htm.tag_name, "
+						+ "htm.create_date, "
+						+ "htm.update_date "
+					+ "FROM "
+						+ "follow_mst fm "
+						+ "LEFT OUTER JOIN hash_tag_mst htm ON(htm.id = fm.followed_hash_tag_id) "
+					+ "WHERE "
+						+ "fm.user_id = ? "
+					+ "LIMIT ?, 11;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, user_id);
+			pstmt.setInt(2, page_indicator * 10);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				if(rs.getInt("id") == 0) continue;
+				HashTag hashTag = new HashTag();
+				hashTag.setId(rs.getInt("id"));
+				hashTag.setTag_name(rs.getString("tag_name"));
+				hashTag.setCreate_date(rs.getTimestamp("create_date") == null ? null : rs.getTimestamp("create_date").toLocalDateTime());
+				hashTag.setUpdate_date(rs.getTimestamp("update_date") == null ? null : rs.getTimestamp("update_date").toLocalDateTime());
+				
+				followingHashTagList.add(hashTag);
+			}
+		} catch(SQLDataException e1) {
+			System.out.println("no row!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt, rs);
+		}
+		
+		return followingHashTagList;
+	}
+	
+	@Override
+	public List<User> selectFollwers(int user_id, int page_indicator) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -388,7 +491,7 @@ public class FollowDaoImpl implements FollowDao {
 					+ "limit ?, 11";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, user_id);
-			pstmt.setInt(2, count_indicator);
+			pstmt.setInt(2, page_indicator);
 			
 			rs = pstmt.executeQuery();
 			
@@ -411,5 +514,34 @@ public class FollowDaoImpl implements FollowDao {
 		}
 		
 		return followers;
+	}
+	
+	@Override
+	public int selectUserCount(String username) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		int userCount = 0;
+		
+		try {
+			conn = db.getConnection();
+			sql = "select count(username) from user_mst where username = ?;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, username);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				userCount = rs.getInt(1);
+			}
+		} catch(SQLDataException e1) {
+			System.out.println("no row!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt, rs);
+		}
+		
+		return userCount;
 	}
 }

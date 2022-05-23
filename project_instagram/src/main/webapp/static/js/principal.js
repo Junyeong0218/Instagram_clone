@@ -48,24 +48,20 @@ function getToken() {
 }
 
 function getPrincipal() {
-	if(data == "true") {
-		$.ajax({
-			type: "get",
-			url: "/auth/principal",
-			async: false,
-			headers: { "Authorization": token },
-			dataType: "text",
-			success: function (data) {
-				console.log(data);
-				principal = JSON.parse(data);
-			},
-			error: function (xhr, status, error) {
-				console.log(xhr);
-				console.log(status);
-				console.log(error);
-			}
-		});
-	} else {
-		alert("userdata load failed");
-	}
+	$.ajax({
+		type: "get",
+		url: "/auth/principal",
+		async: false,
+		headers: { "Authorization": token },
+		dataType: "text",
+		success: function (data) {
+			principal = JSON.parse(data);
+			console.log(principal);
+		},
+		error: function (xhr, status, error) {
+			console.log(xhr);
+			console.log(status);
+			console.log(error);
+		}
+	});
 }

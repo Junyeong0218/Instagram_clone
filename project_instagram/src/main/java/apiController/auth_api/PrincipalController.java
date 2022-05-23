@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import entity.JwtProperties;
 import entity.SecurityContext;
 import entity.User;
 
@@ -17,7 +18,7 @@ public class PrincipalController extends HttpServlet{
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		User sessionUser = SecurityContext.certificateUser(SecurityContext.getToken((String) request.getSession().getAttribute("UUID")));
+		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
 		StringBuilder sb = new StringBuilder();
 		sb.append(" { \"id\": \"" + sessionUser.getId() + "\", " + 
 							"\"username\": \"" + sessionUser.getUsername() + "\", " + 

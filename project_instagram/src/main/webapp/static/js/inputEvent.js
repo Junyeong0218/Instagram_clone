@@ -9,8 +9,6 @@ const username_regex = /^[a-z][A-Za-z0-9]{1,15}$/;
 const symbol_regex = /[!@#$%^&*`~=+_]{1,16}/;
 const password_regex = /^[A-za-z0-9!@#$%^&*`~=+_]{8,16}$/;
 
-console.log(window.navigator.plugins);
-
 // ------------------------------------
 usernameTag.onkeydown = keydownEvent;
 usernameTag.oninput = keydownEvent;
@@ -27,35 +25,20 @@ submit_button.onclick = () => {
 	$.ajax({
 		type: "post",
 		url: "/auth/signin",
-		data: { "plugins" : window.navigator.plugins.length,
-					  "username": usernameTag.value,
+		data: { "username": usernameTag.value,
 					  "password": passwordTag.value },
 		async: false,
 		dataType: "text",
-		success: function (xhr, status, data) {
+		success: function (data) {
 			console.log(data);
-			
-			if(data == null || data == "") {
-				alert("아이디 혹은 비밀번호를 확인해주세요.");
-			} else {
-				const token = data.getResponseHeader("Authorization");
-				const request = new XMLHttpRequest();
-				request.open("GET", "http://localhost:8080/verify/token/main", true);
-				request.setRequestHeader("Authorization", token);
-				
-				request.send();
-				request.onloadend = (event) => {
-					console.log(event);
-					if(request.response == "true") {
-						location.replace("/main");
-					}
-				}
+			if(data== "true") {
+				location.replace("/main");
 			}
 		},
 		error: function (xhr, status, error) {
-			console.log(xhr);
-			console.log(status);
-			console.log(error);
+			if(xhr.status == 400) {
+				alert("아이디 혹은 비밀번호를 확인해주세요.");
+			}
 		}
 	});
 }

@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import repository.FollowDao;
-import response_dto.UserProfileResDto;
 import service.FollowService;
 import service.FollowServiceImpl;
 
@@ -30,13 +29,14 @@ public class ProfileController extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		int sessionUserId = (int) request.getAttribute("sessionUserId");
 		String username = (String) request.getAttribute("username");
-		
-		UserProfileResDto resDto = followService.selectUserProfileInfo(username, sessionUserId);
-		request.setAttribute("userProfile", resDto);
-		System.out.println(resDto);
-		
-		request.getRequestDispatcher("/WEB-INF/views/userinfo/profile.jsp").forward(request, response);
+		System.out.println("진입");
+		if(followService.isValidUser(username)) {
+			System.out.println("target_username is valid");
+			request.getRequestDispatcher("/WEB-INF/views/userinfo/profile.jsp").forward(request, response);
+		} else {
+			response.setContentType("text/html; charset=UTF-8");
+			response.getWriter().print("<script>alert(\"존재하지 않는 유저입니다.\"); location.href=\"/main\";</script>");
+		}
 	}
 }

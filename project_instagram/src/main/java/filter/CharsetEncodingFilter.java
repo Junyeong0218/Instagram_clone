@@ -9,7 +9,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
 
 import config.FileUploadPathConfig;
 import entity.NonReadActivities;
@@ -28,7 +27,6 @@ import repository.StoryDaoImpl;
 import repository.UserDao;
 import repository.UserDaoImpl;
 
-@WebFilter("/*")
 public class CharsetEncodingFilter implements Filter {
 	
 	@Override
@@ -56,6 +54,8 @@ public class CharsetEncodingFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
+		System.out.println("------------------------------------");
+		System.out.println("CharsetFilter executed!");
 		request.setCharacterEncoding("UTF-8");
 		
 		chain.doFilter(request, response);

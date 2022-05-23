@@ -6,6 +6,7 @@ import java.util.List;
 import config.FileUploadPathConfig;
 import entity.Activity;
 import entity.ArticleMedia;
+import entity.HashTag;
 import entity.NonReadActivities;
 import entity.User;
 import entity.UserProfile;
@@ -58,6 +59,16 @@ public class FollowServiceImpl implements FollowService {
 	}
 	
 	@Override
+	public int insertFollowHashTag(int hash_tag_id, int user_id) {
+		return followDao.insertFollowHashTag(hash_tag_id, user_id);
+	}
+	
+	@Override
+	public int deleteFollowHashTag(int hash_tag_id, int user_id) {
+		return followDao.deleteFollowHashTag(hash_tag_id, user_id);
+	}
+	
+	@Override
 	public List<Activity> selectActivities(int user_id) {
 		if(NonReadActivities.getNonReadActivityCount(user_id) > 0) {
 			int result = newActivityDao.updateActivityReadFlag(user_id);
@@ -81,6 +92,8 @@ public class FollowServiceImpl implements FollowService {
 		}
 		return activities;
 	}
+	
+	
 	
 	@Override
 	public UserProfileResDto selectUserProfileInfo(String username, int session_user_id) {
@@ -135,12 +148,22 @@ public class FollowServiceImpl implements FollowService {
 	}
 	
 	@Override
-	public List<User> selectFollowingUsers(int user_id, int count_indicator) {
-		return followDao.selectFollowingUsers(user_id, count_indicator);
+	public List<User> selectFollowingUsers(int user_id, int page_indicator) {
+		return followDao.selectFollowingUsers(user_id, page_indicator);
 	}
 	
 	@Override
-	public List<User> selectFollowers(int user_id, int count_indicator) {
-		return followDao.selectFollwers(user_id, count_indicator);
+	public List<HashTag> selectFollowingHashTags(int user_id, int page_indicator) {
+		return followDao.selectFollowingHashTags(user_id, page_indicator);
+	}
+	
+	@Override
+	public List<User> selectFollowers(int user_id, int page_indicator) {
+		return followDao.selectFollwers(user_id, page_indicator);
+	}
+	
+	@Override
+	public boolean isValidUser(String username) {
+		return followDao.selectUserCount(username) > 0;
 	}
 }

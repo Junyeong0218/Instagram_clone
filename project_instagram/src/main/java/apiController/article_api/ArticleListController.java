@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import entity.ArticleMedia;
+import entity.JwtProperties;
+import entity.SecurityContext;
 import entity.User;
 import repository.ArticleDao;
 import response_dto.ArticleResDto;
@@ -34,8 +36,7 @@ public class ArticleListController extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		User sessionUser = (User) session.getAttribute("user");
+		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
 		
 		int page_indicator = (Integer) request.getAttribute("page_indicator");
 		List<ArticleResDto> articleResDtoList = articleService.selectArticles(sessionUser.getId());

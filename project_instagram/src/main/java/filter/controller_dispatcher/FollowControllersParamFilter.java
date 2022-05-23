@@ -7,24 +7,23 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import config.RequestMethod;
 
-@WebFilter("/follow/*")
 public class FollowControllersParamFilter implements Filter {
 	
 	private final String FOLLOW_USER = "/follow/user";
 	private final String FOLLOW_HASHTAG = "/follow/hashtag";
 	private final String FOLLOWERS = "/follow/followers";
-	private final String FOLLOWINGS = "/follow/following";
+	private final String FOLLOWINGS = "/follow/followings";
 	private final String FOLLOW_RECOMMENDATION = "/follow/recommendation";
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
+		System.out.println("FollowFilter executed!");
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse resp = (HttpServletResponse) response;
 		
@@ -44,7 +43,7 @@ public class FollowControllersParamFilter implements Filter {
 			resp.sendError(404, "bad request");
 		}
 		
-		uri = uri.replace("/follow", "");
+		uri = uri.replaceFirst("/follow", "");
 		String[] uris = uri.split("/");
 		System.out.println("after replace : " + uri);
 		System.out.println("uris.length : " + uris.length);
@@ -59,17 +58,21 @@ public class FollowControllersParamFilter implements Filter {
 				
 				if(method.equals(RequestMethod.POST) ||
 					method.equals(RequestMethod.DELETE)) {
-					request.getRequestDispatcher(FOLLOW_USER);
+					request.getRequestDispatcher(FOLLOW_USER).forward(request, response);
 				} else {
 					resp.sendError(404, "not supported Method");
 				}
 			} else if(uris[1].equals("hashtag")) {
-				int hash_tag_id = Integer.parseInt(uris[2]);
-				request.setAttribute("hash_tag_id", hash_tag_id);
-				
-				if(method.equals(RequestMethod.POST) ||
-					method.equals(RequestMethod.DELETE)) {
-					request.getRequestDispatcher(FOLLOW_HASHTAG);
+				if(method.equals(RequestMethod.GET)) {
+					int page_indicator = Integer.parseInt(uris[2]);
+					request.setAttribute("page_indicator", page_indicator);
+					request.getRequestDispatcher(FOLLOW_HASHTAG).forward(request, response);
+				} else if(method.equals(RequestMethod.POST) ||
+								method.equals(RequestMethod.DELETE)) {
+					
+					int hash_tag_id = Integer.parseInt(uris[2]);
+					request.setAttribute("hash_tag_id", hash_tag_id);
+					request.getRequestDispatcher(FOLLOW_HASHTAG).forward(request, response);
 				} else {
 					resp.sendError(404, "not supported Method");
 				}
@@ -78,7 +81,7 @@ public class FollowControllersParamFilter implements Filter {
 				request.setAttribute("page_indicator", page_indicator);
 				
 				if(method.equals(RequestMethod.GET)) {
-					request.getRequestDispatcher(FOLLOWERS);
+					request.getRequestDispatcher(FOLLOWERS).forward(request, response);
 				} else {
 					resp.sendError(404, "not supported Method");
 				}
@@ -87,7 +90,7 @@ public class FollowControllersParamFilter implements Filter {
 				request.setAttribute("page_indicator", page_indicator);
 				
 				if(method.equals(RequestMethod.GET)) {
-					request.getRequestDispatcher(FOLLOWINGS);
+					request.getRequestDispatcher(FOLLOWINGS).forward(request, response);
 				} else {
 					resp.sendError(404, "not supported Method");
 				}

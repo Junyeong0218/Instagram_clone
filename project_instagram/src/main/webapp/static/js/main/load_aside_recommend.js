@@ -1,10 +1,20 @@
 const recommend_users = document.querySelector(".recommend-users");
+const profile_description_image = document.querySelector(".profile-description-image > img");
+const principal_username = document.querySelector(".principal-username");
+const principal_nickname = document.querySelector(".principal-nickname");
 let recommend_user_data;
+
+if(principal.has_profile_image == "true") {
+	profile_description_image.src = "/static/file_upload/user_profile_images/" + principal.file_name;
+}
+principal_username.innerText = principal.username;
+principal_nickname.innerText = principal.name;
 
 function loadRecommendUsers() {
 	$.ajax({
 		type: "get",
 		url: "/follow/recommendation",
+		headers: { "Authorization" : token },
 		dataType: "text",
 		success: function (data) {
 			data = JSON.parse(data);
@@ -32,6 +42,7 @@ function followUser(event, index) {
 	$.ajax({
 		type: "post",
 		url: "/follow",
+		headers: { "Authorization" : token },
 		data: { "partner_user_id": recommend_user_data[index].id },
 		dataType: "text",
 		success: function (data) {

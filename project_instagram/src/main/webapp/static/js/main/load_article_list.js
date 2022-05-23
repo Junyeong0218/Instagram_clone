@@ -12,6 +12,7 @@ function loadArticleList() {
 	$.ajax({
 		type: "get",
 		url: "/article/list/" + article_pager++,
+		headers: { "Authorization" : token},
 		dataType: "text",
 		success: function (data) {
 			data = JSON.parse(data);
