@@ -8,6 +8,8 @@ pop_up.onclick = closePopup;
 select_button.onclick = selectGender;
 
 function showGenderPopup() {
+	window.scrollTo(0, 0);
+	document.body.style = "overflow:hidden;";
     pop_up.classList.remove("to-hidden");
     pop_up.classList.add("to-show");
 }
@@ -16,6 +18,7 @@ function closePopup(event) {
     if (event.target == pop_up || event.target == close_button) {
         pop_up.classList.remove("to-show");
         pop_up.classList.add("to-hidden");
+        document.body.style = "";
     }
 }
 

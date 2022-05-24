@@ -304,6 +304,8 @@ public class FollowDaoImpl implements FollowDao {
 						+ "up.file_name, "
 						+ "am.is_stored, "
 						+ "am.create_date, "
+						+ "count(distinct ar.id) as `like_count`, "
+						+ "count(distinct ac.id) as `comment_count`, "
 						
 						+ "media.media_type, "
 						+ "media.media_name, "
@@ -316,6 +318,8 @@ public class FollowDaoImpl implements FollowDao {
 						+ "left outer join user_profile_image up on(up.user_id = um.id) "
 						+ "left outer join article_mst am on(am.user_id = um.id) "
 						+ "left outer join article_media media on(media.article_id = am.id and media.media_name like \"%01%\") "
+						+ "left outer join article_reaction ar on(ar.article_id = am.id) "
+						+ "left outer join article_comment ac on(ac.article_id = am.id) "
 						+ "left outer join follow_mst fm on(fm.user_id = um.id) "
 						+ "left outer join follow_mst fm2 on(fm2.partner_user_id = um.id) "
 						+ "left outer join follow_mst fm3 on(fm3.user_id = ? and fm3.partner_user_id = um.id) "
@@ -346,6 +350,8 @@ public class FollowDaoImpl implements FollowDao {
 				profile.setMedia_name(rs.getString("media_name"));
 				profile.set_stored(rs.getBoolean("is_stored"));
 				profile.setCreate_date(rs.getTimestamp("create_date") != null ? rs.getTimestamp("create_date").toLocalDateTime() : null);
+				profile.setLike_count(rs.getInt("like_count"));
+				profile.setComment_count(rs.getInt("comment_count"));
 				profile.setFollow_flag(rs.getInt("partner_user_id") > 0 ? true : false);
 				profile.setFollower(rs.getInt("follower"));
 				profile.setFollowing(rs.getInt("following"));
@@ -386,8 +392,6 @@ public class FollowDaoImpl implements FollowDao {
 						+ "left outer join user_profile_image up on(up.user_id = fm.partner_user_id) "
 					+ "where "
 						+ "fm.user_id = ? "
-					+ "group by "
-						+ "fm.user_id "
 					+ "limit ?, 11;";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, user_id);

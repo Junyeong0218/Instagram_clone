@@ -30,6 +30,7 @@ let is_password_pair_equal = false;
 
 window.onload = (event) => {
 	focusFormWithQueryString();
+	initUserData();
 }
 
 for(let i = 0; i < userinfo_inputs.length; i++) {
@@ -44,7 +45,43 @@ for (let i = 0; i < userinfo_menus.length; i++) {
 profile_image_input.onchange = previewInputImage;
 userinfo_submit_button.onclick = () => {
 	if(profile_image_input.files.length > 0) changeImageFileName();
-	userinfo_form.submit();
+	const formData = {};
+	formData.file = profile_image_input.files[0] == null ? null : profile_image_input.files[0];
+	for(let i = 0; i < userinfo_inputs.length; i++) {
+		const input_name = userinfo_inputs[i].name;
+		if(input_name == "file" || input_name == "recommend") continue;
+		if(input_name == "gender") {
+			formData["" + input_name] = userinfo_inputs[i].value == "남성" ? 0 :
+																	userinfo_inputs[i].value == "여성" ? 1 :
+																	userinfo_inputs[i].value == "맞춤 성별" ? 2 :
+																	userinfo_inputs[i].value == "밝히고 싶지 않음" ? 3 : null;
+		} else {
+			formData["" + input_name] = userinfo_inputs[i].value;
+		}
+	}
+	console.log(formData);
+	let data = new FormData(document.createElement("form"));
+	data.append("formData", JSON.stringify(formData));
+	
+	$.ajax({
+		type: "put",
+		url: "/auth/userinfo",
+		headers: { "Authorization": token},
+		data: data,
+		encType: "multipart/form-data",
+		processData: false,
+		contentType: false,
+		dataType: "text",
+		success: function (data) {
+			console.log(data);
+		},
+		error: function (xhr, status) {
+			console.log(xhr);
+			console.log(status);
+			/*정보 변경이 정상적으로 이루어지지 않았습니다. 다시 시도해주세요.*/
+		}
+	});
+	/*userinfo_form.submit();*/
 }
 
 password_inputs[0].onblur = checkOriginPassword;
@@ -53,6 +90,28 @@ password_inputs[2].onblur = checkPasswordEquality;
 
 // --------------------------------------------------
 // functions
+
+function initUserData() {
+	if(principal.has_profile_image == "true") {
+		const userinfo_profile_images = document.querySelectorAll(".userinfo-profile-image");
+		userinfo_profile_images.forEach(e => {
+			e.src = "/static/file_upload/user_profile_images/" + principal.file_name;
+		});
+	}
+	userinfo_form.querySelector(".username").innerText = principal.username;
+	password_form.querySelector(".username").innerText = principal.username;
+	userinfo_form.querySelector("input[name='username']").value = principal.username;
+	userinfo_form.querySelector("input[name='name']").value = principal.name;
+	userinfo_form.querySelector("input[name='website']").value = principal.website;
+	userinfo_form.querySelector("textarea[name='description']").value = principal.description;
+	userinfo_form.querySelector("input[name='email']").value = principal.email;
+	userinfo_form.querySelector("input[name='phone']").value = principal.phone;
+	const gender_value = principal.gender == "0" ? "남성" :
+											 principal.gender == "1" ? "여성" :
+											 principal.gender == "2" ? "맞춤 성별" :
+											 principal.gender == "3" ? "밝히고 싶지 않음" : "";
+	userinfo_form.querySelector("input[name='gender']").value = gender_value;
+}
 
 function focusFormWithQueryString() {
 	const uri = location.href;
@@ -85,7 +144,8 @@ function checkPasswordEquality() {
 function checkOriginPassword(event) {
 	$.ajax({
 		type: "get",
-		url: "/check-origin-password",
+		url: "/auth/password",
+		headers: { "Authorization": token},
 		data: { "password": event.target.value },
 		dataType: "text",
 		success: function (data) {

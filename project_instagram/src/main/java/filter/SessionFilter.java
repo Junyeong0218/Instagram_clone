@@ -39,7 +39,6 @@ public class SessionFilter implements Filter {
 		if(uri.equals("/")) return;
 		if( uri.contains("static") || uri.contains("templates") || uri.contains("favicon") ||
 			  (uri.contains("security") && method.equals(RequestMethod.GET)) ||
-			  (uri.contains("userinfo") && method.equals(RequestMethod.GET)) ||
 			  (uri.equals("/index") && method.equals(RequestMethod.GET)) ||
 			  (uri.contains("signup") && (method.equals(RequestMethod.GET) || method.equals(RequestMethod.POST))) ) {
 			chain.doFilter(request, response);

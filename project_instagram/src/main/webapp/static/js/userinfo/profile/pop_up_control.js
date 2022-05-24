@@ -1,5 +1,4 @@
 const account_menus = document.querySelector("#account-menus");
-const account_menu_button = document.querySelector(".account-menu-button");
 const buttons = account_menus.querySelectorAll("button");
 
 const follow_info = document.querySelector("#follow-info");
@@ -17,7 +16,6 @@ let origin_following_list;
 let origin_hashtag_list;
 let origin_follower_list;
 
-if(account_menu_button != null && typeof account_menu_button != "undefined") account_menu_button.onclick = showAccountMenus;
 account_menus.onclick = closeAccountMenus;
 
 follower_button.onclick = showFollowInfo;
@@ -93,7 +91,7 @@ function changeTabForFollowing(event) {
 		follow_info.querySelector(".follow-hashtag").classList.add("active");
 		follow_info.querySelector(".people-info").classList.remove("active");
 		follow_info.querySelector(".hashtag-info").classList.add("active");
-		loadFollowingHashTag();n
+		loadFollowingHashTag();
 	}
 }
 
@@ -127,28 +125,33 @@ function loadFollowers() {
 }
 
 function loadFollowingHashTag() {
-	$.ajax({
-		type: "get",
-		url: "/follow/hashtag/" + hashtag_tab_count,
-		headers: { "Authorization" : token},
-		dataType: "text",
-		success: function (data) {
-			data = JSON.parse(data);
-			hashtag_tab_count++;
-			
-			const hashtag_info = follow_info.querySelector(".hashtag-info");
-			
-			for(let i=0; i<data.length; i++) {
-				const row = makePeopleTag(data[i]);
-				hashtag_info.appendChild(row);
+	if(has_more_hashtags == true) {
+		$.ajax({
+			type: "get",
+			url: "/follow/hashtag/" + hashtag_tab_count,
+			headers: { "Authorization" : token},
+			dataType: "text",
+			success: function (data) {
+				data = JSON.parse(data);
+				hashtag_tab_count++;
+				if(data.has_more_hashtags == "false") {
+					has_more_hashtags = false;
+				}
+				
+				const hashtag_info = follow_info.querySelector(".hashtag-info");
+				
+				for(let i=0; i<data.hash_tags.length; i++) {
+					const row = makePeopleTag(data.hash_tags[i]);
+					hashtag_info.appendChild(row);
+				}
+			},
+			error: function (xhr, status, error) {
+				console.log(xhr);
+				console.log(status);
+				console.log(error);
 			}
-		},
-		error: function (xhr, status, error) {
-			console.log(xhr);
-			console.log(status);
-			console.log(error);
-		}
-	});
+		});
+	}
 }
 
 function loadFollowing() {
@@ -201,6 +204,22 @@ function unfollowUser(event, index) {
 			console.log(error);
 		}
 	});
+}
+
+function makeHashTag(hashtag_data) {
+	const row = document.createElement("div");
+	row.className = "row";
+	row.innerHTML = `<div class="user-profile-image">
+											<img src="/static/images/search_result_hash_tag.png" alt="">
+										</div>
+										<div class="summary">
+											<span class="user-summary-username">${hashtag_data.tag_name}</span>
+											<span class="user-summary-name"></span>
+										</div>
+										<div>
+											<button type="button" class="follow-button">팔로잉</button>
+										</div>`;
+	return row;
 }
 
 function makePeopleTag(user_data) {

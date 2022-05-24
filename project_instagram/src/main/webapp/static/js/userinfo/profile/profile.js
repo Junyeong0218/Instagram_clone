@@ -52,6 +52,8 @@ function appendTargetUserData(data) {
 	        <button type="button" class="account-menu-button">
 	        	<img src="/static/images/profile-menu-settings.png" alt="">
 	        </button>`;
+		const account_menu_button = document.querySelector(".account-menu-button");
+		account_menu_button.onclick = showAccountMenus;
 	} else {
 		if(data.follow_flag == "true") {
 			target_userinfo.innerHTML += `
@@ -81,7 +83,17 @@ function appendArticleTags(article_list) {
 				const article = document.createElement("a");
 				article.href = "#";
 				if(article_data.media_list[0].media_type == "image") {
-					article.innerHTML = `<img src="/static/file_upload${article_data.media_list[0].media_name}" alt="">`; 
+					article.innerHTML = `<img src="/static/file_upload${article_data.media_list[0].media_name}" alt="">
+															<div class="summary">
+																<div class="like-info">
+																	<img src="/static/images/profile_article_summary_like_icon.png" alt="">
+																	<span class="like-count">${article_data.like_count}</span>
+																</div>
+																<div class="comment-info">
+																	<img src="/static/images/profile_article_summary_comment_icon.png" alt="">
+																	<span class="comment-count">${article_data.comment_count}</span>
+																</div>
+															</div>`;
 				} else {
 					article.innerHTML = `<img src="/static/file_upload${article_data.media_list[0].media_name}" alt="">`;
 				}

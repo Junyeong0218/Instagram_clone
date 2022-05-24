@@ -28,6 +28,8 @@ public class UserProfile {
 	private String media_name;
 	private boolean is_stored;
 	private LocalDateTime create_date;
+	private int like_count;
+	private int comment_count;
 	
 	// ------------------------------ is_session_user_following_this_user?
 	private boolean follow_flag;

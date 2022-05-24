@@ -58,7 +58,8 @@ public class UserProfileController extends HttpServlet {
 										"\"media_name\": \"" + media.getMedia_name() + "\"}, ");
 			}
 			if(media_list.size() > 0) sb.replace(sb.lastIndexOf(","), sb.length(), "");
-			sb.append(" ] }, ");
+			sb.append(" ], \"like_count\": \"" + article.getTotal_like_count() + "\", " +
+									" \"comment_count\": \"" + article.getTotal_commented_user_count() + "\" }, ");
 		}
 		if(article_list.size() > 0) sb.replace(sb.lastIndexOf(","), sb.length(), "");
 		sb.append(" ] }");

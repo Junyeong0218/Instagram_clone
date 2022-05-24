@@ -133,6 +133,8 @@ public class FollowServiceImpl implements FollowService {
 			}
 			article.getMedia_list().add(media);
 			article.setArticle_create_date(profile.getCreate_date());
+			article.setTotal_like_count(profile.getLike_count());
+			article.setTotal_commented_user_count(profile.getComment_count());
 			articleList.add(article);
 			
 			if(i == userProfile.size() - 1) {

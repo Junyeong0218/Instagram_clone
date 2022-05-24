@@ -1,8 +1,7 @@
 package apiController.auth_api;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Enumeration;
+import java.util.Iterator;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -12,11 +11,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
 import com.oreilly.servlet.MultipartRequest;
 
-import config.FileUploadPathConfig;
+import entity.JwtProperties;
+import entity.SecurityContext;
 import entity.User;
 import repository.UserDao;
 import request_dto.CheckInputReqDto;
@@ -54,35 +54,48 @@ public class UserinfoController extends HttpServlet{
 	}
 	
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// 중간에 한글 경로 포함되어 있어도 알아서 파일 넣어줌.
 		// form-data 로 받았을 때의 fileName으로 저장되기 때문에 js로 파일명 변경을 시도했으나, 보안 문제로 input type=file 의 value를 임의로 변경할 수 없었음.
 		// 파일명을 username.extension 으로 변경한 새로운 File 객체를 생성하고 DataTransfer 객체의 items에 add 한 후 input type=file에 덮어쓰기로 해결함.
-		HttpSession session = request.getSession();
-		User sessionUser = (User)session.getAttribute("user");
+		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
 		
-		String dir = FileUploadPathConfig.getFileUploadPath() + "/user_profile_images/";
-		MultipartRequest multipartRequest = new MultipartRequest(request, dir, 1024 * 1024 * 3, "UTF-8");
-		Enumeration<String> params = multipartRequest.getParameterNames();
+		String formDataString = request.getParameter("formData");
+		System.out.println(formDataString);
 		
-		User user = new User();
-		user.setId(sessionUser.getId());
-		while(params.hasMoreElements()) {
-			user = setParameters(multipartRequest, params.nextElement(), user);
-		}
-		user.setFile_name(multipartRequest.getOriginalFileName("file"));
+//		Iterator<Part> parts = request.getParts().iterator();
+//		while(parts.hasNext()) {
+//			Part part = parts.next();
+//			if(part.getName().equals("file")) continue;
+//			String value = new String(part.getInputStream().readAllBytes(), "UTF-8");
+//			System.out.println(part.getName() + " : " + value);
+//		}
 		
-		int result = authService.updateUserinfo(sessionUser, user);
-		
-		if(result > 0) {
-			User updatedUser = authService.getUser(sessionUser.getUsername());
-			session.setAttribute("user", updatedUser);
-			response.sendRedirect("/main");
-		} else {
-			response.setContentType("text/html; charset=UTF-8");
-			PrintWriter out = response.getWriter();
-			out.print("<script>alert(\"정보 변경이 정상적으로 이루어지지 않았습니다. 다시 시도해주세요.\"); loaction.href=\"/userinfo\";</script>");
-		}
+//		Iterator<String> paramNames = request.getParameterNames().asIterator();
+//		
+//		while(paramNames.hasNext()) {
+//			String paramName = paramNames.next();
+//			System.out.println(paramName + " : " + request.getParameter(paramName));
+//		}
+//		String dir = FileUploadPathConfig.getFileUploadPath() + "/user_profile_images/";
+//		MultipartRequest multipartRequest = new MultipartRequest(request, dir, 1024 * 1024 * 3, "UTF-8");
+//		Enumeration<String> params = multipartRequest.getParameterNames();
+//		
+//		User user = new User();
+//		user.setId(sessionUser.getId());
+//		while(params.hasMoreElements()) {
+//			user = setParameters(multipartRequest, params.nextElement(), user);
+//		}
+//		user.setFile_name(multipartRequest.getOriginalFileName("file"));
+//		
+//		int result = authService.updateUserinfo(sessionUser, user);
+//		
+//		if(result > 0) {
+////			User updatedUser = authService.getUser(sessionUser.getUsername());
+//			response.sendRedirect("/main");
+//		} else {
+//			response.sendError(416, "update userinfo failed");
+//		}
 	}
 	
 	private User setParameters(MultipartRequest multipartRequest, String parameterName, User user) {

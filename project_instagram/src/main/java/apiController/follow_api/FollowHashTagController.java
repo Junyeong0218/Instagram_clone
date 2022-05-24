@@ -43,15 +43,21 @@ public class FollowHashTagController extends HttpServlet {
 		List<HashTag> hashTags = followService.selectFollowingHashTags(sessionUser.getId(), page_indicator);
 		System.out.println(hashTags);
 		
+		boolean hasMoreHashTags = false;
+		if(hashTags.size() > 10) {
+			hasMoreHashTags = true;
+			hashTags.remove(10);
+		}
+		
 		StringBuilder sb = new StringBuilder();
-		sb.append(" [ ");
+		sb.append(" { \"hash_tags\" : [ ");
 		for(HashTag hashTag : hashTags) {
 			sb.append(" { \"id\": \"" + hashTag.getId() + "\", " + 
 									"\"tag_name\": \"" + hashTag.getTag_name() + "\", " +
 									"\"create_date\": \"" + hashTag.getCreate_date() + "\"}, ");
 		}
 		if(hashTags.size() > 0) sb.replace(sb.lastIndexOf(","), sb.length(), "");
-		sb.append(" ]");
+		sb.append(" ], \"has_more_hashtags\": \"" + hasMoreHashTags + "\" } ");
 		
 		System.out.println(sb.toString());
 		

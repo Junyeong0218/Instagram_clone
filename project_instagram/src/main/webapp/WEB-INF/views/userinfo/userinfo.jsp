@@ -14,6 +14,7 @@
 	<link rel="stylesheet" href="/static/css/main/header.css">
 	<link rel="stylesheet" href="/static/css/userinfo/userinfo.css">
 	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+	<script type="text/javascript" src="/static/js/principal.js"></script>
 </head>
 
 <body>
@@ -69,16 +70,10 @@
 			<div class="userinfo-wrapper">
 				<form class="userinfo-form" enctype="multipart/form-data">
 					<div class="userinfo-profile-image">
-						
-						<c:if test="${sessionScope.user.has_profile_image == true}">
-							<img src="/static/images/user_profile_images/${sessionScope.user.file_name}" alt="프로필">					
-						</c:if>
-						<c:if test="${sessionScope.user.has_profile_image == false}">
-							<img src="/static/images/basic_profile_image.jpg" alt="프로필">
-						</c:if>
+						<img src="/static/images/basic_profile_image.jpg" alt="프로필">
 
 						<div class="profile-image-input-wrapper">
-							<span>${sessionScope.user.username}</span>
+							<span class="username"></span>
 							<label class="" for="profile-image">프로필 사진 바꾸기</label>
 							<input class="hidden" id="profile-image" name="file" type="file" accept="image/*">
 						</div>
@@ -86,7 +81,7 @@
 					<div class="userinfo-input-wrapper">
 						<span class="field-name">이름</span>
 						<div class="description-wrapper">
-							<input type="text" name="name" value="${sessionScope.user.name}">
+							<input type="text" name="name" value="">
 							<span class="description">
 								<p>사람들이 이름, 별명 또는 비즈니스 이름 등 회원님의 알려진 이름을 사용하여 회원님의 계정을 찾을 수
 									있도록 도와주세요.</p>
@@ -98,7 +93,7 @@
 						<span class="field-name">사용자 이름</span>
 						<div class="description-wrapper">
 						
-							<input type="text" name="username" value="${sessionScope.user.username}">
+							<input type="text" name="username" value="">
 							<span class="description">
 								<p>In most cases, you'll be able to change your username
 									back to ${sessionScope.user.username} for another 14 days.</p>
@@ -108,13 +103,13 @@
 					<div class="userinfo-input-wrapper">
 						<span class="field-name">웹 사이트</span>
 						<div class="description-wrapper">
-							<input type="text" name="website" placeholder="웹사이트" value="${sessionScope.user.website != null ? sessionScope.user.website : ''}">
+							<input type="text" name="website" placeholder="웹사이트" value="">
 						</div>
 					</div>
 					<div class="userinfo-input-wrapper">
 						<span class="field-name">소개</span>
 						<div class="description-wrapper">
-							<textarea name="description" value="${sessionScope.user.description != null ? sessionScope.user.description : ''}"></textarea>
+							<textarea name="description" value=""></textarea>
 						</div>
 					</div>
 					<div class="userinfo-input-wrapper">
@@ -132,32 +127,19 @@
 					<div class="userinfo-input-wrapper">
 						<span class="field-name">이메일</span>
 						<div class="description-wrapper">
-							<input type="email" name="email" value="${sessionScope.user.email != null ? sessionScope.user.email : ''}">
+							<input type="email" name="email" value="">
 						</div>
 					</div>
 					<div class="userinfo-input-wrapper">
 						<span class="field-name">전화번호</span>
 						<div class="description-wrapper">
-							<input type="tel" name="phone" value="${sessionScope.user.phone != null ? sessionScope.user.phone : ''}">
+							<input type="tel" name="phone" value="">
 						</div>
 					</div>
 					<div class="userinfo-input-wrapper">
 						<span class="field-name">성별</span>
 						<div class="description-wrapper">
-							<c:set var="gender" value="" />
-							<c:if test="${sessionScope.user.gender == 0}">
-								<c:set var="gender" value="남성" />
-							</c:if>
-							<c:if test="${sessionScope.user.gender == 1}">
-								<c:set var="gender" value="여성" />
-							</c:if>
-							<c:if test="${sessionScope.user.gender == 2}">
-								<c:set var="gender" value="맞춤 성별" />
-							</c:if>
-							<c:if test="${sessionScope.user.gender == 3}">
-								<c:set var="gender" value="밝히고 싶지 않음" />
-							</c:if>
-							<input type="text" name="gender" value="${gender}" readonly>
+							<input type="text" name="gender" value="" readonly>
 						</div>
 					</div>
 					<div class="userinfo-input-wrapper">
@@ -177,16 +159,10 @@
 				</form>
 				<form class="password-form hidden" action="/update-password" method="post">
 					<div class="userinfo-profile-image">
-					
-						<c:if test="${sessionScope.user.has_profile_image == true}">
-							<img src="/static/images/user_profile_images/${sessionScope.user.file_name}" alt="프로필">					
-						</c:if>
-						<c:if test="${sessionScope.user.has_profile_image == false}">
-							<img src="/static/images/basic_profile_image.jpg" alt="프로필">
-						</c:if>
+						<img src="/static/images/basic_profile_image.jpg" alt="프로필">
 						
 						<div class="profile-image-input-wrapper">
-							<span>${sessionScope.user.username}</span>
+							<span class="username"></span>
 						</div>
 					</div>
 					<div class="userinfo-input-wrapper">

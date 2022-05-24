@@ -227,16 +227,16 @@ public class UserDaoImpl implements UserDao {
 				user.setUsername(rs.getString("username"));
 				user.setPassword(rs.getString("password"));
 				user.setName(rs.getString("name"));
-				user.setEmail(rs.getString("email"));
-				user.setPhone(rs.getString("phone"));
-				user.setWebsite(rs.getString("website"));
-				user.setDescription(rs.getString("description"));
+				user.setEmail(rs.getCharacterStream("email") == null ? "" : rs.getString("email"));
+				user.setPhone(rs.getCharacterStream("phone") == null ? "" : rs.getString("phone"));
+				user.setWebsite(rs.getCharacterStream("website") == null ? "" : rs.getString("website"));
+				user.setDescription(rs.getCharacterStream("description") == null ? "" : rs.getString("description"));
 				user.setGender(rs.getInt("gender"));
 				user.setHas_profile_image(rs.getInt("has_profile_image") == 1 ? true : false);
 				user.setLast_username_update_date(rs.getTimestamp("last_username_update_date").toLocalDateTime());
 				user.setCreate_date(rs.getTimestamp("create_date").toLocalDateTime());
 				user.setUpdate_date(rs.getTimestamp("update_date").toLocalDateTime());
-				user.setFile_name(rs.getString("file_name"));
+				user.setFile_name(rs.getCharacterStream("file_name") == null ? "" : rs.getString("file_name"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
