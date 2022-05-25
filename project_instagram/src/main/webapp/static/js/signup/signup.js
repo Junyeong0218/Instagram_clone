@@ -1,5 +1,6 @@
+const signup_form = document.querySelector(".signup-form");
 const input_tags = document.querySelectorAll("input");
-const submit_button = document.querySelector("button[type='submit']");
+const submit_button = document.querySelector(".submit-button");
 
 const username_regex = /^[a-z][A-Za-z0-9]{1,15}$/;
 const phone_regex = /^01(0|1|6|7|8|9)[0-9]{3,4}[0-9]{4}$/;
@@ -22,6 +23,31 @@ for (let i = 0; i < input_tags.length; i++) {
         input_tags[i].onkeyup = keyupEvent;
         input_tags[i].onfocus = initFlag;
         input_tags[i].onblur = checkRegex;
+}
+
+submit_button.onclick = () => {
+	$.ajax({
+		type: "post",
+		url: "/auth/signup",
+		data: { "email": input_tags[0].value, 
+					  "name": input_tags[1].value,
+					  "username": input_tags[2].value,
+					  "password": input_tags[3].value },
+		dataType: "text",
+		success: function (data) {
+			console.log(data);
+			if(data == "true") {
+				alert("회원가입이 완료되었습니다.\n가입하신 아이디로 로그인해주세요.");
+				location.href = "/index";
+			} else {
+				alert("회원가입에 실패했습니다.\n입력정보를 다시 한 번 확인해주세요.");
+			}
+		},
+		error: function (xhr, status) {
+			console.log(xhr);
+			console.log(status);
+		}
+	});
 }
 
 function initFlag(event) {
@@ -155,7 +181,7 @@ function checkInput(input) {
 	let flag;
 	$.ajax({
 		type: "get",
-		url: "/check-input",
+		url: "/auth/userinfo",
 		data: data,
 		dataType: "text",
 		async: false,

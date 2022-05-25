@@ -39,6 +39,8 @@ public class AuthControllersMethodFilter implements Filter {
 		
 		if(uri.equals("/auth/signin") && method.equals(RequestMethod.POST)) {
 			chain.doFilter(request, response);
+		} else if(uri.equals("/auth/signup") && method.equals(RequestMethod.POST)) {
+			chain.doFilter(request, response);
 		} else if(uri.equals("/auth/logout") && method.equals(RequestMethod.GET)) {
 			chain.doFilter(request, response);
 		} else if(uri.equals("/auth/password") && (method.equals(RequestMethod.GET) || method.equals(RequestMethod.PUT))) {

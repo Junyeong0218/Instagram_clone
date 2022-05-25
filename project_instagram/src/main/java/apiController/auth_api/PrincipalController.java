@@ -2,6 +2,8 @@ package apiController.auth_api;
 
 import java.io.IOException;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,26 +13,39 @@ import javax.servlet.http.HttpServletResponse;
 import entity.JwtProperties;
 import entity.SecurityContext;
 import entity.User;
+import repository.UserDao;
+import service.AuthService;
+import service.AuthServiceImpl;
 
 @WebServlet("/auth/principal")
 public class PrincipalController extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 
+	private AuthService authService;
+	
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+		ServletContext servletContext = config.getServletContext();
+		authService = new AuthServiceImpl((UserDao) servletContext.getAttribute("userDao"));
+	}
+	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
+		User userDetail = authService.getUserById(sessionUser.getId());
 		StringBuilder sb = new StringBuilder();
-		sb.append(" { \"id\": \"" + sessionUser.getId() + "\", " + 
-							"\"username\": \"" + sessionUser.getUsername() + "\", " + 
-							"\"name\": \"" + sessionUser.getName() + "\", " + 
-							"\"email\": \"" + sessionUser.getEmail() + "\", " + 
-							"\"phone\": \"" + sessionUser.getPhone() + "\", " + 
-							"\"website\": \"" + sessionUser.getWebsite() + "\", " + 
-							"\"description\": \"" + sessionUser.getDescription() + "\", " + 
-							"\"gender\": \"" + sessionUser.getGender() + "\", " + 
-							"\"has_profile_image\": \"" + sessionUser.isHas_profile_image() + "\", " + 
-							"\"last_username_update_date\": \"" + sessionUser.getLast_username_update_date() + "\", " + 
-							"\"file_name\": \"" + sessionUser.getFile_name() + "\" }");
+		sb.append(" { \"id\": \"" + userDetail.getId() + "\", " + 
+							"\"username\": \"" + userDetail.getUsername() + "\", " + 
+							"\"name\": \"" + userDetail.getName() + "\", " + 
+							"\"email\": \"" + userDetail.getEmail() + "\", " + 
+							"\"phone\": \"" + userDetail.getPhone() + "\", " + 
+							"\"website\": \"" + userDetail.getWebsite() + "\", " + 
+							"\"description\": \"" + userDetail.getDescription() + "\", " + 
+							"\"gender\": \"" + userDetail.getGender() + "\", " + 
+							"\"has_profile_image\": \"" + userDetail.isHas_profile_image() + "\", " + 
+							"\"last_username_update_date\": \"" + userDetail.getLast_username_update_date() + "\", " + 
+							"\"file_name\": \"" + userDetail.getFile_name() + "\" }");
 		
 		response.setContentType("text/plain; charset=UTF-8");
 		response.getWriter().print(sb.toString());

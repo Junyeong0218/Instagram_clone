@@ -16,11 +16,12 @@ activity_button.onclick = (event) => {
 	console.log(event);
 	$.ajax({
 		type: "get",
-		url: "/follow/select-activities",
+		url: "/follow/activities",
 		headers: { "Authorization" : token },
 		dataType: "text",
 		success: function (data) {
 			data = JSON.parse(data);
+			console.log(data);
 			const activity_menu_tag = makeActivityMenuTag(data);
 			activity_menu_wrapper.appendChild(activity_menu_tag);
 			const new_activity_alert = activity.querySelector(".new-activity-alert");
@@ -118,7 +119,7 @@ function makeActivityMenuTag(activity_list) {
 		const ago_tag = makeAgoTag(activity_list[i].create_date);
 		const row = document.createElement("div");
 		row.className = "row";
-		row.innerHTML = `<div class="profile-image"><img src="/static/images/${activity_list[i].has_profile_image == true ? 'user_profile_images/' + activity_list[i].file_name : 'basic_profile_image.jpg'}" alt="">
+		row.innerHTML = `<div class="profile-image"><img src="/static/${activity_list[i].has_profile_image == "true" ? 'file_upload/' + activity_list[i].file_name : 'images/basic_profile_image.jpg'}" alt="">
 										  </div>
 										  <div class="activity-message">
 										  	  <span class="target-username">${activity_list[i].username}</span>${activity_list[i].activity_message}<span class="message"> ${message_tag != 'null' ? ':' + message_tag : ''}${ago_tag}</span>
@@ -132,7 +133,7 @@ function makeActivityMenuTag(activity_list) {
 		} else {
 			const div = document.createElement("div");
 			div.className = "origin-image";
-			div.innerHTML = `<img src="/static/images/article_medias/${activity_list[i].article_id}/${activity_list[i].media_name}" alt="">`;
+			div.innerHTML = `<img src="/static/file_upload${activity_list[i].media_name}" alt="">`;
 			row.appendChild(div);
 			
 		}
@@ -181,7 +182,7 @@ function makeATags(contents) {
 		tag += contents.substring(0, at_index);
 		let blank_index = contents.indexOf(" ", at_index);
 		if(blank_index == -1) blank_index = contents.length;
-		tag += `<a href="/profile?username=${contents.substring(at_index + 1, blank_index)}" class="tag">${contents.substring(at_index, blank_index)}</a>`;
+		tag += `<a href="/profile/${contents.substring(at_index + 1, blank_index)}" class="tag">${contents.substring(at_index, blank_index)}</a>`;
 		contents = contents.substring(blank_index, contents.length);
 		at_index = contents.indexOf("@");
 	}

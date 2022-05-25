@@ -10,8 +10,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
+import entity.JwtProperties;
+import entity.SecurityContext;
 import entity.User;
 import repository.MessageDao;
 import service.MessageService;
@@ -32,12 +33,31 @@ public class MessageReactionController extends HttpServlet{
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		User sessionUser = (User) session.getAttribute("user");
+		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
 		
 		int message_id = (Integer) request.getAttribute("message_id");
 		
-		List<Integer> like_users = messageService.toggleMessageReaction(sessionUser.getId(), message_id);
+		List<Integer> like_users = messageService.insertMessageReaction(sessionUser.getId(), message_id);
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("[ ");
+		for(int user_id : like_users) {
+			sb.append(user_id + ", ");
+		}
+		if(like_users.size() > 0) sb.replace(sb.lastIndexOf(", "), sb.length(), "");
+		sb.append(" ]");
+		
+		response.setContentType("text/plain; charset=UTF-8");
+		response.getWriter().print(sb.toString());
+	}
+	
+	@Override
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
+		
+		int message_id = (Integer) request.getAttribute("message_id");
+		
+		List<Integer> like_users = messageService.deleteMessageReaction(sessionUser.getId(), message_id);
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append("[ ");

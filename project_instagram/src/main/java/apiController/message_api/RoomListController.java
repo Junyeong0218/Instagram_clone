@@ -10,8 +10,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
+import entity.JwtProperties;
+import entity.SecurityContext;
 import entity.User;
 import repository.MessageDao;
 import response_dto.RoomSummaryResDto;
@@ -33,8 +34,7 @@ public class RoomListController extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		User sessionUser = (User) session.getAttribute("user");
+		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
 		
 		List<RoomSummaryResDto> rooms = messageService.selectRoomInfoForInit(sessionUser.getId());
 		StringBuilder sb = new StringBuilder();

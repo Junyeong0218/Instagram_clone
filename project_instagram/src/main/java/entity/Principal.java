@@ -35,4 +35,8 @@ public class Principal {
 			return null;
 		}
 	}
+	
+	public boolean removeUser(int id) {
+		return userMap.remove(id) != null;
+	}
 }

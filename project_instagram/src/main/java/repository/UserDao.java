@@ -1,5 +1,7 @@
 package repository;
 
+import java.lang.reflect.InvocationTargetException;
+
 import entity.User;
 
 public interface UserDao {
@@ -12,11 +14,13 @@ public interface UserDao {
 	
 	public String selectPassword(String username);
 
-	public User getUser(String username);
+	public User getUserByUsername(String username);
+	
+	public User getUserById(int user_id);
 	
 	public int signup(User user);
 	
-	public int updateUserinfo(User user);
+	public int updateUserinfo(User sessionUser, User user) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException;
 	
 	public int updateUserProfile(User user);
 	

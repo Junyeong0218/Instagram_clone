@@ -145,8 +145,18 @@ public class MessageServiceImpl implements MessageService {
 	}
 	
 	@Override
-	public List<Integer> toggleMessageReaction(int user_id, int message_id) {
-		return messageDao.toggleMessageReaction(user_id, message_id);
+	public List<Integer> insertMessageReaction(int user_id, int message_id) {
+		return messageDao.insertMessageReaction(user_id, message_id);
+	}
+	
+	@Override
+	public List<Integer> deleteMessageReaction(int user_id, int message_id) {
+		return messageDao.deleteMessageReaction(user_id, message_id);
+	}
+	
+	@Override
+	public boolean updateMessageToDelete(int message_id) {
+		return messageDao.updateMessageToDelete(message_id) > 0;
 	}
 	
 	@Override

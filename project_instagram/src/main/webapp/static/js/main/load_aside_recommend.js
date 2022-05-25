@@ -5,7 +5,7 @@ const principal_nickname = document.querySelector(".principal-nickname");
 let recommend_user_data;
 
 if(principal.has_profile_image == "true") {
-	profile_description_image.src = "/static/file_upload/user_profile_images/" + principal.file_name;
+	profile_description_image.src = "/static/file_upload" + principal.file_name;
 }
 principal_username.innerText = principal.username;
 principal_nickname.innerText = principal.name;
@@ -62,7 +62,7 @@ function makeRecommendUserTag(userData) {
 	const div = document.createElement("div");
 	div.className = "recommend-user";
 	div.innerHTML = `<div class="user-image">
-										<img src="${userData.has_profile_image == "true" ? '../../../../file_upload/user_profile_images/' + userData.file_name : '/static/images/basic_profile_image.jpg'}" alt="추천 유저 프로필 이미지">
+										<img src="${userData.has_profile_image == "true" ? '/static/file_upload' + userData.file_name : '/static/images/basic_profile_image.jpg'}" alt="추천 유저 프로필 이미지">
 									</div>
 									<div class="user-description">
 										<span class="recommend-username">${userData.username}</span>

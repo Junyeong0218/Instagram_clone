@@ -67,7 +67,8 @@ image_input.onchange = () => {
 		formData.append("file", file);
 		$.ajax({
 			type: "post",
-			url: "/direct/insert-direct-image-message",
+			url: "/message",
+			headers: { "Authorization": token },
 			data: formData,
 			encType: "multipart/form-data",
 			processData: false,
@@ -98,7 +99,8 @@ function insertNewMessage(event) {
 	const room_id = activated_room_data[0].room_id;
 	$.ajax({
 		type: "post",
-		url: "/direct/insert-direct-text-message",
+		url: "/message",
+		headers: { "Authorization": token },
 		data: { "room_id": room_id, 
 					  "contents": event.target.value },
 		dataType: "text",
@@ -121,7 +123,8 @@ function loadMessageData() {
 	let room_data;
 	$.ajax({
 		type: "get",
-		url: "/direct/select-rooms",
+		url: "/message/rooms",
+		headers: { "Authorization": token },
 		async: false,
 		dataType: "text",
 		success: function (data) {
@@ -250,7 +253,7 @@ function addMessagesToRoom() {
 	names = names.substring(0, names.lastIndexOf(","));
 	if(user_list.length == 2) names += "님";
 	target_user.querySelector(".name").innerText = names;
-	target_user.querySelector("img").src = "/static/images/" + (user_list[represent_user_index].has_profile_image == "true" ? "user_profile_images/" + user_list[represent_user_index].file_name : "basic_profile_image.jpg");
+	target_user.querySelector("img").src = "/static/" + (user_list[represent_user_index].has_profile_image == "true" ? "file_upload" + user_list[represent_user_index].file_name : "images/basic_profile_image.jpg");
 	message_description.innerHTML = "";
 	for(let i = activated_room_data.length - 1; i > -1; i--) {
 		const message_info = activated_room_data[i];
@@ -362,10 +365,19 @@ function toggleMessageLike(event) {
 	}
 	if(current_index == -1) return;
 	const message_data = activated_room_data[current_index];
+	let type = "post";
+	if(message_data.like_users.length > 0) {
+		for(let i = 0; i < message_data.like_users.length; i++) {
+			if(message_data.like_users[i] == principal.id) {
+				type = "delete";
+				break;
+			}
+		}
+	}
 	$.ajax({
-		type: "post",
-		url: "/direct/toggle-message-reaction",
-		data: { "message_id": message_data.id },
+		type: type,
+		url: "/message/reaction/" + message_data.id,
+		headers: { "Authorization": token },
 		dataType: "text",
 		success: function (data) {
 			data = JSON.parse(data);
@@ -435,8 +447,8 @@ function activeRoom(event) {
 function selectMessages() {
 	$.ajax({
 		type: "get",
-		url: "/direct/select-messages",
-		data: { "room_id": origin_room_data.room_summary[activated_room_index].room_id },
+		url: "/message/room/" + origin_room_data.room_summary[activated_room_index].room_id,
+		headers: { "Authorization": token },
 		dataType: "text",
 		success: function (data) {
 			activated_room_data = JSON.parse(data);
@@ -470,7 +482,7 @@ function makeRecentMessageDate(create_date) {
 	} else if(month > 1) {
 		return `${month}개월`;
 	} else if(date > 6) {
-		return `${date/7}주`;
+		return `${Math.floor(date/7)}주`;
 ;	} else if((date == 1 && upload_time.getDay() != now.getDay()) || date > 1) {
 		return `${date}일`;
 	} else if(hour > 0) {
@@ -484,19 +496,20 @@ function makeRecentMessageDate(create_date) {
 
 function addToUserList() {
 	const user_list = user_list_tag.children;
-	let is_exist = false;
+	let index = -1;
 	const room_list = origin_room_data.room_summary;
+	console.log(room_list);
 	for(let i = 0; i < room_list.length; i++) {
 		if(activated_room_data[0].room_id == room_list[i].room_id) {
-			is_exist = true;
+			index = i;
 			break;
 		}
 	}
-	if(! is_exist) {
-		const users = origin_room_data[0].entered_users;
+	if(index != -1) {
+		const users = origin_room_data.room_summary[index].entered_users;
 		let names = "";
 		for(let i = 0; i < users.length; i++) {
-			if(users[i].id != origin_room_data.user_id) {
+			if(users[i].user_id != origin_room_data.user_id) {
 				names += i == users.length - 1 ? users[i].name + ", " : users[i].name;
 			}
 		}
@@ -528,7 +541,9 @@ function removeActiveRoomExcept(button) {
 function reloadOriginRoomData() {
 	$.ajax({
 		type: "get",
-		url: "/direct/select-rooms",
+		url: "/message/rooms",
+		headers: { "Authorization": token },
+		async: false,
 		dataType: "text",
 		success: function (data) {
 			origin_room_data = JSON.parse(data);
@@ -551,9 +566,6 @@ function makeNewRoom() {
 		}
 	}
 	insertNewRoomToDB();
-	reloadOriginRoomData();
-	addToUserList();
-	addMessagesToRoom();
 }
 
 function insertNewRoomToDB() {
@@ -566,12 +578,16 @@ function insertNewRoomToDB() {
 	console.log(data);
 	$.ajax({
 		type: "post",
-		url: "/direct/insert-new-room",
+		url: "/message/room",
+		headers: { "Authorization": token },
 		data: data,
 		dataType: "text",
 		success: function (data) {
 			activated_room_data = JSON.parse(data);
-			console.log(data);
+			console.log(activated_room_data);
+			reloadOriginRoomData();
+			addToUserList();
+			/*addMessagesToRoom();*/
 		},
 		error: function (xhr, status, error) {
 			console.log(xhr);
@@ -589,6 +605,7 @@ function selectUser(event) {
 	$.ajax({
 		type: "get",
 		url: "/search/users/" + keyword,
+		headers: { "Authorization": token },
 		dataType: "text",
 		async: false,
 		success: function (data) {
@@ -606,12 +623,13 @@ function selectUser(event) {
 
 function replaceSelectResult() {
 	const rows = recommend_receivers.querySelectorAll(".row");
-	for(let i = 0; i < rows.length; i++) {
+	for(let i = rows.length-1; i > -1; i--) {
 		if(rows[i].querySelector("input").checked == false) {
 			rows[i].remove();
 			modal_user_list.splice(i, 1);
 		}
 	}
+	console.log(modal_user_list);
 	for(let i = 0; i < selected_users.length; i++) {
 		let is_exist = false;
 		for(let j = 0; j < target_users.length; j++) {
@@ -624,7 +642,7 @@ function replaceSelectResult() {
 			modal_user_list.push(selected_users[i]);
 			const row = document.createElement("div");
 			row.className = "row";
-			row.innerHTML = `<img src="/static/images/${selected_users[i].has_profile_image == true ? 'user_profile_images/' + selected_users[i].file_name : 'basic_profile_image.jpg'}">
+			row.innerHTML = `<img src="/static/${selected_users[i].has_profile_image == true ? 'file_upload' + selected_users[i].file_name : 'images/basic_profile_image.jpg'}">
 						    				  <div class="user-info">
 						    					  <span class="username">${selected_users[i].username}</span>
 						    					  <span class="name">${selected_users[i].name}</span>
@@ -653,6 +671,7 @@ function toggleUserToTarget(event, index) {
 			if(tags[i].innerText == modal_user_list[index].username) {
 				tags[i].remove();
 				target_users.splice(i, 1);
+				break;
 			}
 		}
 	} else {
@@ -685,8 +704,8 @@ function activeNewTargetModal() {
 	initializeModal();
 	$.ajax({
 		type: "get",
-		url: "/follow/select-followers",
-		data: { "count_indicator": 0},
+		url: "/follow/followers/0",
+		headers: { "Authorization": token },
 		async: false,
 		dataType: "text",
 		success: function (data) {

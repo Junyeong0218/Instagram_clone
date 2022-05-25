@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="/static/css/short_footer.css">
     <link rel="stylesheet" href="/static/css/search/search.css">
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script type="text/javascript" src="/static/js/principal.js"></script>
 </head>
 
 <body>

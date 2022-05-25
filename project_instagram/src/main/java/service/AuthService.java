@@ -9,7 +9,9 @@ public interface AuthService {
 	
 	public boolean checkOriginPassword(User user);
 	
-	public User getUser(String username);
+	public User getUserByUsername(String username);
+	
+	public User getUserById(int user_id);
 	
 	public User signin(User user);
 	

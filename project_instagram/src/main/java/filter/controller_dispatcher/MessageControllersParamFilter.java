@@ -51,12 +51,11 @@ public class MessageControllersParamFilter implements Filter {
 		
 		if(uris.length == 2) {
 			try {
-				// /message allows GET PUT DELETE
+				// /message allows GET DELETE
 				int message_id = Integer.parseInt(uris[1]);
 				request.setAttribute("message_id", message_id);
 				
 				if(method.equals(RequestMethod.GET) ||
-					method.equals(RequestMethod.PUT) ||
 					method.equals(RequestMethod.DELETE)) {
 					request.getRequestDispatcher(MESSAGE).forward(request, response);
 				} else {

@@ -10,17 +10,18 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import entity.Activity;
+import entity.JwtProperties;
+import entity.SecurityContext;
 import entity.User;
 import repository.FollowDao;
 import repository.NewActivityDao;
 import service.FollowService;
 import service.FollowServiceImpl;
 
-@WebServlet("/follow/select-activities")
-public class SelectActivities extends HttpServlet {
+@WebServlet("/follow/activities")
+public class ActivityController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private FollowService followService;
@@ -35,10 +36,9 @@ public class SelectActivities extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		User user = (User) session.getAttribute("user");
+		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
 		
-		List<Activity> activities = followService.selectActivities(user.getId());
+		List<Activity> activities = followService.selectActivities(sessionUser.getId());
 		
 		System.out.println(activities);
 		

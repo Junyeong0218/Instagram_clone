@@ -19,6 +19,7 @@ public class FollowControllersParamFilter implements Filter {
 	private final String FOLLOWERS = "/follow/followers";
 	private final String FOLLOWINGS = "/follow/followings";
 	private final String FOLLOW_RECOMMENDATION = "/follow/recommendation";
+	private final String ACTIVITIES = "/follow/activities";
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -33,7 +34,7 @@ public class FollowControllersParamFilter implements Filter {
 		String method = req.getMethod();
 		System.out.println("method : " + method);
 		
-		if(uri.equals(FOLLOW_USER) || uri.equals(FOLLOW_HASHTAG) || uri.equals(FOLLOWERS) || uri.equals(FOLLOWINGS)) {
+		if(uri.equals(FOLLOW_USER) || uri.equals(FOLLOW_HASHTAG) || uri.equals(FOLLOWERS) || uri.equals(FOLLOWINGS) || uri.equals(ACTIVITIES)) {
 			chain.doFilter(request, response);
 			return;
 		} else if(uri.equals(FOLLOW_RECOMMENDATION) && method.equals(RequestMethod.GET)) {

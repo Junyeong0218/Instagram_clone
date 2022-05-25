@@ -157,7 +157,7 @@
 						</div>
 					</div>
 				</form>
-				<form class="password-form hidden" action="/update-password" method="post">
+				<form class="password-form hidden" >
 					<div class="userinfo-profile-image">
 						<img src="/static/images/basic_profile_image.jpg" alt="프로필">
 						
@@ -186,8 +186,7 @@
 					<div class="userinfo-input-wrapper">
 						<span class="field-name"></span>
 						<div class="form-buttons">
-							<button class="password-submit-button disabled" type="submit"
-								disabled>비밀번호 변경</button>
+							<button class="password-submit-button disabled" type="button" disabled>비밀번호 변경</button>
 							<button type="button">비밀번호를 잊으셨나요?</button>
 						</div>
 					</div>

@@ -43,7 +43,7 @@ function appendTargetUserData(data) {
 	target_user_follow_info.querySelector(".follower").innerText = data.follower;
 	target_user_follow_info.querySelector(".following").innerText = data.following;
 	if(data.has_profile_image == "true") {
-		userinfo_profile_image.src = "/static/file_upload/user_profile_image/" + data.file_name;
+		userinfo_profile_image.src = "/static/file_upload" + data.file_name;
 	}
 	target_userinfo.innerHTML = `<span class="target-username">${data.username}</span>`;
 	if(principal.id == data.user_id) {

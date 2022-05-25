@@ -27,7 +27,7 @@ let files = new Array();
 let last_file_index = 0;
 
 if(principal.has_profile_image == "true") {
-	new_file_picker_principal.querySelector("img").src = "/static/file_upload/user_profile_images/" + principal.file_name;
+	new_file_picker_principal.querySelector("img").src = "/static/file_upload" + principal.file_name;
 }
 new_file_picker_principal.querySelector("span").innerText = principal.username;
 

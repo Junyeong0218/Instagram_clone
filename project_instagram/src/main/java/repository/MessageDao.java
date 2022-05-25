@@ -22,7 +22,11 @@ public interface MessageDao {
 	
 	public List<RoomInfo> selectRoomInfoForInit(int user_id);
 	
-	public List<Integer> toggleMessageReaction(int user_id, int message_id);
+	public List<Integer> insertMessageReaction(int user_id, int message_id);
+
+	public List<Integer> deleteMessageReaction(int user_id, int message_id);
+	
+	public int updateMessageToDelete(int message_id);
 	
 	public List<Integer> selectRoomIdByMessageId(List<Integer> message_ids);
 }

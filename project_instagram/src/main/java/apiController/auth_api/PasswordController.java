@@ -9,8 +9,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
+import org.mindrot.jbcrypt.BCrypt;
+
+import entity.JwtProperties;
+import entity.SecurityContext;
 import entity.User;
 import repository.UserDao;
 import service.AuthService;
@@ -31,7 +34,7 @@ public class PasswordController extends HttpServlet{
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		User sessionUser = (User) request.getSession().getAttribute("user");
+		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
 		String targetPassword = request.getParameter("password");
 		
 		User user = User.builder()
@@ -47,12 +50,13 @@ public class PasswordController extends HttpServlet{
 	
 	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		User sessionUser = (User) session.getAttribute("user");
-		System.out.println(request.getParameter("password"));
+		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
+		String requestBody = new String(request.getInputStream().readAllBytes(), "UTF-8");
+		String passwordParam = requestBody.replaceAll("[\\{\\}]", "").split(":")[1].replaceAll("\"", "");
+		System.out.println(passwordParam);
 		User requestDto = User.builder()
 													  .id(sessionUser.getId())
-													  .password(request.getParameter("password"))
+													  .password(BCrypt.hashpw(passwordParam, BCrypt.gensalt()))
 													  .build();
 		System.out.println(requestDto);
 		
@@ -60,9 +64,9 @@ public class PasswordController extends HttpServlet{
 		
 		response.setContentType("text/html; charset=UTF-8");
 		if(result == 1) {
-			response.getWriter().print("<script>alert(\"비밀번호 변경에 성공했습니다.\\n다시 로그인해주세요.\"); location.href=\"/logout\";</script>");
+			response.getWriter().print(true);
 		} else {
-			response.getWriter().print("<script>alert(\"비밀번호 변경에 실패했습니다.\\n다시 시도해주세요.\"); location.href=\"/userinfo\";</script>");
+			response.getWriter().print(false);
 		}
 	}
 }

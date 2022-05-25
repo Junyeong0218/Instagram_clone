@@ -34,6 +34,32 @@ public class FileService {
 		return isExist;
 	}
 	
+	public static String uploadProfileImage(Collection<Part> collection, String dir) throws IOException {
+		file = new File(dir);
+		String fileName = null;
+		
+		Iterator<Part> iterator = collection.iterator();
+		while(iterator.hasNext()) {
+			Part part = iterator.next();
+			if(part.getName().equals("file")) {
+				fis = part.getInputStream();
+				fileName = part.getSubmittedFileName();
+				Path filePath = Paths.get(dir + "/" + fileName);
+				
+				try {
+					Files.write(filePath, fis.readAllBytes());
+				} catch (Exception e) {
+					System.out.println("file upload failed!");
+					return null;
+				}
+			}
+		}
+		fis = null;
+		path = null;
+		file = null;
+		return fileName;
+	}
+	
 	public static String uploadImageMessage(Collection<Part> collection, String dir) throws IOException {
 		file = new File(dir);
 		if(!file.exists()) file.mkdirs();
@@ -43,7 +69,7 @@ public class FileService {
 		while(iterator.hasNext()) {
 			Part part = iterator.next();
 			if(part.getName().equals("file")) {
-				InputStream fis = part.getInputStream();
+				fis = part.getInputStream();
 				fileName = UUID.randomUUID().toString().replace("-", "") + "-" + part.getSubmittedFileName();
 				Path filePath = Paths.get(dir + fileName);
 				
@@ -55,6 +81,9 @@ public class FileService {
 				}
 			}
 		}
+		fis = null;
+		path = null;
+		file = null;
 		return fileName;
 	}
 	

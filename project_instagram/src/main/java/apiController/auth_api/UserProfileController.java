@@ -66,6 +66,5 @@ public class UserProfileController extends HttpServlet {
 		
 		response.setContentType("text/plain; charset=UTF-8");
 		response.getWriter().print(sb.toString());
-		// json stringify 출력 필요
 	}
 }

@@ -46,7 +46,6 @@ profile_image_input.onchange = previewInputImage;
 userinfo_submit_button.onclick = () => {
 	if(profile_image_input.files.length > 0) changeImageFileName();
 	const formData = {};
-	formData.file = profile_image_input.files[0] == null ? null : profile_image_input.files[0];
 	for(let i = 0; i < userinfo_inputs.length; i++) {
 		const input_name = userinfo_inputs[i].name;
 		if(input_name == "file" || input_name == "recommend") continue;
@@ -59,9 +58,13 @@ userinfo_submit_button.onclick = () => {
 			formData["" + input_name] = userinfo_inputs[i].value;
 		}
 	}
+	formData.description = description.value;
 	console.log(formData);
 	let data = new FormData(document.createElement("form"));
 	data.append("formData", JSON.stringify(formData));
+	if(profile_image_input.files[0] != null) {
+		data.append("file", profile_image_input.files[0]);
+	}
 	
 	$.ajax({
 		type: "put",
@@ -74,6 +77,11 @@ userinfo_submit_button.onclick = () => {
 		dataType: "text",
 		success: function (data) {
 			console.log(data);
+			if(data == "true") {
+				location.reload();
+			} else {
+				alert("정보 변경에 실패했습니다.");
+			}
 		},
 		error: function (xhr, status) {
 			console.log(xhr);
@@ -81,21 +89,48 @@ userinfo_submit_button.onclick = () => {
 			/*정보 변경이 정상적으로 이루어지지 않았습니다. 다시 시도해주세요.*/
 		}
 	});
-	/*userinfo_form.submit();*/
 }
 
 password_inputs[0].onblur = checkOriginPassword;
 password_inputs[1].onblur = checkPasswordEquality;
 password_inputs[2].onblur = checkPasswordEquality;
 
+password_submit_button.onclick = () => {
+	/*const formData = new FormData();
+	formData.append("password", password_inputs[1].value);*/
+	console.log(password_inputs[1].value);
+	$.ajax({
+		type: "put",
+		url: "/auth/password",
+		headers: { "Authorization": token}, 
+		data: JSON.stringify({ "password": password_inputs[1].value }),
+		encType: "application/json; charset=UTF-8",
+		dataType: "text",
+		success: function (data) {
+			console.log(data);
+			if(data == "true") {
+				alert("비밀번호 변경이 완료되었습니다!\n로그인 화면으로 이동합니다.");
+				location.href = "/auth/logout";
+			} else {
+				alert("비밀번호 변경에 실패했습니다.");
+			}
+		},
+		error: function (xhr, status) {
+			console.log(xhr);
+			console.log(status);
+		}
+	});
+}
+
 // --------------------------------------------------
 // functions
 
 function initUserData() {
 	if(principal.has_profile_image == "true") {
+		console.log("has_profile_image == true");
 		const userinfo_profile_images = document.querySelectorAll(".userinfo-profile-image");
 		userinfo_profile_images.forEach(e => {
-			e.src = "/static/file_upload/user_profile_images/" + principal.file_name;
+			e.querySelector("img").src = "/static/file_upload" + principal.file_name;
 		});
 	}
 	userinfo_form.querySelector(".username").innerText = principal.username;

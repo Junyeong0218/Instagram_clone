@@ -1,5 +1,7 @@
 package service;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.mindrot.jbcrypt.BCrypt;
 
 import config.FileUploadPathConfig;
@@ -33,8 +35,17 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public User getUser(String username) {
-		User user = userDao.getUser(username);
+	public User getUserByUsername(String username) {
+		User user = userDao.getUserByUsername(username);
+		if(user.getFile_name() != null) {
+			user.setFile_name(FileUploadPathConfig.getProfileImagePath(user.getFile_name()));
+		}
+		return user;
+	}
+	
+	@Override
+	public User getUserById(int user_id) {
+		User user = userDao.getUserById(user_id);
 		if(user.getFile_name() != null) {
 			user.setFile_name(FileUploadPathConfig.getProfileImagePath(user.getFile_name()));
 		}
@@ -45,7 +56,7 @@ public class AuthServiceImpl implements AuthService {
 	public User signin(User user) {
 		String db_password = userDao.selectPassword(user.getUsername());
 		if(BCrypt.checkpw(user.getPassword(), db_password)) {
-			User userDetail = userDao.getUser(user.getUsername());
+			User userDetail = userDao.getUserByUsername(user.getUsername());
 			if(userDetail.getFile_name() != null) {
 				userDetail.setFile_name(FileUploadPathConfig.getProfileImagePath(userDetail.getFile_name()));
 			}
@@ -61,6 +72,7 @@ public class AuthServiceImpl implements AuthService {
 	
 	@Override
 	public int updateUserinfo(User sessionUser, User user) {
+		user.setId(sessionUser.getId());
 		int result = 0;
 		if(user.getFile_name() != null) {
 			user.setHas_profile_image(true);
@@ -68,7 +80,15 @@ public class AuthServiceImpl implements AuthService {
 		}
 		else user.setHas_profile_image(false);
 
-		result += userDao.updateUserinfo(user);
+		try {
+			result += userDao.updateUserinfo(sessionUser, user);
+		} catch (IllegalAccessException e) {
+			System.out.println(e.getClass().getName());
+		} catch (IllegalArgumentException e) {
+			System.out.println(e.getClass().getName());
+		} catch (InvocationTargetException e) {
+			System.out.println(e.getClass().getName());
+		}
 		
 		return result;
 	}

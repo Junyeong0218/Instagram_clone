@@ -10,9 +10,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import config.FileUploadPathConfig;
+import entity.JwtProperties;
+import entity.SecurityContext;
 import entity.User;
 import repository.MessageDao;
 import repository.NewActivityDao;
@@ -47,25 +48,26 @@ public class MessageController extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		User sessionUser = (User) session.getAttribute("user");
+		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
 		
 		int room_id = Integer.parseInt(request.getParameter("room_id"));
 		boolean result = false;
-
-		if(FileService.hasFile(request.getParts())) {
-			// insert image type direct message
-			String fileName = null;
-			
-			try {
-				fileName = FileService.uploadImageMessage(request.getParts(), FileUploadPathConfig.getFileUploadPath() + "/message_images/");
-			} catch (IOException e) {
-				System.out.println(this.getClass().getName() + " :::: file upload failed!");
-				fileName = null;
-			}
-			
-			if(fileName != null) {
-				result = messageService.insertDirectImageMessage(sessionUser.getId(), room_id, fileName);
+		
+		if(request.getContentType().contains("multipart/form-data")) {
+			if(FileService.hasFile(request.getParts())) {
+				// insert image type direct message
+				String fileName = null;
+				
+				try {
+					fileName = FileService.uploadImageMessage(request.getParts(), FileUploadPathConfig.getFileUploadPath() + "/message_images/");
+				} catch (IOException e) {
+					System.out.println(this.getClass().getName() + " :::: file upload failed!");
+					fileName = null;
+				}
+				
+				if(fileName != null) {
+					result = messageService.insertDirectImageMessage(sessionUser.getId(), room_id, fileName);
+				}
 			}
 		} else {
 			// insert text type direct message
@@ -79,14 +81,13 @@ public class MessageController extends HttpServlet {
 	}
 	
 	@Override
-	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// message_id 로 내용 수정
-		int message_id = (Integer) request.getAttribute("message_id");
-	}
-	
-	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// message_id 로 메시지 삭제
+		// message_id 로 메시지 삭제 ( /message/{message_id}
 		int message_id = (Integer) request.getAttribute("message_id");
+		
+		boolean result = messageService.updateMessageToDelete(message_id);
+		
+		response.setContentType("text/plain; charset=UTF-8");
+		response.getWriter().print(result);
 	}
 }

@@ -208,7 +208,7 @@ public class MessageDaoImpl implements MessageDao {
 				rs.last();
 				row_count = rs.getRow();
 				
-				if(row_count == target_user_ids.size() + 1) {
+				if(row_count > target_user_ids.size() + 1) {
 					rs.first();
 					room_id = rs.getInt("room_id");
 				}
@@ -243,7 +243,7 @@ public class MessageDaoImpl implements MessageDao {
 			
 			if(result > 0) {
 				pstmt.close();
-				sql = "select id from direct_message_room_mst where made_user_id = ? order by create_date desc;";
+				sql = "select id from direct_message_room_mst where made_user_id = ? order by create_date desc limit 1;";
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setInt(1, user_id);
 				rs = pstmt.executeQuery();
@@ -420,7 +420,7 @@ public class MessageDaoImpl implements MessageDao {
 	}
 	
 	@Override
-	public List<Integer> toggleMessageReaction(int user_id, int message_id) {
+	public List<Integer> insertMessageReaction(int user_id, int message_id) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -430,35 +430,14 @@ public class MessageDaoImpl implements MessageDao {
 		
 		try {
 			conn = db.getConnection();
-			sql = "select id from direct_message_reaction where user_id = ? and direct_message_id = ?;";
+			sql = "insert into direct_message_reaction values(0, ?, ?, now(), now());";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, user_id);
 			pstmt.setInt(2, message_id);
-			rs = pstmt.executeQuery();
-			
-			int id  = 0;
-			
-			if(rs.next()) {
-				id = rs.getInt("id");
-			}
-			
-			pstmt.close();
-			
-			if(id == 0) {
-				sql = "insert into direct_message_reaction values(0, ?, ?, now(), now());";
-			} else {
-				sql = "delete from direct_message_reaction where user_id = ? and direct_message_id = ?;";
-			}
-			
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, user_id);
-			pstmt.setInt(2, message_id);
-			
 			result = pstmt.executeUpdate();
 			
 			if(result == 1) {
 				pstmt.close();
-				rs.close();
 				sql = "select user_id from direct_message_reaction where direct_message_id = ?";
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setInt(1, message_id);
@@ -478,6 +457,71 @@ public class MessageDaoImpl implements MessageDao {
 		}
 		
 		return like_users;
+	}
+
+	@Override
+	public List<Integer> deleteMessageReaction(int user_id, int message_id) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		int result = 0;
+		List<Integer> like_users = new ArrayList<Integer>();
+		
+		try {
+			conn = db.getConnection();
+			sql = "delete from direct_message_reaction where user_id = ? and direct_message_id = ?;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, user_id);
+			pstmt.setInt(2, message_id);
+			result = pstmt.executeUpdate();
+			
+			if(result == 1) {
+				pstmt.close();
+				sql = "select user_id from direct_message_reaction where direct_message_id = ?";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, message_id);
+				
+				rs = pstmt.executeQuery();
+				
+				while(rs.next()) {
+					like_users.add(rs.getInt("user_id"));
+				}
+			}
+		} catch (SQLDataException e) {
+			System.out.println("no row!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt, rs);
+		}
+		
+		return like_users;
+	}
+	
+	@Override
+	public int updateMessageToDelete(int message_id) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String sql = null;
+		int result = 0;
+		
+		try {
+			conn = db.getConnection();
+			sql = "update direct_message_mst set deleted_flag = true, delete_data = now() where id = ?;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, message_id);
+			
+			result = pstmt.executeUpdate();
+		} catch (SQLDataException e) {
+			System.out.println("no row!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt);
+		}
+		
+		return result;
 	}
 	
 	@Override
