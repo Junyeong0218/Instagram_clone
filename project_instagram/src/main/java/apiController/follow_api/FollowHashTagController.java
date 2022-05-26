@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import entity.HashTag;
-import entity.JwtProperties;
-import entity.SecurityContext;
 import entity.User;
 import repository.FollowDao;
 import repository.NewActivityDao;
@@ -36,7 +34,7 @@ public class FollowHashTagController extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
+		User sessionUser = (User) request.getAttribute("sessionUser");
 		int page_indicator = (int) request.getAttribute("page_indicator");
 		// select following hashtags
 		
@@ -67,7 +65,7 @@ public class FollowHashTagController extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
+		User sessionUser = (User) request.getAttribute("sessionUser");
 		int hash_tag_id = (int) request.getAttribute("hash_tag_id");
 		// insert follow hashtag
 		int result = followService.insertFollowHashTag(hash_tag_id, sessionUser.getId());
@@ -78,7 +76,7 @@ public class FollowHashTagController extends HttpServlet {
 	
 	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
+		User sessionUser = (User) request.getAttribute("sessionUser");
 		int hash_tag_id = (int) request.getAttribute("hash_tag_id");
 		// delete follow hashtag
 		int result = followService.deleteFollowHashTag(hash_tag_id, sessionUser.getId());

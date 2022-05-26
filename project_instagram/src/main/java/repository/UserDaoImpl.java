@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLDataException;
 
 import db.DBConnectionMgr;
+import entity.SecurityContext;
 import entity.User;
 
 public class UserDaoImpl implements UserDao {
@@ -168,6 +169,7 @@ public class UserDaoImpl implements UserDao {
 	public int signup(User user) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		StringBuilder sb = new StringBuilder();
 		boolean isEmail = user.getEmail().contains("@");
 		int result = 0;
@@ -188,6 +190,45 @@ public class UserDaoImpl implements UserDao {
 			pstmt.setString(4, user.getEmail());
 			
 			result = pstmt.executeUpdate();
+			
+			int secret_key_count = 0;
+			if(result == 1) {
+				pstmt.close();
+				sb.delete(0, sb.length());
+				sb.append("select id from user_mst where username = ?;");
+				pstmt = conn.prepareStatement(sb.toString());
+				pstmt.setString(1, user.getUsername());
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					user.setId(rs.getInt("id"));
+				}
+				
+				String uuid = null;
+				boolean isExist = true;
+				while(isExist) {
+					pstmt.close();
+					rs.close();
+					sb.delete(0, sb.length());
+					uuid = SecurityContext.getInstance().generateUUID();
+					sb.append("select count(secret_key) from user_auth_token where secret_key = ?;");
+					pstmt = conn.prepareStatement(sb.toString());
+					pstmt.setString(1, uuid);
+					rs = pstmt.executeQuery();
+					
+					if(rs.next()) {
+						secret_key_count = rs.getInt(1);
+					}
+					if(secret_key_count == 0) isExist = false;
+				}
+				sb.delete(0, sb.length());
+				sb.append("update user_auth_token set secret_key = ? where user_id = ?;");
+				pstmt = conn.prepareStatement(sb.toString());
+				pstmt.setString(1, uuid);
+				pstmt.setInt(1, user.getId());
+				
+				result += pstmt.executeUpdate();
+			}
 		} catch (SQLDataException e) {
 			System.out.println("no row");
 		} catch (Exception e) {
@@ -205,41 +246,31 @@ public class UserDaoImpl implements UserDao {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql = "select "
-						+ "um.*, "
-						+ "`up`.file_name "
-					+ "from "
-						+ "user_mst um "
-						+ "left outer join user_profile_image `up` on(um.id = `up`.user_id) "
-					+ "where "
-						+ "um.username = ? and um.disable_flag = 0;";
+								+ "um.id, "
+								+ "um.username, "
+								+ "um.`name`, "
+								+ "um.role, "
+								+ "uat.secret_key "
+							+ "from "
+								+ "user_mst um "
+								+ "left outer join user_auth_token uat on(uat.user_id = um.id) "
+							+ "where "
+								+ "um.username = ?;";
 		User user = null;
 		
 		try {
 			conn = db.getConnection();
 			pstmt = conn.prepareStatement(sql);
-
-			// set params
 			pstmt.setString(1, username);
 			
 			rs = pstmt.executeQuery();
-			// rs 가 null 인 상태에서 next() 호출 시 SQLDataException
-			
-			while(rs.next()) {
+			if(rs.next()) {
 				user = new User();
 				user.setId(rs.getInt("id"));
 				user.setUsername(rs.getString("username"));
-				user.setPassword(rs.getString("password"));
 				user.setName(rs.getString("name"));
-				user.setEmail(rs.getCharacterStream("email") == null ? "" : rs.getString("email"));
-				user.setPhone(rs.getCharacterStream("phone") == null ? "" : rs.getString("phone"));
-				user.setWebsite(rs.getCharacterStream("website") == null ? "" : rs.getString("website"));
-				user.setDescription(rs.getCharacterStream("description") == null ? "" : rs.getString("description"));
-				user.setGender(rs.getInt("gender"));
-				user.setHas_profile_image(rs.getInt("has_profile_image") == 1 ? true : false);
-				user.setLast_username_update_date(rs.getTimestamp("last_username_update_date").toLocalDateTime());
-				user.setCreate_date(rs.getTimestamp("create_date").toLocalDateTime());
-				user.setUpdate_date(rs.getTimestamp("update_date").toLocalDateTime());
-				user.setFile_name(rs.getCharacterStream("file_name") == null ? "" : rs.getString("file_name"));
+				user.setRole(rs.getString("role"));
+				user.setSecret_key(rs.getString("secret_key"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -257,9 +288,11 @@ public class UserDaoImpl implements UserDao {
 		ResultSet rs = null;
 		String sql = "select "
 						+ "um.*, "
+						+ "ud.has_profile_image, "
 						+ "`up`.file_name "
 					+ "from "
 						+ "user_mst um "
+						+ "left outer join user_detail ud on(ud.user_id = um.id) "
 						+ "left outer join user_profile_image `up` on(um.id = `up`.user_id) "
 					+ "where "
 						+ "um.id = ? and um.disable_flag = 0;";
@@ -268,8 +301,6 @@ public class UserDaoImpl implements UserDao {
 		try {
 			conn = db.getConnection();
 			pstmt = conn.prepareStatement(sql);
-
-			// set params
 			pstmt.setInt(1, user_id);
 			
 			rs = pstmt.executeQuery();
@@ -279,17 +310,10 @@ public class UserDaoImpl implements UserDao {
 				user = new User();
 				user.setId(rs.getInt("id"));
 				user.setUsername(rs.getString("username"));
-				user.setPassword(rs.getString("password"));
 				user.setName(rs.getString("name"));
 				user.setEmail(rs.getCharacterStream("email") == null ? "" : rs.getString("email"));
 				user.setPhone(rs.getCharacterStream("phone") == null ? "" : rs.getString("phone"));
-				user.setWebsite(rs.getCharacterStream("website") == null ? "" : rs.getString("website"));
-				user.setDescription(rs.getCharacterStream("description") == null ? "" : rs.getString("description"));
-				user.setGender(rs.getInt("gender"));
 				user.setHas_profile_image(rs.getInt("has_profile_image") == 1 ? true : false);
-				user.setLast_username_update_date(rs.getTimestamp("last_username_update_date").toLocalDateTime());
-				user.setCreate_date(rs.getTimestamp("create_date").toLocalDateTime());
-				user.setUpdate_date(rs.getTimestamp("update_date").toLocalDateTime());
 				user.setFile_name(rs.getCharacterStream("file_name") == null ? "" : rs.getString("file_name"));
 			}
 		} catch (Exception e) {
@@ -413,6 +437,78 @@ public class UserDaoImpl implements UserDao {
 		}
 		
 		return result;
+	}
+	
+	@Override
+	public int registerJwtToken(int user_id, String jwt) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String sql = "";
+		int result = 0;
+		
+		try {
+			conn = db.getConnection();
+			sql = "update user_auth_token set jwt_token = ? where user_id = ?;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, jwt);
+			pstmt.setInt(2, user_id);
+			
+			result = pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt);
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public int updateJwtToken(int user_id, String jwt) {
+		return registerJwtToken(user_id, jwt);
+	}
+	
+	@Override
+	public User selectTokenInfo(String jwt) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "";
+		User user = null;
+		
+		try {
+			conn = db.getConnection();
+			sql = "select "
+						+ "um.id, "
+						+ "um.username, "
+						+ "um.name,"
+						+ "um.role,"
+						+ "uat.secret_key "
+					+ "from "
+						+ "user_auth_token uat "
+						+ "left outer join user_mst um on(um.id = uat.user_id) "
+					+ "where "
+						+ "uat.jwt_token = ?;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, jwt);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				user = new User();
+				user.setId(rs.getInt("id"));
+				user.setUsername(rs.getString("username"));
+				user.setName(rs.getString("name"));
+				user.setRole(rs.getString("role"));
+				user.setSecret_key(rs.getString("secret_key"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt);
+		}
+		
+		return user;
 	}
 	
 }

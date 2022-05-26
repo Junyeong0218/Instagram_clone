@@ -17,7 +17,6 @@ public class MessageControllersParamFilter implements Filter {
 	private final String MESSAGE = "/message";
 	private final String MESSAGE_ROOMS = "/message/rooms";
 	private final String MESSAGE_ROOM = "/message/room";
-	private final String MESSAGE_ROOM_FLAG = "/message/room/flag";
 	private final String MESSAGE_REACTION = "/message/reaction";
 	
 	@Override
@@ -33,7 +32,7 @@ public class MessageControllersParamFilter implements Filter {
 		String method = req.getMethod();
 		System.out.println("method : " + method);
 		
-		if(uri.equals(MESSAGE_ROOMS) || uri.equals(MESSAGE_ROOM) || uri.equals(MESSAGE_ROOM_FLAG) || uri.equals(MESSAGE_REACTION)) {
+		if(uri.equals(MESSAGE_ROOMS) || uri.equals(MESSAGE_ROOM) || uri.equals(MESSAGE_REACTION)) {
 			chain.doFilter(request, response);
 			return;
 		} else if(uri.equals(MESSAGE) && method.equals(RequestMethod.POST)) {
@@ -92,16 +91,7 @@ public class MessageControllersParamFilter implements Filter {
 						resp.sendError(404, "invalid Method");
 					}
 				} catch (NumberFormatException e) {
-					if(uris[2].equals("flag")) {
-						// /message/reaction/flag allows only GET method
-						if(method.equals(RequestMethod.GET)) {
-							request.getRequestDispatcher(MESSAGE_ROOM_FLAG).forward(request, response);
-						} else {
-							resp.sendError(404, "invalid Method");
-						}
-					} else {
-						resp.sendError(404, "bad request");
-					}
+					resp.sendError(404, "bad request");
 				}
 			} else if(uris[1].equals("reaction")) {
 				try {

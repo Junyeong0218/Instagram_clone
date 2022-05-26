@@ -31,24 +31,9 @@ public class CharsetEncodingFilter implements Filter {
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		ServletContext servletContext = filterConfig.getServletContext();
-		FileUploadPathConfig.setFile_upload_path(filterConfig.getServletContext().getRealPath("/static/file_upload"));
-		System.out.println(FileUploadPathConfig.getFileUploadPath());
-		UserDao userDao = new UserDaoImpl();
-		ArticleDao articleDao = new ArticleDaoImpl();
-		FollowDao followDao = new FollowDaoImpl();
-		StoryDao storyDao = new StoryDaoImpl();
-		SearchDao searchDao = new SearchDaoImpl();
-		MessageDao messageDao = new MessageDaoImpl();
-		NewActivityDao newActivityDao = new NewActivityDaoImpl();
-		NonReadActivities.createInstance();
-		servletContext.setAttribute("userDao", userDao);
-		servletContext.setAttribute("articleDao", articleDao);
-		servletContext.setAttribute("followDao", followDao);
-		servletContext.setAttribute("storyDao", storyDao);
-		servletContext.setAttribute("searchDao", searchDao);
-		servletContext.setAttribute("messageDao", messageDao);
-		servletContext.setAttribute("newActivityDao", newActivityDao);
+		System.out.println("charset filter initialize!");
+		
+		System.out.println("charset filter initialize finish! ----------------------------");
 	}
 
 	@Override

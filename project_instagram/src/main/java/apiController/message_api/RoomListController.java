@@ -11,8 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import entity.JwtProperties;
-import entity.SecurityContext;
 import entity.User;
 import repository.MessageDao;
 import response_dto.RoomSummaryResDto;
@@ -34,13 +32,12 @@ public class RoomListController extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
+		User sessionUser = (User) request.getAttribute("sessionUser");
 		
 		List<RoomSummaryResDto> rooms = messageService.selectRoomInfoForInit(sessionUser.getId());
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append(" { \"user_id\": \"" + sessionUser.getId() + "\", " + 
-								"\"room_summary\": [ ");
+		sb.append(" [ ");
 		for(RoomSummaryResDto room : rooms) {
 			sb.append(" { \"room_id\": \"" + room.getRoom_id() + "\", " +
 									"\"entered_users\" : [ ");
@@ -61,7 +58,7 @@ public class RoomListController extends HttpServlet {
 									"\"read_message_count\": \"" + room.getRead_message_count() + "\" }, ");
 		}
 		if(rooms.size() > 0) sb.replace(sb.lastIndexOf(","), sb.length(), "");
-		sb.append(" ] }");
+		sb.append(" ] ");
 		System.out.println(sb.toString());
 		
 		response.setContentType("text/plain; charset=UTF-8");

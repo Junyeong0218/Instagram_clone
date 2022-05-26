@@ -11,8 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import entity.JwtProperties;
-import entity.SecurityContext;
 import entity.User;
 import repository.StoryDao;
 import response_dto.RecentStoryResDto;
@@ -34,7 +32,7 @@ public class RecentStoriesController extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
+		User sessionUser = (User) request.getAttribute("sessionUser");
 		
 		List<RecentStoryResDto> storyList = storyService.selectRecentStories(sessionUser.getId());
 		

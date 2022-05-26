@@ -13,8 +13,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import entity.JwtProperties;
-import entity.SecurityContext;
 import entity.User;
 import repository.MessageDao;
 import repository.NewActivityDao;
@@ -38,7 +36,7 @@ public class RoomController extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
+		User sessionUser = (User) request.getAttribute("sessionUser");
 		int room_id = (Integer) request.getAttribute("room_id");
 		
 		List<MessageResDto> messages = messageService.selectMessages(sessionUser.getId(), room_id);
@@ -70,7 +68,7 @@ public class RoomController extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
+		User sessionUser = (User) request.getAttribute("sessionUser");
 		
 		String[] target_users = request.getParameterValues("target_users[]");
 		List<Integer> target_user_ids = Arrays.stream(target_users).map(e -> Integer.parseInt(e))

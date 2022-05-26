@@ -31,6 +31,8 @@ public class User {
 	private LocalDateTime create_date;
 	private LocalDateTime update_date;
 	private String role;
+	private String secret_key;
+	private String jwt_token;
 	
 	// ---------------------------- profile_file_name
 	private String file_name;

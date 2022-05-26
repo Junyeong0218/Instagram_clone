@@ -11,9 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import config.RequestMethod;
-import entity.JwtProperties;
-import entity.SecurityContext;
-import entity.User;
 
 public class AuthControllersMethodFilter implements Filter {
 	
@@ -51,9 +48,7 @@ public class AuthControllersMethodFilter implements Filter {
 			chain.doFilter(request, response);
 		} else if(uri.contains("/auth/profile") && method.equals(RequestMethod.GET)) {
 			String targetUsername = uri.replace("/auth/profile/", "");
-			User sessionUser = SecurityContext.certificateUser(req.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
 			request.setAttribute("targetUsername", targetUsername);
-			request.setAttribute("sessionUserId", sessionUser.getId());
 			
 			req.getRequestDispatcher(PROFILE).forward(request, response);
 		} else {

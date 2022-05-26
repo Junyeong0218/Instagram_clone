@@ -11,9 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import entity.JwtProperties;
 import entity.SearchKeyword;
-import entity.SecurityContext;
 import entity.User;
 import repository.SearchDao;
 import service.SearchService;
@@ -34,7 +32,7 @@ public class SearchKeywordController extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
+		User sessionUser = (User) request.getAttribute("sessionUser");
 		
 		String keyword = (String) request.getAttribute("keyword");
 		

@@ -10,8 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import entity.JwtProperties;
-import entity.SecurityContext;
 import entity.User;
 import repository.UserDao;
 import service.AuthService;
@@ -32,7 +30,7 @@ public class PrincipalController extends HttpServlet{
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
+		User sessionUser = (User) request.getAttribute("sessionUser");
 		User userDetail = authService.getUserById(sessionUser.getId());
 		StringBuilder sb = new StringBuilder();
 		sb.append(" { \"id\": \"" + userDetail.getId() + "\", " + 
@@ -40,11 +38,7 @@ public class PrincipalController extends HttpServlet{
 							"\"name\": \"" + userDetail.getName() + "\", " + 
 							"\"email\": \"" + userDetail.getEmail() + "\", " + 
 							"\"phone\": \"" + userDetail.getPhone() + "\", " + 
-							"\"website\": \"" + userDetail.getWebsite() + "\", " + 
-							"\"description\": \"" + userDetail.getDescription() + "\", " + 
-							"\"gender\": \"" + userDetail.getGender() + "\", " + 
 							"\"has_profile_image\": \"" + userDetail.isHas_profile_image() + "\", " + 
-							"\"last_username_update_date\": \"" + userDetail.getLast_username_update_date() + "\", " + 
 							"\"file_name\": \"" + userDetail.getFile_name() + "\" }");
 		
 		response.setContentType("text/plain; charset=UTF-8");

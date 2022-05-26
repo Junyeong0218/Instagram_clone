@@ -58,6 +58,10 @@ function keydownEvent(event) {
             passwordTag.focus();
             return;
         }
+        if (event.target.name == "password" && event.keyCode == 13) {
+            submit_button.click();
+            return;
+        }
         if (!isFunctionKey(event)) {
             event.target.className = "typed-input";
             event.target.parentElement.querySelector("span").className = "typed-span";

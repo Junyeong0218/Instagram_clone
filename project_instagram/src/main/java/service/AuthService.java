@@ -20,5 +20,12 @@ public interface AuthService {
 	public int updateUserinfo(User sessionUser, User user);
 	
 	public int updatePassword(User user);
+	
+	public boolean registerJwtToken(int user_id, String jwt);
+	
+	public boolean updateJwtToken(int user_id, String jwt);
+	
+	public User selectTokenInfo(String jwt);
+	
 
 }

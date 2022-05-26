@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import config.FileUploadPathConfig;
-import entity.JwtProperties;
 import entity.SecurityContext;
 import entity.User;
 import entity.User.UserBuilder;
@@ -62,7 +61,7 @@ public class UserinfoController extends HttpServlet{
 		// 중간에 한글 경로 포함되어 있어도 알아서 파일 넣어줌.
 		// form-data 로 받았을 때의 fileName으로 저장되기 때문에 js로 파일명 변경을 시도했으나, 보안 문제로 input type=file 의 value를 임의로 변경할 수 없었음.
 		// 파일명을 username.extension 으로 변경한 새로운 File 객체를 생성하고 DataTransfer 객체의 items에 add 한 후 input type=file에 덮어쓰기로 해결함.
-		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
+		User sessionUser = (User) request.getAttribute("sessionUser");
 		UserBuilder builder = User.builder();
 		Method[] methods = UserBuilder.class.getMethods();
 		
@@ -104,9 +103,13 @@ public class UserinfoController extends HttpServlet{
 			User updatedUser = authService.getUserByUsername(buildedUser.getUsername());
 			// user_id username name token 재발급
 			// principal setUser
-			SecurityContext.reIssueToken(updatedUser, (String) request.getSession().getAttribute("UUID"));
-			// true
-			response.getWriter().print(true);
+			try {
+				SecurityContext.getInstance().reIssueToken(updatedUser, (String) request.getSession().getAttribute("UUID"));
+				// true
+				response.getWriter().print(true);
+			} catch (NullPointerException e) {
+				System.out.println("security context is not created!!");
+			}
 		} else {
 			response.getWriter().print(false);
 		}

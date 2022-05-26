@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.mindrot.jbcrypt.BCrypt;
 
-import entity.JwtProperties;
-import entity.SecurityContext;
 import entity.User;
 import repository.UserDao;
 import service.AuthService;
@@ -34,7 +32,7 @@ public class PasswordController extends HttpServlet{
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
+		User sessionUser = (User) request.getAttribute("sessionUser");
 		String targetPassword = request.getParameter("password");
 		
 		User user = User.builder()
@@ -50,7 +48,7 @@ public class PasswordController extends HttpServlet{
 	
 	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
+		User sessionUser = (User) request.getAttribute("sessionUser");
 		String requestBody = new String(request.getInputStream().readAllBytes(), "UTF-8");
 		String passwordParam = requestBody.replaceAll("[\\{\\}]", "").split(":")[1].replaceAll("\"", "");
 		System.out.println(passwordParam);

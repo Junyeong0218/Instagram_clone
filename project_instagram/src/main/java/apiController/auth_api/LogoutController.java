@@ -19,8 +19,12 @@ public class LogoutController extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String uuid = (String) request.getSession().getAttribute("UUID");
-		User sessionUser = SecurityContext.certificateUser(SecurityContext.getToken(uuid));
-		SecurityContext.invalidateUser(sessionUser, uuid);
+		User sessionUser = (User) request.getAttribute("sessionUser");
+		try {
+			SecurityContext.getInstance().invalidateUser(sessionUser, uuid);
+		} catch (NullPointerException e) {
+			System.out.println("security context is not created!!");
+		}
 		if(NonReadActivities.eraseUser(sessionUser.getId())) {
 			request.getSession().invalidate();
 			response.sendRedirect("/index");

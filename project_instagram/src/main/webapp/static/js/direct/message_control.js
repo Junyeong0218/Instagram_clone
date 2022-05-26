@@ -30,9 +30,10 @@ let activated_room_index;
 
 window.onload = () => {
 	origin_room_data = loadMessageData();
-	for(let i = 0; i < origin_room_data.room_summary.length; i++) {
-		addRoomListTag(origin_room_data.room_summary[i]);
+	for(let i = 0; i < origin_room_data.length; i++) {
+		addRoomListTag(origin_room_data[i]);
 	}
+	console.log(origin_room_data);
 }
 
 textarea.onkeypress = (event) => {
@@ -139,7 +140,7 @@ function loadMessageData() {
 	return room_data;
 }
 
-function reloadMessageListTags() {
+/*function reloadMessageListTags() {
 	const room_data = loadMessageData();
 	if(origin_room_data != null) {
 		const room_summary = origin_room_data.room_summary;
@@ -191,18 +192,16 @@ function reloadMessageListTags() {
 			}
 		}
 	}
-}
+}*/
 
 function addRoomListTag(room_data) {
-	const session_user_id = origin_room_data.user_id;
-	
 	const user_list = room_data.entered_users;
 	const all_message_count = Number(room_data.all_message_count);
 	const read_message_count = Number(room_data.read_message_count);
 	let represent_user_index;
 	let names = "";
 	for(let j = 0; j < user_list.length; j++) {
-		if(user_list[j].user_id != session_user_id) {
+		if(user_list[j].user_id != principal.id) {
 			represent_user_index = j;
 			names += user_list[j].name + ", ";
 		}
@@ -229,9 +228,8 @@ function addRoomListTag(room_data) {
 function findSelectedRoomIndex() {
 	if(activated_room_data.length == 0) return -1;
 	const room_id = activated_room_data[0].room_id;
-	const room_list = origin_room_data.room_summary;
-	for(let i = 0; i < room_list.length; i++) {
-		if(room_list[i].room_id == room_id) {
+	for(let i = 0; i < origin_room_data.length; i++) {
+		if(origin_room_data[i].room_id == room_id) {
 			return i;
 		}
 	}
@@ -240,12 +238,11 @@ function findSelectedRoomIndex() {
 
 function addMessagesToRoom() {
 	const room_index = findSelectedRoomIndex();
-	const session_user_id = origin_room_data.user_id;
-	const user_list = origin_room_data.room_summary[room_index].entered_users;
+	const user_list = origin_room_data[room_index].entered_users;
 	let represent_user_index;
 	let names = "";
 	for(let j = 0; j < user_list.length; j++) {
-		if(user_list[j].user_id != session_user_id) {
+		if(user_list[j].user_id != principal.id) {
 			represent_user_index = j;
 			names += user_list[j].name + ", ";
 		}
@@ -277,8 +274,8 @@ function addMessagesToRoom() {
 		}
 		
 		const line = document.createElement("div");
-		if(message_info.user_id != session_user_id) { 
-			const entered_users = origin_room_data.room_summary[activated_room_index].entered_users;
+		if(message_info.user_id != principal.id) { 
+			const entered_users = origin_room_data[activated_room_index].entered_users;
 			let sended_user_info;
 			for(let j = 0; j < entered_users.length; j++) {
 				if(entered_users[j].user_id == message_info.user_id) {
@@ -447,7 +444,7 @@ function activeRoom(event) {
 function selectMessages() {
 	$.ajax({
 		type: "get",
-		url: "/message/room/" + origin_room_data.room_summary[activated_room_index].room_id,
+		url: "/message/room/" + origin_room_data[activated_room_index].room_id,
 		headers: { "Authorization": token },
 		dataType: "text",
 		success: function (data) {
@@ -497,22 +494,21 @@ function makeRecentMessageDate(create_date) {
 function addToUserList() {
 	const user_list = user_list_tag.children;
 	let index = -1;
-	const room_list = origin_room_data.room_summary;
-	console.log(room_list);
-	for(let i = 0; i < room_list.length; i++) {
-		if(activated_room_data[0].room_id == room_list[i].room_id) {
+	for(let i = 0; i < origin_room_data.length; i++) {
+		if(activated_room_data[0].room_id == origin_room_data[i].room_id) {
 			index = i;
 			break;
 		}
 	}
 	if(index != -1) {
-		const users = origin_room_data.room_summary[index].entered_users;
+		const users = origin_room_data[index].entered_users;
 		let names = "";
 		for(let i = 0; i < users.length; i++) {
-			if(users[i].user_id != origin_room_data.user_id) {
-				names += i == users.length - 1 ? users[i].name + ", " : users[i].name;
+			if(users[i].user_id != principal.id) {
+				names += users[i].name + ", ";
 			}
 		}
+		names = names.substring(0, names.lastIndexOf(","));
 		if(users.length == 2) names += "님";
 		const button = document.createElement("button");
 		button.type = "button";
@@ -535,25 +531,6 @@ function removeActiveRoomExcept(button) {
 	for(let i = 0; i < user_list.length; i++) {
 		if(user_list[i] != button) user_list[i].classList.remove("active");
 	}
-	
-}
-
-function reloadOriginRoomData() {
-	$.ajax({
-		type: "get",
-		url: "/message/rooms",
-		headers: { "Authorization": token },
-		async: false,
-		dataType: "text",
-		success: function (data) {
-			origin_room_data = JSON.parse(data);
-		},
-		error: function (xhr, status, error) {
-			console.log(xhr);
-			console.log(status);
-			console.log(error);
-		}
-	});
 }
 
 function makeNewRoom() {
@@ -584,10 +561,16 @@ function insertNewRoomToDB() {
 		dataType: "text",
 		success: function (data) {
 			activated_room_data = JSON.parse(data);
-			console.log(activated_room_data);
-			reloadOriginRoomData();
-			addToUserList();
-			/*addMessagesToRoom();*/
+			const newData = loadMessageData();
+			const already_exist = selectNewRoomIndex(origin_room_data);
+			if(already_exist == null || typeof already_exist == "undefined") {
+				const index = selectNewRoomIndex(newData);
+				addRoomListTag(newData[index]);
+				origin_room_data = newData;
+				user_list_tag.children[user_list_tag.children.length - 1].click();
+			} else {
+				user_list_tag.children[already_exist].click();
+			}
 		},
 		error: function (xhr, status, error) {
 			console.log(xhr);
@@ -595,6 +578,14 @@ function insertNewRoomToDB() {
 			console.log(error);
 		}
 	});
+}
+
+function selectNewRoomIndex(newData) {
+	for(let i = 0; i < newData.length; i++) {
+		if(activated_room_data[0].room_id == newData[i].room_id) {
+			return i;
+		}
+	}
 }
 
 function selectUser(event) {
@@ -683,7 +674,7 @@ function toggleUserToTarget(event, index) {
 		div.querySelector("button").onclick = deleteCheck;
 	}
 	activeNextButton();
-	console.log(target_users);
+	console.log("target_users : " + target_users);
 }
 
 function deleteCheck(event) {

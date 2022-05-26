@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import entity.ArticleMedia;
+import entity.User;
 import repository.FollowDao;
 import response_dto.ArticleResDto;
 import response_dto.UserProfileResDto;
@@ -34,7 +35,7 @@ public class UserProfileController extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String targetUsername = (String) request.getAttribute("targetUsername");
-		int sessionUserId = (int) request.getAttribute("sessionUserId");
+		int sessionUserId = ((User) request.getAttribute("sessionUser")).getId();
 
 		UserProfileResDto resDto = followService.selectUserProfileInfo(targetUsername, sessionUserId);
 		System.out.println(resDto);

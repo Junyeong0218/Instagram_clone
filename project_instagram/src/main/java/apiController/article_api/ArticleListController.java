@@ -35,7 +35,7 @@ public class ArticleListController extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
+		User sessionUser = (User) request.getAttribute("sessionUser");
 		
 		int page_indicator = (Integer) request.getAttribute("page_indicator");
 		List<ArticleResDto> articleResDtoList = articleService.selectArticles(sessionUser.getId());

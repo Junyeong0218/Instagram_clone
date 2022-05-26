@@ -25,4 +25,10 @@ public interface UserDao {
 	public int updateUserProfile(User user);
 	
 	public int updatePassword(User user);
+	
+	public int registerJwtToken(int user_id, String jwt);
+	
+	public User selectTokenInfo(String jwt);
+	
+	public int updateJwtToken(int user_id, String jwt);
 }

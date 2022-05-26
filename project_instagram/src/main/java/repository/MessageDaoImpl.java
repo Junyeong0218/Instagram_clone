@@ -178,42 +178,30 @@ public class MessageDaoImpl implements MessageDao {
 		
 		try {
 			conn = db.getConnection();
-			sql = "SELECT "
-						+ "room_users.id, "
-						+ "room_users.room_id, "
-						+ "room_users.user_id, "
-						+ "COUNT(room_users2.user_id) AS entered_users_count "
-					+ "FROM "
-						+ "direct_message_room_entered_users room_users "
-						+ "LEFT OUTER JOIN direct_message_room_mst room ON(room.id = room_users.room_id) "
-						+ "LEFT OUTER JOIN direct_message_room_entered_users room_users2 ON(room_users2.room_id = room.id) "
+			sql = "select "
+						+ "count(distinct user_id) as `count`, "
+						+ "room_id "
+					+ "from "
+						+ "direct_message_room_entered_users "
 					+ "WHERE "
-						+ "room_users.user_id IN(" + user_id + ", ";
+						+ "user_id in(" + user_id + ", ";
 			for(int id : target_user_ids) {
 				sql += id + ", ";
 			}
 			sql = sql.substring(0, sql.lastIndexOf(","));
 			sql += ") "
 					+ "GROUP BY "
-						+ "room_users.id "
+						+ "room_id "
 					+ "HAVING "
-						+ "entered_users_count = ?;";
+						+ "count = ?;";
 			System.out.println(sql);
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, target_user_ids.size() + 1);
 			rs = pstmt.executeQuery();
 			
-			int row_count = 0;
-			if(rs != null) {
-				rs.last();
-				row_count = rs.getRow();
-				
-				if(row_count > target_user_ids.size() + 1) {
-					rs.first();
-					room_id = rs.getInt("room_id");
-				}
+			if(rs.next()) {
+				room_id = rs.getInt("room_id");
 			}
-			
 		} catch (SQLDataException e) {
 			System.out.println("no row!");
 		} catch (Exception e) {

@@ -57,9 +57,6 @@ public class AuthServiceImpl implements AuthService {
 		String db_password = userDao.selectPassword(user.getUsername());
 		if(BCrypt.checkpw(user.getPassword(), db_password)) {
 			User userDetail = userDao.getUserByUsername(user.getUsername());
-			if(userDetail.getFile_name() != null) {
-				userDetail.setFile_name(FileUploadPathConfig.getProfileImagePath(userDetail.getFile_name()));
-			}
 			return userDetail;
 		}
 		return null;
@@ -100,5 +97,20 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public int updatePassword(User user) {
 		return userDao.updatePassword(user);
+	}
+	
+	@Override
+	public boolean registerJwtToken(int user_id, String jwt) {
+		return userDao.registerJwtToken(user_id, jwt) > 0;
+	}
+	
+	@Override
+	public boolean updateJwtToken(int user_id, String jwt) {
+		return userDao.updateJwtToken(user_id, jwt) > 0;
+	}
+	
+	@Override
+	public User selectTokenInfo(String jwt) {
+		return userDao.selectTokenInfo(jwt);
 	}
 }

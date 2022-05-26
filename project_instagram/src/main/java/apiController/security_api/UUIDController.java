@@ -15,6 +15,6 @@ public class UUIDController extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/plain; charset=UTF-8");
-		response.getWriter().print((String) request.getSession().getAttribute("UUID"));
+		response.getWriter().print((String) request.getSession().getAttribute("user_secret_key"));
 	}
 }

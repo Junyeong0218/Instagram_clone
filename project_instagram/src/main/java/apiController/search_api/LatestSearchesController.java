@@ -12,9 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import entity.HashTag;
-import entity.JwtProperties;
 import entity.LatestSearchRecord;
-import entity.SecurityContext;
 import entity.User;
 import repository.SearchDao;
 import response_dto.LatestSearchResDto;
@@ -36,7 +34,7 @@ public class LatestSearchesController extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
+		User sessionUser = (User) request.getAttribute("sessionUser");
 		
 		LatestSearchResDto dto = searchService.selectLatestSearches(sessionUser.getId());
 		StringBuilder sb = new StringBuilder();
@@ -70,7 +68,7 @@ public class LatestSearchesController extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		User sessionUser = SecurityContext.certificateUser(request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, ""));
+		User sessionUser = (User) request.getAttribute("sessionUser");
 		
 		boolean isUser = Boolean.parseBoolean(request.getParameter("isUser"));
 		int id = Integer.parseInt(request.getParameter("id"));
