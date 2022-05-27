@@ -182,7 +182,7 @@ public class UserDaoImpl implements UserDao {
 			} else {
 				sb.append("phone, ");
 			}
-			sb.append("last_username_update_date, create_date, update_date) values(?, ?, ?, ?, now(), now(), now());");
+			sb.append("create_date, update_date, role) values(?, ?, ?, ?, now(), now(), \"ROLE_USER\");");
 			pstmt = conn.prepareStatement(sb.toString());
 			pstmt.setString(1, user.getUsername());
 			pstmt.setString(2, user.getPassword());
@@ -332,7 +332,7 @@ public class UserDaoImpl implements UserDao {
 		StringBuilder sql = new StringBuilder();
 		int result = 0;
 		
-		sql.append("update user_mst set ");
+		sql.append("update user_detail set ");
 		Field[] fields = user.getClass().getDeclaredFields();
 		Method[] methods = user.getClass().getDeclaredMethods();
 		for(Field field : fields) {
@@ -510,5 +510,4 @@ public class UserDaoImpl implements UserDao {
 		
 		return user;
 	}
-	
 }

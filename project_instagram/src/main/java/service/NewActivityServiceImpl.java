@@ -20,7 +20,6 @@ public class NewActivityServiceImpl implements NewActivityService {
 	@Override
 	public Map<String, List<Integer>> selectNonReadActivities(int user_id) {
 		List<NonRead> nonReads = newActivityDao.selectNonReadActivities(user_id);
-		System.out.println(nonReads);
 		Map<String, List<Integer>> nonReadActivities = new HashMap<String, List<Integer>>();
 		nonReadActivities.put(NonReadActivities.ACTIVITY, new ArrayList<Integer>());
 		nonReadActivities.put(NonReadActivities.MESSAGE, new ArrayList<Integer>());

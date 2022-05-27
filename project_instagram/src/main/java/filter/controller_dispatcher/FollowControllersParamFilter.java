@@ -24,15 +24,10 @@ public class FollowControllersParamFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		System.out.println("FollowFilter executed!");
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse resp = (HttpServletResponse) response;
-		
 		String uri = req.getRequestURI();
-		System.out.println("uri : " + uri);
-
 		String method = req.getMethod();
-		System.out.println("method : " + method);
 		
 		if(uri.equals(FOLLOW_USER) || uri.equals(FOLLOW_HASHTAG) || uri.equals(FOLLOWERS) || uri.equals(FOLLOWINGS) || uri.equals(ACTIVITIES)) {
 			chain.doFilter(request, response);
@@ -46,11 +41,6 @@ public class FollowControllersParamFilter implements Filter {
 		
 		uri = uri.replaceFirst("/follow", "");
 		String[] uris = uri.split("/");
-		System.out.println("after replace : " + uri);
-		System.out.println("uris.length : " + uris.length);
-		for(String s : uris) {
-			System.out.println(s);
-		}
 		
 		try {
 			if(uris[1].equals("user")) {

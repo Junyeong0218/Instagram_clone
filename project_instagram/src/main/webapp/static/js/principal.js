@@ -2,7 +2,12 @@ let sessionUUIDForSessionUser;
 let token;
 let principal;
 
+let first_load_flag = true;
+
 getUUID();
+setInterval(() => {
+	getToken();
+}, 1000);
 
 function getUUID() {
 	$.ajax({
@@ -34,9 +39,12 @@ function getToken() {
 			console.log(data);
 			if(data == null || data == "null" || data == "") {
 				alert("token load failed");
-			} else {
+			} else if(first_load_flag){
+				first_load_flag = false;
 				token = data;
 				getPrincipal();
+			} else {
+				token = data;
 			}
 		},
 		error: function (xhr, status, error) {

@@ -64,7 +64,7 @@ public class FollowDaoImpl implements FollowDao {
 				resDto.setUsername(rs.getString("username"));
 				resDto.setName(rs.getString("name"));
 				resDto.setHas_profile_image(rs.getInt("has_profile_image") == 1 ? true : false);
-				resDto.setFile_name(rs.getString("file_name") == "null" || rs.getString("file_name") == null ? null : rs.getString("file_name"));
+				resDto.setFile_name(rs.getCharacterStream("file_name") == null ? "" : rs.getString("file_name"));
 				
 				userList.add(resDto);
 			}
@@ -197,12 +197,12 @@ public class FollowDaoImpl implements FollowDao {
 						+ "al.id, "
 						+ "al.user_id, "
 						+ "um.username, "
-						+ "um.has_profile_image, "
+						+ "ud.has_profile_image, "
 						+ "up.file_name, "
 
 						+ "al.related_user_id, "
 						+ "um2.username AS related_username, "
-						+ "um2.has_profile_image AS related_user_has_profile_image, "
+						+ "ud2.has_profile_image AS related_user_has_profile_image, "
 						+ "up2.file_name AS related_user_file_name, "
 
 						+ "al.activity_flag, "
@@ -222,8 +222,10 @@ public class FollowDaoImpl implements FollowDao {
 					+ "FROM "
 						+ "activity_logs al "
 						+ "LEFT OUTER JOIN user_mst um ON(um.id = al.user_id) "
+						+ "LEFT OUTER JOIN user_detail ud ON(ud.user_id = al.user_id) "
 						+ "LEFT OUTER JOIN user_profile_image up ON(up.user_id = al.user_id) "
 						+ "LEFT OUTER JOIN user_mst um2 ON(um2.id = al.related_user_id) "
+						+ "LEFT OUTER JOIN user_detail ud2 ON(ud2.user_id = al.related_user_id) "
 						+ "LEFT OUTER JOIN user_profile_image up2 ON(up2.user_id = al.related_user_id) "
 						+ "LEFT OUTER JOIN article_media media ON(media.article_id = al.article_id) "
 						+ "LEFT OUTER JOIN article_comment ac ON(ac.id = al.comment_id) "
@@ -245,11 +247,11 @@ public class FollowDaoImpl implements FollowDao {
 				activity.setUser_id(rs.getInt("user_id"));
 				activity.setUsername(rs.getString("username"));
 				activity.setHas_profile_image(rs.getInt("has_profile_image") == 0 ? false : true);
-				activity.setFile_name(rs.getString("file_name"));
+				activity.setFile_name(rs.getCharacterStream("file_name") == null ? "" : rs.getString("file_name"));
 				activity.setRelated_user_id(rs.getInt("related_user_id"));
 				activity.setRelated_username(rs.getString("related_username"));
 				activity.setRelated_user_has_profile_image(rs.getInt("related_user_has_profile_image") == 0 ? false : true);
-				activity.setRelated_user_file_name(rs.getString("related_user_file_name"));
+				activity.setRelated_user_file_name(rs.getCharacterStream("related_user_file_name") == null ? "" : rs.getString("related_user_file_name"));
 				activity.setActivity_flag(rs.getString("activity_flag"));
 				activity.setActivity_message(rs.getString("activity_message"));
 				
@@ -301,7 +303,7 @@ public class FollowDaoImpl implements FollowDao {
 						+ "um.id as `user_id`, "
 						+ "um.username, "
 						+ "um.`name`, "
-						+ "um.has_profile_image, "
+						+ "ud.has_profile_image, "
 						+ "up.file_name, "
 						+ "am.is_stored, "
 						+ "am.create_date, "
@@ -316,6 +318,7 @@ public class FollowDaoImpl implements FollowDao {
 						+ "count(distinct fm2.user_id) as follower "
 					+ "from "
 						+ "user_mst um "
+						+ "left outer join user_detail ud on(ud.user_id = um.id) "
 						+ "left outer join user_profile_image up on(up.user_id = um.id) "
 						+ "left outer join article_mst am on(am.user_id = um.id) "
 						+ "left outer join article_media media on(media.article_id = am.id and media.media_name like \"%01%\") "
@@ -346,7 +349,7 @@ public class FollowDaoImpl implements FollowDao {
 				profile.setUsername(rs.getString("username"));
 				profile.setName(rs.getString("name"));
 				profile.setHas_profile_image(rs.getInt("has_profile_image") == 0 ? false : true);
-				profile.setFile_name(rs.getString("file_name") == "null" || rs.getString("file_name") == null ? null : rs.getString("file_name"));
+				profile.setFile_name(rs.getCharacterStream("file_name") == null ? "" : rs.getString("file_name"));
 				profile.setMedia_type(rs.getString("media_type"));
 				profile.setMedia_name(rs.getString("media_name"));
 				profile.set_stored(rs.getBoolean("is_stored"));
@@ -385,11 +388,12 @@ public class FollowDaoImpl implements FollowDao {
 						+ "fm.partner_user_id, "
 						+ "um.username, "
 						+ "um.name, "
-						+ "um.has_profile_image, "
+						+ "ud.has_profile_image, "
 						+ "up.file_name "
 					+ "from "
 						+ "follow_mst fm "
 						+ "left outer join user_mst um on(um.id = fm.partner_user_id) "
+						+ "left outer join user_detail ud on(ud.user_id = fm.partner_user_id) "
 						+ "left outer join user_profile_image up on(up.user_id = fm.partner_user_id) "
 					+ "where "
 						+ "fm.user_id = ? "
@@ -406,7 +410,7 @@ public class FollowDaoImpl implements FollowDao {
 				user.setUsername(rs.getString("username"));
 				user.setName(rs.getString("name"));
 				user.setHas_profile_image(rs.getInt("has_profile_image") == 1 ? true : false);
-				user.setFile_name(rs.getString("file_name"));
+				user.setFile_name(rs.getCharacterStream("file_name") == null ? "" : rs.getString("file_name"));
 				
 				followingUserList.add(user);
 			}
@@ -483,11 +487,12 @@ public class FollowDaoImpl implements FollowDao {
 						+ "fm.user_id, "
 						+ "um.username, "
 						+ "um.`name`, "
-						+ "um.has_profile_image, "
+						+ "ud.has_profile_image, "
 						+ "up.file_name "
 					+ "from "
 						+ "follow_mst fm "
 						+ "left outer join user_mst um on(um.id = fm.user_id) "
+						+ "left outer join user_detail ud on(ud.user_id = fm.user_id) "
 						+ "left outer join user_profile_image up on(up.user_id = fm.user_id) "
 					+ "where "
 						+ "fm.partner_user_id = ? "
@@ -506,7 +511,7 @@ public class FollowDaoImpl implements FollowDao {
 				user.setUsername(rs.getString("username"));
 				user.setName(rs.getString("name"));
 				user.setHas_profile_image(rs.getInt("has_profile_image") == 1 ? true : false);
-				user.setFile_name(rs.getString("file_name"));
+				user.setFile_name(rs.getCharacterStream("file_name") == null ? "" : rs.getString("file_name"));
 				
 				followers.add(user);
 			}

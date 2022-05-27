@@ -19,15 +19,10 @@ public class AuthControllersMethodFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		System.out.println("AuthFilter executed!");
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse resp = (HttpServletResponse) response;
-		System.out.println("authfilter : ");
 		String uri = req.getRequestURI();
-		System.out.println("uri : " + uri);
-		
 		String method = req.getMethod();
-		System.out.println("method : " + method);
 		
 		if(uri.equals(PROFILE)) {
 			chain.doFilter(request, response);

@@ -4,6 +4,7 @@ const passwordTag = document.querySelector("input[name='password']");
 const usernameSpan = document.querySelectorAll("form span")[0];
 const passwordSpan = document.querySelectorAll("form span")[1];
 const submit_button = document.querySelector(".submit-button");
+const naver_button = document.querySelector(".naver-signin");
 
 const username_regex = /^[a-z][A-Za-z0-9]{1,15}$/;
 const symbol_regex = /[!@#$%^&*`~=+_]{1,16}/;
@@ -42,6 +43,33 @@ submit_button.onclick = () => {
 		}
 	});
 }
+
+naver_button.onclick = () => {
+	location.href = "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=1neVQwuiHwavJykhB63G&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Foauth%2Fsignin&state=65bc7411-ae35-4ee5-87d0-eaeb23d22caa";
+}
+
+/*facebook_button.onclick = () => {
+	$.ajax({
+		type: "get",
+		url: "",
+		dataType: "text",
+		success: function (data) {
+			console.log(data);
+			data = JSON.parse(data);
+			console.log(data);
+			let url = "https://www.facebook.com/v14.0/dialog/oauth?";
+			url += "client_id=" + data.client_id;
+			url += "&redirect_uri=/oauth/signin";
+			url += "&scope=email&response_type=code&auth_type=rerequest&display=popup";
+			console.log(url);
+			location.href = url;
+		},
+		error: function (xhr, status) {
+			console.log(xhr);
+			console.log(status);
+		}
+	});
+}*/
 
 function keyupEvent(event) {
     if (isLengthZero(event)) {

@@ -22,15 +22,10 @@ public class MessageControllersParamFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		System.out.println("MessageFilter executed!");
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse resp = (HttpServletResponse) response;
-		
 		String uri = req.getRequestURI();
-		System.out.println("uri : " + uri);
-		
 		String method = req.getMethod();
-		System.out.println("method : " + method);
 		
 		if(uri.equals(MESSAGE_ROOMS) || uri.equals(MESSAGE_ROOM) || uri.equals(MESSAGE_REACTION)) {
 			chain.doFilter(request, response);
@@ -42,11 +37,6 @@ public class MessageControllersParamFilter implements Filter {
 		
 		uri = uri.replace("/message", "");
 		String[] uris = uri.split("/");
-		System.out.println("after replace : " + uri);
-		System.out.println("uris.length : " + uris.length);
-		for(String s : uris) {
-			System.out.println(s);
-		}
 		
 		if(uris.length == 2) {
 			try {

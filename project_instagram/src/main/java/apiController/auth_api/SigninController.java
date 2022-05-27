@@ -39,7 +39,6 @@ public class SigninController extends HttpServlet{
 		User user = User.builder().username(request.getParameter("username"))
 					  			  						.password(request.getParameter("password")).build();
 		User userDetail = authService.signin(user);
-		System.out.println(userDetail);
 		if(userDetail != null) {
 			// 로그인 인증 성공 시 NonReadActivities 객체에도 세션 정보 저장
 			NonReadActivities.setUser(userDetail.getId(), newActivityService.selectNonReadActivities(userDetail.getId()));

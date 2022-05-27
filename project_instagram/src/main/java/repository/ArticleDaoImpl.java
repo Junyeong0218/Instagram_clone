@@ -160,11 +160,11 @@ public class ArticleDaoImpl implements ArticleDao {
 				detail.setArticle_id(rs.getInt("id"));
 				detail.setArticle_user_id(rs.getInt("user_id"));
 				detail.setArticle_username(rs.getString("article_username"));
-				detail.setArticle_user_has_profile_image(rs.getInt("has_profile_image") == 1 ? true : false);
-				detail.setArticle_user_file_name(rs.getString("file_name"));
+				detail.setArticle_user_has_profile_image(rs.getBoolean("has_profile_image"));
+				detail.setArticle_user_file_name(rs.getCharacterStream("file_name") == null ? "" : rs.getString("file_name"));
 				detail.setFeature(rs.getString("feature"));
 				detail.setMedia_type(rs.getString("media_type"));
-				detail.setContents(rs.getString("contents"));
+				detail.setContents(rs.getCharacterStream("contents") == null ? "" : rs.getString("contents"));
 				detail.set_stored(rs.getInt("is_stored") == 1 ? true : false);
 				detail.setCreate_date(rs.getTimestamp("create_date") != null ? rs.getTimestamp("create_date").toLocalDateTime() : null);
 				detail.setMedia_name(rs.getString("media_name"));
@@ -313,7 +313,7 @@ public class ArticleDaoImpl implements ArticleDao {
 						+ "ac.article_id, "
 						+ "ac.commented_user_id, "
 						+ "um.username, "
-						+ "um.has_profile_image, "
+						+ "ud.has_profile_image, "
 						+ "up.file_name, "
 						+ "ac.`contents`, "
 						+ "ac.create_date, "
@@ -323,6 +323,7 @@ public class ArticleDaoImpl implements ArticleDao {
 					+ "FROM "
 						+ "article_comment ac "
 						+ "LEFT OUTER JOIN user_mst um ON(um.id = ac.commented_user_id) "
+						+ "LEFT OUTER JOIN usre_detail ud ON(ud.user_id = ac.commented_user_id) "
 						+ "LEFT OUTER JOIN user_profile_image up ON(up.user_id = ac.commented_user_id) "
 						+ "LEFT OUTER JOIN article_comment_reaction acr ON(acr.article_comment_id = ac.id) "
 						+ "LEFT OUTER JOIN article_comment_reaction acr2 ON(acr2.article_comment_id = ac.id AND acr2.like_user_id = ?) "
@@ -341,9 +342,9 @@ public class ArticleDaoImpl implements ArticleDao {
 				comment.setArticle_id(rs.getInt("article_id"));
 				comment.setUser_id(rs.getInt("commented_user_id"));
 				comment.setUsername(rs.getString("username"));
-				comment.setHas_profile_image(rs.getInt("has_profile_image") == 1 ? true : false);
-				comment.setFile_name(rs.getString("file_name"));
-				comment.setContents(rs.getString("contents"));
+				comment.setHas_profile_image(rs.getBoolean("has_profile_image"));
+				comment.setFile_name(rs.getCharacterStream("file_name") == null ? "" : rs.getString("file_name"));
+				comment.setContents(rs.getCharacterStream("contents") == null ? "" : rs.getString("contents"));
 				comment.setCreate_date(rs.getTimestamp("create_date").toLocalDateTime());
 				comment.setComment_like_user_count(rs.getInt("comment_like_user_count"));
 				comment.setLike_flag(rs.getInt("like_user_id") == 0 ? false : true);
@@ -375,7 +376,7 @@ public class ArticleDaoImpl implements ArticleDao {
 						+ "am.id, "
 						+ "am.user_id, "
 						+ "um.username, "
-						+ "um.has_profile_image, "
+						+ "ud.has_profile_image, "
 						+ "up.file_name, "
 						+ "am.feature, "
 						+ "am.`contents`, "
@@ -390,7 +391,7 @@ public class ArticleDaoImpl implements ArticleDao {
 						+ "ac.id as comment_id, "
 						+ "ac.commented_user_id, "
 						+ "um2.username as commented_username, "
-						+ "um2.has_profile_image as commented_user_has_profile_image, "
+						+ "ud2.has_profile_image as commented_user_has_profile_image, "
 						+ "up2.file_name as commented_user_file_name, "
 						+ "ac.`contents` as comment_contents, "
 						+ "ac.create_date as comment_create_date, "
@@ -400,12 +401,14 @@ public class ArticleDaoImpl implements ArticleDao {
 					+ "from "
 						+ "article_mst am "
 						+ "left outer join user_mst um on(um.id = am.user_id) "
+						+ "left outer join user_detail ud on(ud.user_id = am.user_id) "
 						+ "left outer join user_profile_image up on(up.user_id = um.id) "
 						+ "left outer join article_media media on(am.id = media.article_id) "
 						+ "left outer join article_reaction ar on(am.id = ar.article_id) "
 						+ "left outer join article_reaction ar2 on(am.id = ar.article_id and ar.like_user_id = ?) "
 						+ "left outer join article_comment ac on(am.id = ac.article_id and ac.related_flag = 0) "
 						+ "left outer join user_mst um2 on(um2.id = ac.commented_user_id) "
+						+ "left outer join user_detail ud2 on(ud2.user_id = ac.commented_user_id) "
 						+ "left outer join user_profile_image up2 on(up2.user_id = ac.commented_user_id) "
 						+ "left outer join article_comment ac2 on(ac2.related_comment_id = ac.id and ac2.related_flag = 1) "
 						+ "left outer join article_comment_reaction acr on(acr.article_comment_id = ac.id) "
@@ -428,11 +431,11 @@ public class ArticleDaoImpl implements ArticleDao {
 				detail.setArticle_id(rs.getInt("id"));
 				detail.setArticle_user_id(rs.getInt("user_id"));
 				detail.setArticle_username(rs.getString("username"));
-				detail.setArticle_user_has_profile_image(rs.getInt("has_profile_image") == 1 ? true : false);
-				detail.setArticle_user_file_name(rs.getString("file_name"));
-				detail.setFeature(rs.getString("feature"));
+				detail.setArticle_user_has_profile_image(rs.getBoolean("has_profile_image"));
+				detail.setArticle_user_file_name(rs.getCharacterStream("file_name") == null ? "" : rs.getString("file_name"));
+				detail.setFeature(rs.getCharacterStream("feature") == null ? "" : rs.getString("feature"));
 				detail.setMedia_type(rs.getString("media_type"));
-				detail.setContents(rs.getString("contents"));
+				detail.setContents(rs.getCharacterStream("contents") == null ? "" : rs.getString("contents"));
 				detail.setCreate_date(rs.getTimestamp("create_date").toLocalDateTime());
 				detail.setLike_user_count(rs.getInt("like_user_count"));
 				detail.setLike_flag(rs.getInt("like_user_id") == 0 ? false : true);
@@ -440,8 +443,8 @@ public class ArticleDaoImpl implements ArticleDao {
 				detail.setComment_id(rs.getInt("comment_id"));
 				detail.setCommented_user_id(rs.getInt("commented_user_id"));
 				detail.setCommented_username(rs.getString("commented_username"));
-				detail.setCommented_user_has_profile_image(rs.getInt("commented_user_has_profile_image") == 1 ? true : false);
-				detail.setCommented_user_file_name(rs.getString("commented_user_file_name"));
+				detail.setCommented_user_has_profile_image(rs.getBoolean("commented_user_has_profile_image"));
+				detail.setCommented_user_file_name(rs.getCharacterStream("commented_user_file_name") == null ? "" : rs.getString("commented_user_file_name"));
 				detail.setComment_contents(rs.getString("comment_contents"));
 				detail.setComment_create_date(rs.getTimestamp("comment_create_date") != null ? rs.getTimestamp("comment_create_date").toLocalDateTime() : null);
 				detail.setRelated_comment_count(rs.getInt("related_comment_count"));

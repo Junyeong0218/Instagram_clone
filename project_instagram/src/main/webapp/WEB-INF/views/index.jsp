@@ -50,10 +50,17 @@
 						<span class="or">또는</span>
 						<span class="liner"></span>
 					</div>
-					<button type="button" class="facebook-signin">
-						<img src="/static/images/login_facebook.png" alt="페이스북 로그인 로고">
-						<span>Facebook으로 로그인</span>
-					</button>
+					<div class="oauths">
+						<button type="button" class="google-signin">
+							<img src="/static/images/login_facebook.png" alt="구글 로그인 로고">
+						</button>
+						<button type="button" class="naver-signin">
+							<img src="/static/images/login_facebook.png" alt="네이버 로그인 로고">
+						</button>
+						<button type="button" class="kakao-signin">
+							<img src="/static/images/login_facebook.png" alt="카카오 로그인 로고">
+						</button>
+					</div>
 					<div class="forget-password">
 						<a href="#">비밀번호를 잊으셨나요?</a>
 					</div>

@@ -91,7 +91,6 @@ public class NonReadActivities {
 	}
 	
 	public static String isChanged(int user_id) {
-		System.out.println(user_id + " : " + getNonReadMessage(user_id));
 		Map<String, Boolean> userChangeFlags = changeFlags.get(user_id);
 		if(userChangeFlags.get(ACTIVITY) && userChangeFlags.get(MESSAGE)) {
 			return allChangedMessage();

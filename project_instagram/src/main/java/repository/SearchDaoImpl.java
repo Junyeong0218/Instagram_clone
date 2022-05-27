@@ -35,7 +35,7 @@ public class SearchDaoImpl implements SearchDao {
 						+ "lsr.searched_user_id, "
 						+ "um.username, "
 						+ "um.`name`, "
-						+ "um.has_profile_image, "
+						+ "ud.has_profile_image, "
 						+ "up.file_name, "
 						+ "fm.id as user_follow_flag, "
 						
@@ -48,6 +48,7 @@ public class SearchDaoImpl implements SearchDao {
 					+ "from "
 						+ "latest_search_records lsr "
 						+ "left outer join user_mst um on(um.id = lsr.searched_user_id) "
+						+ "left outer join user_detail ud on(ud.user_id = lsr.searched_user_id) "
 						+ "left outer join user_profile_image up on(up.user_id = lsr.searched_user_id) "
 						+ "left outer join follow_mst fm on(fm.partner_user_id = lsr.searched_user_id) "
 						+ "left outer join hash_tag_mst htm on(htm.id = lsr.hash_tag_id) "
@@ -70,7 +71,7 @@ public class SearchDaoImpl implements SearchDao {
 				detail.setUsername(rs.getString("username"));
 				detail.setName(rs.getString("name"));
 				detail.setHas_profile_image(rs.getBoolean("has_profile_image"));
-				detail.setFile_name(rs.getString("file_name"));
+				detail.setFile_name(rs.getCharacterStream("file_name") == null ? "" : rs.getString("file_name"));
 				detail.setHash_tag_id(rs.getInt("hash_tag_id"));
 				detail.setTag_name(rs.getString("tag_name"));
 				detail.setCreate_date(rs.getTimestamp("create_date") == null ? null : rs.getTimestamp("create_date").toLocalDateTime());
@@ -150,7 +151,7 @@ public class SearchDaoImpl implements SearchDao {
 						+ "um.id, "
 						+ "um.username, "
 						+ "um.`name`, "
-						+ "um.has_profile_image, "
+						+ "ud.has_profile_image, "
 						+ "up.file_name, "
 						+ "fm.id AS user_follow_flag, "
 						
@@ -159,6 +160,7 @@ public class SearchDaoImpl implements SearchDao {
 						+ "0 AS hash_tag_follow_flag "
 					+ "FROM "
 						+ "user_mst um "
+						+ "LEFT OUTER JOIN user_detail ud ON(ud.user_id = um.id) "
 						+ "LEFT OUTER JOIN user_profile_image up ON(up.user_id = um.id) "
 						+ "LEFT OUTER JOIN follow_mst fm ON(fm.partner_user_id = um.id AND fm.user_id = ?) "
 					+ "WHERE  "
@@ -197,7 +199,7 @@ public class SearchDaoImpl implements SearchDao {
 				result.setUsername(rs.getString("username"));
 				result.setName(rs.getString("name"));
 				result.setHas_profile_image(rs.getBoolean("has_profile_image"));
-				result.setFile_name(rs.getString("file_name"));
+				result.setFile_name(rs.getCharacterStream("file_name") == null ? "" : rs.getString("file_name"));
 				result.setUser_follow_flag(rs.getInt("user_follow_flag") > 0 ? true : false);
 				result.setHash_tag_id(rs.getInt("hash_tag_id"));
 				result.setTag_name(rs.getString("tag_name"));
@@ -343,7 +345,7 @@ public class SearchDaoImpl implements SearchDao {
 						+ "um.id, "
 						+ "um.username, "
 						+ "um.`name`, "
-						+ "um.has_profile_image, "
+						+ "ud.has_profile_image, "
 						+ "up.file_name "
 					+ "from "
 						+ "user_mst um "
@@ -360,7 +362,7 @@ public class SearchDaoImpl implements SearchDao {
 				user.setUsername(rs.getString("username"));
 				user.setName(rs.getString("name"));
 				user.setHas_profile_image(rs.getBoolean("has_profile_image"));
-				user.setFile_name(rs.getString("file_name"));
+				user.setFile_name(rs.getCharacterStream("file_name") == null ? "" : rs.getString("file_name"));
 				
 				users.add(user);
 			}

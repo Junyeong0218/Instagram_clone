@@ -19,10 +19,8 @@ public class AlertNewLogsController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		User sessionUser = (User) request.getAttribute("sessionUser");
 		response.setContentType("text/plain; charset=UTF-8");
-		System.out.println(NonReadActivities.isChanged(sessionUser.getId()));
 		if(NonReadActivities.isChanged(sessionUser.getId()) != null) {
 			String array = NonReadActivities.getNonReadMessage(sessionUser.getId());
-			System.out.println(array);
 			response.getWriter().print(array);
 		}
 	}

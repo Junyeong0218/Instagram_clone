@@ -1,17 +1,39 @@
 package config;
 
-import java.lang.reflect.Field;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.net.URLEncoder;
+import java.time.LocalDate;
 import java.util.UUID;
-
-import entity.User;
 
 public class Test {
 
-	public static void main(String[] args) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-		String uuid = UUID.randomUUID().toString();
-		System.out.println(uuid);
+	public static void main(String[] args) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
+		System.out.println(URLEncoder.encode("http://localhost:8080/oauth/signin", "UTF-8"));
+//		String today = LocalDate.now().toString();
+//		File file = new File(today + ".txt",);
+//		if(!file.exists()) {
+//			file.mkdirs();
+//		} else {
+//			
+//		}
+//		BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+//		bw.write("asdfasdf");
+//		bw.flush();
+//		UserDao userDao = new UserDaoImpl();
+//		Class<?>[] classes = userDao.getClass().getClasses();
+//		System.out.println();
+//		System.out.println(userDao.getInterface());
+//		Class<?>[] interfaces = userDao.getClass().getInterfaces();
+//		System.out.println("length : " + interfaces.length);
+//		for(Class<?> i : interfaces) {
+//			System.out.println(i.getName());
+//		}
+//		String uuid = UUID.randomUUID().toString();
+//		System.out.println(uuid);
 //		User user = new User();
 //		user.setId(1);
 //		user.setUsername("hippo2003");

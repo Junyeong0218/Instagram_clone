@@ -52,7 +52,7 @@ public class StoryDaoImpl implements StoryDao {
 				resDto.setUsername(rs.getString("username"));
 				resDto.setName(rs.getString("name"));
 				resDto.setHas_profile_image(rs.getInt("has_profile_image") == 1 ? true : false);
-				resDto.setFile_name(rs.getString("file_name"));
+				resDto.setFile_name(rs.getCharacterStream("file_name") == null ? "" : rs.getString("file_name"));
 				
 				userList.add(resDto);
 			}

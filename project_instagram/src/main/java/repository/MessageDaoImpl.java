@@ -37,13 +37,13 @@ public class MessageDaoImpl implements MessageDao {
 						+ "dm.user_id, "
 						+ "um.username, "
 						+ "um.`name`, "
-						+ "um.has_profile_image, "
+						+ "ud.has_profile_image, "
 						+ "up.file_name, "
 	
 						+ "dm.target_user_id, "
 						+ "um2.username, "
 						+ "um2.`name`, "
-						+ "um2.has_profile_image, "
+						+ "ud2.has_profile_image, "
 						+ "up2.file_name, "
 	
 						+ "dm.`contents`, "
@@ -55,8 +55,10 @@ public class MessageDaoImpl implements MessageDao {
 					+ "FROM "
 						+ "direct_message_mst dm "
 						+ "LEFT OUTER JOIN user_mst um ON(um.id = dm.user_id AND um.id != ?) "
+						+ "LEFT OUTER JOIN user_detail ud ON(ud.user_id = um.id) "
 						+ "LEFT OUTER JOIN user_profile_image up ON(up.user_id = um.id) "
 						+ "LEFT OUTER JOIN user_mst um2 ON(um2.id = dm.target_user_id AND um2.id != ?) "
+						+ "LEFT OUTER JOIN user_detail ud2 ON(ud2.user_id = um2.id) "
 						+ "LEFT OUTER JOIN user_profile_image up2 ON(up2.user_id = um2.id) "
 						+ "LEFT OUTER JOIN direct_message_image dmi ON(dmi.id = dm.image_id) "
 						+ "LEFT OUTER JOIN direct_message_reaction dmr ON(dmr.direct_message_id = dm.id) "
@@ -311,7 +313,7 @@ public class MessageDaoImpl implements MessageDao {
 				message.setContents(rs.getString("contents"));
 				message.set_image(rs.getBoolean("is_image"));
 				message.setImage_id(rs.getInt("image_id"));
-				message.setFile_name(rs.getString("file_name"));
+				message.setFile_name(rs.getCharacterStream("file_name") == null ? "" : rs.getString("file_name"));
 				message.setLike_user_id(rs.getInt("like_user_id"));
 				message.setCreate_date(rs.getTimestamp("create_date") != null ? rs.getTimestamp("create_date").toLocalDateTime() : null);
 				
@@ -344,7 +346,7 @@ public class MessageDaoImpl implements MessageDao {
 						+ "room_users2.user_id, "
 						+ "um.username, "
 						+ "um.`name`, "
-						+ "um.has_profile_image, "
+						+ "ud.has_profile_image, "
 						+ "up.file_name, "
 						+ "dm.`contents`, "
 						+ "dm.create_date,"
@@ -354,6 +356,7 @@ public class MessageDaoImpl implements MessageDao {
 						+ "direct_message_room_entered_users room_users "
 						+ "left outer join direct_message_room_entered_users room_users2 on(room_users2.room_id = room_users.room_id) "
 						+ "left outer join user_mst um on(um.id = room_users2.user_id) "
+						+ "left outer join user_detail ud on(ud.user_id = room_users2.user_id) "
 						+ "left outer join user_profile_image up on(up.user_id = um.id) "
 						+ "left outer join direct_message_mst dm on(dm.room_id = room_users.room_id and "
 							+ "dm.create_date = (select "
@@ -387,7 +390,7 @@ public class MessageDaoImpl implements MessageDao {
 				room.setUsername(rs.getString("username"));
 				room.setName(rs.getString("name"));
 				room.setHas_profile_image(rs.getBoolean("has_profile_image"));
-				room.setFile_name(rs.getString("file_name"));
+				room.setFile_name(rs.getCharacterStream("file_name") == null ? "" : rs.getString("file_name"));
 				room.setContents(rs.getString("contents"));
 				room.setCreate_date(rs.getTimestamp("create_date") != null ? rs.getTimestamp("create_date").toLocalDateTime() : null);
 				room.setAll_message_count(rs.getInt("all_message_count"));

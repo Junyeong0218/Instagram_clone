@@ -22,12 +22,10 @@ public class SearchControllersParamFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		System.out.println("SearchFilter executed!");
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse resp = (HttpServletResponse) response;
-		
 		String uri = req.getRequestURI();
-		System.out.println("uri : " + uri);
+		String method = req.getMethod();
 		
 		if(uri.equals(SEARCH) || uri.equals(SEARCH_LOG) || uri.equals(SEARCH_USERS) || uri.equals(SEARCH_KEYWORD)) {
 			chain.doFilter(request, response);
@@ -36,14 +34,6 @@ public class SearchControllersParamFilter implements Filter {
 		
 		uri = uri.replace("/search", "");
 		String[] uris = uri.split("/");
-		System.out.println("after replace : " + uri);
-		System.out.println("uris.length : " + uris.length);
-		for(String s : uris) {
-			System.out.println(s);
-		}
-		
-		String method = req.getMethod();
-		System.out.println("method : " + method);
 		
 		if(uris.length == 2) {
 			String tag_name = uris[1];
