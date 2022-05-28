@@ -17,6 +17,7 @@ public class ArticleControllersParamFilter implements Filter {
 	private final String ARTICLE = "/article";
 	private final String ARTICLE_COMMENT = "/article/comment"; 
 	private final String ARTICLE_REACTION = "/article/reaction";
+	private final String ARTICLE_COMMENT_REACTION = "/article/comment/reaction";
 	private final String ARTICLE_LIST = "/article/list";
 	
 	@Override
@@ -27,7 +28,7 @@ public class ArticleControllersParamFilter implements Filter {
 		
 		String uri = req.getRequestURI();
 		
-		if(uri.equals(ARTICLE) || uri.equals(ARTICLE_REACTION) || uri.equals(ARTICLE_COMMENT) || uri.equals(ARTICLE_LIST)) {
+		if(uri.equals(ARTICLE) || uri.equals(ARTICLE_REACTION) || uri.equals(ARTICLE_COMMENT) || uri.equals(ARTICLE_LIST) || uri.equals(ARTICLE_COMMENT_REACTION)) {
 			chain.doFilter(request, response);
 			return;
 		}
@@ -69,6 +70,14 @@ public class ArticleControllersParamFilter implements Filter {
 						method.equals(RequestMethod.PUT) ||
 						method.equals(RequestMethod.DELETE)) {
 						req.getRequestDispatcher(ARTICLE_COMMENT).forward(request, response);
+					}
+				} else if(uris.length == 5) {
+					comment_id = Integer.parseInt(uris[3]);
+					request.setAttribute("comment_id", comment_id);
+					
+					if(method.equals(RequestMethod.POST) ||
+						method.equals(RequestMethod.DELETE)) {
+						req.getRequestDispatcher(ARTICLE_COMMENT_REACTION).forward(request, response);
 					}
 				}
 			} else {

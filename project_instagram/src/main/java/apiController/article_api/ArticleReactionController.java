@@ -9,7 +9,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import entity.User;
 import repository.ArticleDao;
@@ -33,10 +32,9 @@ public class ArticleReactionController extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		User sessionUser = (User) session.getAttribute("user");
+		User sessionUser = (User) request.getAttribute("sessionUser");
 		
-		int article_id = (Integer) request.getAttribute("article_id");
+		int article_id = (int) request.getAttribute("article_id");
 		System.out.println(article_id);
 		
 		int result = articleService.insertLikeArticle(article_id, sessionUser.getId());
@@ -47,10 +45,9 @@ public class ArticleReactionController extends HttpServlet {
 
 	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		User sessionUser = (User) session.getAttribute("user");
+		User sessionUser = (User) request.getAttribute("sessionUser");
 		
-		int article_id = (Integer) request.getAttribute("article_id");
+		int article_id = (int) request.getAttribute("article_id");
 		System.out.println(article_id);
 
 		int result = articleService.deleteLikeArticle(article_id, sessionUser.getId());

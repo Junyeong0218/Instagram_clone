@@ -10,7 +10,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import entity.ArticleComment;
 import entity.User;
@@ -35,10 +34,9 @@ public class CommentController extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		User sessionUser = (User) session.getAttribute("user");
+		User sessionUser = (User) request.getAttribute("sessionUser");
 		
-		int comment_id = (Integer) request.getAttribute("comment_id");
+		int comment_id = (int) request.getAttribute("comment_id");
 		System.out.println("/article/integer/comment/integer get : " + comment_id);
 		
 		List<ArticleComment> comments = articleService.selectRelatedComments(comment_id, sessionUser.getId());
@@ -56,7 +54,7 @@ public class CommentController extends HttpServlet {
 									"\"comment_like_user_count\": \"" + comment.getComment_like_user_count() + "\", " + 
 									"\"like_flag\": \"" + comment.isLike_flag() + "\" }, ");
 		}
-		sb.replace(sb.lastIndexOf(","), sb.length(), "");
+		if(comments.size() > 0) sb.replace(sb.lastIndexOf(","), sb.length(), "");
 		sb.append(" ]");
 		
 		response.setContentType("text/plain; charset=UTF-8");
@@ -65,8 +63,7 @@ public class CommentController extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		User sessionUser = (User) session.getAttribute("user");
+		User sessionUser = (User) request.getAttribute("sessionUser");
 		
 		int article_id = (Integer) request.getAttribute("article_id");
 		String contents = request.getParameter("comment");
@@ -91,11 +88,13 @@ public class CommentController extends HttpServlet {
 	
 	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// 댓글 수정
 		
 	}
 	
 	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// 댓글 삭제
 		
 	}
 }

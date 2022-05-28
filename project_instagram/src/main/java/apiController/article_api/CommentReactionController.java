@@ -9,7 +9,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import entity.User;
 import repository.ArticleDao;
@@ -33,10 +32,9 @@ public class CommentReactionController extends HttpServlet{
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		User sessionUser = (User) session.getAttribute("user");
+		User sessionUser = (User) request.getAttribute("sessionUser");
 		
-		int comment_id = Integer.parseInt(request.getParameter("comment_id"));
+		int comment_id = (int) request.getAttribute("comment_id");
 		
 		int result = articleService.insertCommentLike(comment_id, sessionUser.getId());
 		
@@ -46,10 +44,9 @@ public class CommentReactionController extends HttpServlet{
 	
 	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		User sessionUser = (User) session.getAttribute("user");
+		User sessionUser = (User) request.getAttribute("sessionUser");
 		
-		int comment_id = Integer.parseInt(request.getParameter("comment_id"));
+		int comment_id = (int) request.getAttribute("comment_id");
 		
 		int result = articleService.deleteCommentLike(comment_id, sessionUser.getId());
 		

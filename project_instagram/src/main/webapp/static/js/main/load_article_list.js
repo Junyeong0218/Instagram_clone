@@ -352,6 +352,7 @@ function toggleLikeArticle(event) {
 	$.ajax({
 		type: type,
 		url: "/article/" + article_id + "/reaction",
+		headers: { "Authorization" : token},
 		dataType: "text",
 		success: function (data) {
 			if(data == "1") {
@@ -426,6 +427,7 @@ function submitComment(event) {
 	$.ajax({
 		type: "post",
 		url: "/article/" + article_id + "/comment",
+		headers: { "Authorization" : token},
 		data: data,
 		dataType: "text",
 		success: function (data) {
@@ -453,6 +455,7 @@ function showArticleDetail(event) {
 	$.ajax({
 		type: "get",
 		url: "/article/" + article_id,
+		headers: { "Authorization" : token},
 		dataType: "text",
 		async: "false",
 		success: function (data) {
@@ -524,6 +527,7 @@ function toggleReplies(event) {
 		$.ajax({
 			type: "get",
 			url: "/article/" + article_id + "/comment/" + current_comment_data.id,
+			headers: { "Authorization" : token},
 			dataType: "text",
 			success: function (data) {
 				data = JSON.parse(data);
@@ -639,7 +643,8 @@ function toggleCommentLike(event, isReply, reply_index, origin_comment_index) {
 	let type = comment_like_flag == "true" ? "delete" : "post";
 	$.ajax({
 		type: type,
-		url: "/article" + article_id + "/comment/" + commet_id + "/reaction",
+		url: "/article/" + article_id + "/comment/" + comment_id + "/reaction",
+		headers: { "Authorization" : token},
 		dataType: "text",
 		success: function (data) {
 			if(data == "1") {

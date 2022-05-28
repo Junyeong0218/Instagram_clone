@@ -323,7 +323,7 @@ public class ArticleDaoImpl implements ArticleDao {
 					+ "FROM "
 						+ "article_comment ac "
 						+ "LEFT OUTER JOIN user_mst um ON(um.id = ac.commented_user_id) "
-						+ "LEFT OUTER JOIN usre_detail ud ON(ud.user_id = ac.commented_user_id) "
+						+ "LEFT OUTER JOIN user_detail ud ON(ud.user_id = ac.commented_user_id) "
 						+ "LEFT OUTER JOIN user_profile_image up ON(up.user_id = ac.commented_user_id) "
 						+ "LEFT OUTER JOIN article_comment_reaction acr ON(acr.article_comment_id = ac.id) "
 						+ "LEFT OUTER JOIN article_comment_reaction acr2 ON(acr2.article_comment_id = ac.id AND acr2.like_user_id = ?) "
@@ -416,7 +416,7 @@ public class ArticleDaoImpl implements ArticleDao {
 					+ "where "
 						+ "am.id = ? "
 					+ "group by "
-						+ "media.id "
+						+ "comment_id "
 					+ "order by "
 						+ "comment_like_user_count desc, "
 						+ "comment_create_date asc";
