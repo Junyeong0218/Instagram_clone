@@ -344,9 +344,7 @@ public class UserDaoImpl implements UserDao {
 				
 				result = pstmt.executeUpdate();
 			} else if(provider.equals("kakao")) {
-				sql = "insert into user_mst( "
-						+ " id, username, password, name, oauth_username, provider, create_date, update_date, disable_flag, disable_date, role) "
-						+ "values(0, ?, ?, ?, ?, ?, now(), now(), 0, null, \"ROLE_USER\");";
+				sql = "insert into user_mst values(0, ?, ?, ?, null, null, ?, ?, now(), now(), 0, null, \"ROLE_USER\");";
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setString(1, tempUsername);
 				pstmt.setString(2, tempUsername);
@@ -354,12 +352,16 @@ public class UserDaoImpl implements UserDao {
 				pstmt.setString(4, provider + "_" + userData.get("id"));
 				pstmt.setString(5, provider);
 				
-				System.out.println(sql);
-				System.out.println(tempUsername);
-				System.out.println(tempUsername);
-				System.out.println(userData.get("nickname"));
-				System.out.println(provider + "_" + userData.get("id"));
-				System.out.println(provider);
+				result = pstmt.executeUpdate();
+			} else if(provider.equals("google")) {
+				sql = "insert into user_mst values(0, ?, ?, ?, ?, null, ?, ?, now(), now(), 0, null, \"ROLE_USER\");";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, tempUsername);
+				pstmt.setString(2, tempUsername);
+				pstmt.setString(3, userData.get("email"));
+				pstmt.setString(4, userData.get("email"));
+				pstmt.setString(5, provider + "_" + userData.get("id"));
+				pstmt.setString(6, provider);
 				
 				result = pstmt.executeUpdate();
 			}

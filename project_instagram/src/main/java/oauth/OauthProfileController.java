@@ -29,9 +29,9 @@ public class OauthProfileController {
 	}
 	
 	public Map<String, String> getUserDataByNaver(String accessToken) throws IOException {
-		String naverTokenUrl = OauthProperties.NAVER_USERINFO_URL;
-		System.out.println(naverTokenUrl);
-		if(setUrl(naverTokenUrl)) {
+		String naverUserinfoUrl = OauthProperties.NAVER_USERINFO_URL;
+		System.out.println(naverUserinfoUrl);
+		if(setUrl(naverUserinfoUrl)) {
 			connection.setRequestProperty("Authorization", "Bearer " + accessToken);
 			int responseCode = connection.getResponseCode();
 			if(responseCode == 200) {
@@ -56,9 +56,9 @@ public class OauthProfileController {
 	}
 	
 	public Map<String, String> getUserDataByKakao(String accessToken) throws IOException {
-		String kakaoTokenUrl = OauthProperties.KAKAO_USERINFO_URL;
-		System.out.println(kakaoTokenUrl);
-		if(setUrl(kakaoTokenUrl)) {
+		String kakaoUserinfoUrl = OauthProperties.KAKAO_USERINFO_URL;
+		System.out.println(kakaoUserinfoUrl);
+		if(setUrl(kakaoUserinfoUrl)) {
 			connection.setRequestProperty("Authorization", "Bearer " + accessToken);
 			connection.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 			int responseCode = connection.getResponseCode();
@@ -80,6 +80,39 @@ public class OauthProfileController {
 					String value = claim.substring(claim.indexOf(":") + 1, claim.length()).replace("\"", "");
 					System.out.println(key + " : " + value);
 					userData.put(key, value);
+				}
+				br.close();
+				connection.disconnect();
+				return userData;
+			}
+		}
+		return null;
+	}
+	
+	public Map<String, String> getUserDataByGoogle(String accessToken) throws IOException {
+		String googleUserinfoUrl = OauthProperties.GOOGLE_USERINFO_URL;
+		System.out.println(googleUserinfoUrl);
+		if(setUrl(googleUserinfoUrl)) {
+			connection.setRequestProperty("Authorization", "Bearer " + accessToken);
+			connection.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+			int responseCode = connection.getResponseCode();
+			System.out.println(responseCode);
+			if(responseCode == 200) {
+				BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+				Map<String, String> userData = new HashMap<String, String>();
+				String line = br.readLine();
+				while(line != null) {
+					if(line.contains("{") || line.contains("}")) {
+						line = br.readLine();
+						continue;
+					}
+					System.out.println(line);
+					line = line.trim().replace(",", "");
+					String key = line.substring(0, line.indexOf(":")).replaceAll("\"", "");
+					String value = line.substring(line.indexOf(":") + 1, line.length()).replaceAll("\"", "").trim();
+					System.out.println(key + " : " + value);
+					userData.put(key, value);
+					line = br.readLine();
 				}
 				br.close();
 				connection.disconnect();

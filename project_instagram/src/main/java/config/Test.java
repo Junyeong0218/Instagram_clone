@@ -12,7 +12,7 @@ import java.util.UUID;
 public class Test {
 
 	public static void main(String[] args) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
-		System.out.println(URLEncoder.encode("http://localhost:8080/oauth/signin/kakao", "UTF-8"));
+		System.out.println(URLEncoder.encode("http://localhost:8080/oauth/signin/google", "UTF-8"));
 //		String today = LocalDate.now().toString();
 //		File file = new File(today + ".txt",);
 //		if(!file.exists()) {

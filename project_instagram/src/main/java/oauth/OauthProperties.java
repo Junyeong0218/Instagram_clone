@@ -15,10 +15,11 @@ public class OauthProperties {
 	public static final String KAKAO_CLIENT_SECRET = "3dmSccARbmcwuPnK3ox2ABF0onPGhAQH";
 	public static final String KAKAO_REDIRECT_URI = "http://localhost:8080/oauth/signin/kakao";
 	
-	public static final String GOOGLE_TOKEN_URL = "https://accounts.google.com/o/oauth2/auth";
+	public static final String GOOGLE_TOKEN_URL = "https://accounts.google.com/o/oauth2/token";
 	public static final String GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo"; // ?access_token=
 	public static final String GOOGLE_STATE = "GOOGLE_OAUTH_LOGIN";
 	public static final String GOOGLE_CLIENT_ID = "269750796517-dnobegf7dhkb93hpker91tpi1mmg9rpo.apps.googleusercontent.com";
 	public static final String GOOGLE_CLIENT_SECRET = "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";
+	public static final String GOOGLE_REDIRECT_URI = "http://localhost:8080/oauth/signin/google";
 	
 }

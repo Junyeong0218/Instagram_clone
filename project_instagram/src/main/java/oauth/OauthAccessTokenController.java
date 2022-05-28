@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -90,6 +89,43 @@ public class OauthAccessTokenController {
 					if(key.equals("access_token")) {
 						return claim.split(":")[1].replace("\"", "");
 					}
+				}
+				br.close();
+				connection.disconnect();
+			}
+		}
+		return null;
+	}
+	
+	public String getTokenByGoogle(String code) throws IOException {
+		String googleTokenUrl = OauthProperties.GOOGLE_TOKEN_URL;
+		StringBuilder sb = new StringBuilder();
+		sb.append("grant_type=authorization_code&" + 
+								"client_id=" + OauthProperties.GOOGLE_CLIENT_ID + "&" +
+								"redirect_uri=" + URLEncoder.encode(OauthProperties.GOOGLE_REDIRECT_URI, "UTF-8") + "&" +
+								"code=" + code + "&" +
+								"client_secret=" + OauthProperties.GOOGLE_CLIENT_SECRET );
+		System.out.println(googleTokenUrl);
+		System.out.println(sb.toString());
+		if(setUrl(googleTokenUrl)) {
+			connection.setRequestMethod(RequestMethod.POST);
+			connection.setDoOutput(true);
+			connection.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+			DataOutputStream bw = new DataOutputStream(connection.getOutputStream());
+			bw.writeBytes(sb.toString());
+			bw.flush();
+			bw.close();
+			
+			int responseCode = connection.getResponseCode();
+			System.out.println(responseCode);
+			if(responseCode == 200) {
+				BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+				br.readLine();
+				String line = br.readLine().replace(",", "").trim();
+				System.out.println(line);
+				String key = line.split(":")[0].replace("\"", "");
+				if(key.equals("access_token")) {
+					return line.split(":")[1].replace("\"", "");
 				}
 				br.close();
 				connection.disconnect();
