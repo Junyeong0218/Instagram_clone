@@ -45,7 +45,7 @@ submit_button.onclick = () => {
 }
 
 naver_button.onclick = () => {
-	location.href = "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=1neVQwuiHwavJykhB63G&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Foauth%2Fsignin&state=65bc7411-ae35-4ee5-87d0-eaeb23d22caa";
+	location.href = "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=1neVQwuiHwavJykhB63G&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Foauth%2Fsignin%2Fnaver&state=NAVER_OAUTH_LOGIN";
 }
 
 /*facebook_button.onclick = () => {

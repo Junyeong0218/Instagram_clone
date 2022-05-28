@@ -1,5 +1,7 @@
 package service;
 
+import java.util.Map;
+
 import entity.User;
 import request_dto.CheckInputReqDto;
 
@@ -8,6 +10,14 @@ public interface AuthService {
 	public int checkInput(CheckInputReqDto checkInputReqDto);
 	
 	public boolean checkOriginPassword(User user);
+	
+	public int selectIdByOauthEmail(String oauth_email);
+	
+	public int selectOauthUsernameCount(String oauth_username);
+	
+	public User getUserWithOatuh(String provider, Map<String, String> userData);
+	
+	public User getUserByOauthUsername(String oauth_username);
 	
 	public User getUserByUsername(String username);
 	

@@ -107,7 +107,9 @@ public class SecurityContext {
 											  .sign(Algorithm.HMAC512(user_secret_key));
 		user_role.put(token, user.getRole());
 		sessionTokens.put(user_secret_key, token);
-		if(! authService.registerJwtToken(user.getId(), token)) {
+		boolean result = authService.registerJwtToken(user.getId(), token);
+		System.out.println("update token result = " + result);
+		if(! result) {
 			throw new JWTRegisterException("jwt token register error ::: via signin");
 		}
 		

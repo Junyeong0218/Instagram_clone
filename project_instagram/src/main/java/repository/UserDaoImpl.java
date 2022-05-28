@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLDataException;
+import java.util.Map;
 
 import db.DBConnectionMgr;
 import entity.SecurityContext;
@@ -159,10 +160,68 @@ public class UserDaoImpl implements UserDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			db.freeConnection(conn);
+			db.freeConnection(conn, pstmt, rs);
 		}
 		
 		return password;
+	}
+	
+	@Override
+	public int selectIdByOauthEmail(String oauth_email) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		int user_id = 0;
+		
+		try {
+			conn = db.getConnection();
+			sql = "select id from user_mst where email = ? and disable_flag = 0;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, oauth_email);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				user_id = rs.getInt(1);
+			}
+		} catch (SQLDataException e) {
+			System.out.println("no row");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt, rs);
+		}
+		
+		return user_id;
+	}
+	
+	@Override
+	public int selectOauthUserId(String oauth_username) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		int user_id = 0;
+		
+		try {
+			conn = db.getConnection();
+			sql = "select id from user_mst where oauth_username = ? and disable_flag = 0;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, oauth_username);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				user_id = rs.getInt(1);
+			}
+		} catch (SQLDataException e) {
+			System.out.println("no row");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt, rs);
+		}
+		
+		return user_id;
 	}
 	
 	@Override
@@ -225,7 +284,7 @@ public class UserDaoImpl implements UserDao {
 				sb.append("update user_auth_token set secret_key = ? where user_id = ?;");
 				pstmt = conn.prepareStatement(sb.toString());
 				pstmt.setString(1, uuid);
-				pstmt.setInt(1, user.getId());
+				pstmt.setInt(2, user.getId());
 				
 				result += pstmt.executeUpdate();
 			}
@@ -234,10 +293,184 @@ public class UserDaoImpl implements UserDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			db.freeConnection(conn);
+			db.freeConnection(conn, pstmt, rs);
 		}
 		
 		return result;
+	}
+	
+	@Override
+	public int oauthSignup(String provider, Map<String, String> userData) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		int result = 0;
+		
+		try {
+			conn = db.getConnection();
+			sql = "select username from user_mst where username like \"tempinsta%\" order by username desc limit 1;";
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			String tempUsername = null;
+			if(rs.next()) {
+				tempUsername = rs.getString("username");
+				String number = tempUsername.replace("tempinsta", "").replaceAll("0", "");
+				tempUsername = "tempinsta";
+				for(int i = 0; i < 7 - number.length(); i++) {
+					tempUsername += "0";
+				}
+				int newNumber = Integer.parseInt(number);
+				tempUsername += ++newNumber;
+			} else {
+				tempUsername = "tempinsta0000001";
+			}
+			
+			pstmt.close();
+			rs.close();
+			
+			sql = "insert into "
+						+ "user_mst "
+					+ "values("
+						+ "0, "
+						+ "?, "
+						+ "?, "
+						+ "?, "
+						+ "?, "
+						+ "?, "
+						+ "?, "
+						+ "?, "
+						+ "now(), "
+						+ "now(), "
+						+ "0, "
+						+ "null, "
+						+ "\"ROLE_USER\""
+					+ ");";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, tempUsername);
+			pstmt.setString(2, tempUsername);
+			pstmt.setString(3, userData.get("name"));
+			pstmt.setString(4, userData.get("email"));
+			pstmt.setString(5, userData.get("phone").replaceAll("-", ""));
+			pstmt.setString(6, provider + "_" + userData.get("id"));
+			pstmt.setString(7, provider);
+			
+			result = pstmt.executeUpdate();
+			
+			if(result == 1) {
+				pstmt.close();
+				rs.close();
+				sql = "select id from user_mst where oauth_username = ?;";
+				pstmt = conn.prepareStatement(sql);
+				rs = pstmt.executeQuery();
+				
+				int user_id = 0;
+				if(rs.next()) {
+					user_id = rs.getInt("id");
+				}
+				
+				String uuid = null;
+				boolean isExist = true;
+				while(isExist) {
+					pstmt.close();
+					rs.close();
+					int secret_key_count = 0;
+					uuid = SecurityContext.getInstance().generateUUID();
+					sql = "select count(secret_key) from user_auth_token where secret_key = ?;";
+					pstmt = conn.prepareStatement(sql);
+					pstmt.setString(1, uuid);
+					rs = pstmt.executeQuery();
+					
+					if(rs.next()) {
+						secret_key_count = rs.getInt(1);
+					}
+					if(secret_key_count == 0) isExist = false;
+				}
+				sql = "update user_auth_token set secret_key = ? where user_id = ?;";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, uuid);
+				pstmt.setInt(2, user_id);
+				
+				result += pstmt.executeUpdate();
+			}
+		} catch (SQLDataException e) {
+			System.out.println("no row");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt, rs);
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public int updateUserConnectOauth(int user_id, String oauth_username, String provider) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		int result = 0;
+		
+		try {
+			conn = db.getConnection();
+			sql = "update user_mst set oauth_username = ?, provider = ?, update_date = now() where id = ?;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, oauth_username);
+			pstmt.setString(2, provider);
+			pstmt.setInt(3, user_id);
+			
+			result = pstmt.executeUpdate();
+		} catch (SQLDataException e) {
+			System.out.println("no row");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt, rs);
+		}
+		return result;
+	}
+	
+	@Override
+	public User getUserByOauthUsername(String oauth_username) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "select "
+								+ "um.id, "
+								+ "um.username, "
+								+ "um.`name`, "
+								+ "um.role, "
+								+ "uat.secret_key "
+							+ "from "
+								+ "user_mst um "
+								+ "left outer join user_auth_token uat on(uat.user_id = um.id) "
+							+ "where "
+								+ "um.oauth_username = ?;";
+		User user = null;
+		
+		try {
+			conn = db.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, oauth_username);
+			
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				user = new User();
+				user.setId(rs.getInt("id"));
+				user.setUsername(rs.getString("username"));
+				user.setName(rs.getString("name"));
+				user.setRole(rs.getString("role"));
+				user.setSecret_key(rs.getString("secret_key"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt, rs);
+		}
+		
+		return user;
 	}
 	
 	@Override

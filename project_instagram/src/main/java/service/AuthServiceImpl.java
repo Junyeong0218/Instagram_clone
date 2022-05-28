@@ -1,6 +1,7 @@
 package service;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -33,7 +34,52 @@ public class AuthServiceImpl implements AuthService {
 		}
 		return false;
 	}
+	
+	@Override
+	public int selectOauthUsernameCount(String oauth_username) {
+		return userDao.selectOauthUserId(oauth_username);
+	}
+	
+	@Override
+	public int selectIdByOauthEmail(String oauth_email) {
+		return userDao.selectIdByOauthEmail(oauth_email);
+	}
+	
+	@Override
+	public User getUserByOauthUsername(String oauth_username) {
+		return userDao.getUserByOauthUsername(oauth_username);
+	}
 
+	@Override
+	public User getUserWithOatuh(String provider, Map<String, String> userData) {
+		User user = null;
+		String oauth_username = provider + "_" + userData.get("id");
+		int user_id = selectOauthUsernameCount(oauth_username);
+		if(user_id == 0) {
+			// select duplicate email
+			user_id = selectIdByOauthEmail(userData.get("email"));
+			if(user_id == 0) {
+				// insert userData
+				int result = userDao.oauthSignup(provider, userData);
+				if(result > 0) {
+					user = getUserByOauthUsername(oauth_username);
+				}
+			} else {
+				// update oauth_username && provider
+				int result = userDao.updateUserConnectOauth(user_id, oauth_username, provider);
+				System.out.println(result);
+				if(result > 0) {
+					user = getUserByOauthUsername(oauth_username);
+				}
+			}
+		} else {
+			// select via oauth_userinfo
+			user = getUserByOauthUsername(oauth_username);
+		}
+		System.out.println("final user : " + user);
+		return user;
+	}
+	
 	@Override
 	public User getUserByUsername(String username) {
 		User user = userDao.getUserByUsername(username);
