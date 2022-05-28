@@ -1,11 +1,16 @@
 package oauth;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
+
+import config.RequestMethod;
 
 public class OauthAccessTokenController {
 
@@ -39,6 +44,45 @@ public class OauthAccessTokenController {
 			if(responseCode == 200) {
 				BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 				String line = br.readLine();
+				line = line.replaceAll("[\\{\\}]", "");
+				String[] claims = line.split(",");
+				for(String claim : claims) {
+					String key = claim.split(":")[0].replace("\"", "");
+					if(key.equals("access_token")) {
+						return claim.split(":")[1].replace("\"", "");
+					}
+				}
+				br.close();
+				connection.disconnect();
+			}
+		}
+		return null;
+	}
+	
+	public String getTokenByKakao(String code) throws IOException {
+		String kakaoTokenUrl = OauthProperties.KAKAO_TOKEN_URL;
+		StringBuilder sb = new StringBuilder();
+		sb.append("grant_type=authorization_code&" + 
+								"client_id=" + OauthProperties.KAKAO_CLIENT_ID + "&" +
+								"redirect_uri=" + URLEncoder.encode(OauthProperties.KAKAO_REDIRECT_URI, "UTF-8") + "&" +
+								"code=" + code + "&" +
+								"client_secret=" + OauthProperties.KAKAO_CLIENT_SECRET );
+		System.out.println(kakaoTokenUrl);
+		System.out.println(sb.toString());
+		if(setUrl(kakaoTokenUrl)) {
+			connection.setRequestMethod(RequestMethod.POST);
+			connection.setDoOutput(true);
+			connection.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+			DataOutputStream bw = new DataOutputStream(connection.getOutputStream());
+			bw.writeBytes(sb.toString());
+			bw.flush();
+			bw.close();
+			
+			int responseCode = connection.getResponseCode();
+			if(responseCode == 200) {
+				BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+				String line = br.readLine();
+				System.out.println(line);
 				line = line.replaceAll("[\\{\\}]", "");
 				String[] claims = line.split(",");
 				for(String claim : claims) {

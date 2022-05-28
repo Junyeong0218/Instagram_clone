@@ -48,7 +48,16 @@ public class OauthController  {
 			user = authService.getUserWithOatuh(provider, userData);
 			System.out.println("controller user : " + user);
 		} else if(provider.equals("kakao")) {
+			System.out.println(code);
+			OauthAccessTokenController tokenController = new OauthAccessTokenController();
+			String accessToken = tokenController.getTokenByKakao(code);
+			System.out.println("accessToken : " + accessToken);
 			
+			OauthProfileController profileController = new OauthProfileController();
+			Map<String,String> userData = profileController.getUserDataByKakao(accessToken);
+			
+			user = authService.getUserWithOatuh(provider, userData);
+			System.out.println("controller user : " + user);
 		} else if(provider.equals("google")) {
 			
 		}

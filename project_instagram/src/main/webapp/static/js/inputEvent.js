@@ -5,6 +5,7 @@ const usernameSpan = document.querySelectorAll("form span")[0];
 const passwordSpan = document.querySelectorAll("form span")[1];
 const submit_button = document.querySelector(".submit-button");
 const naver_button = document.querySelector(".naver-signin");
+const kakao_button = document.querySelector(".kakao-signin");
 
 const username_regex = /^[a-z][A-Za-z0-9]{1,15}$/;
 const symbol_regex = /[!@#$%^&*`~=+_]{1,16}/;
@@ -46,6 +47,10 @@ submit_button.onclick = () => {
 
 naver_button.onclick = () => {
 	location.href = "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=1neVQwuiHwavJykhB63G&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Foauth%2Fsignin%2Fnaver&state=NAVER_OAUTH_LOGIN";
+}
+
+kakao_button.onclick = () => {
+	location.href = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=0b80930613775d7766608926a629a6b1&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Foauth%2Fsignin%2Fkakao&state=KAKAO_OAUTH_LOGIN";
 }
 
 /*facebook_button.onclick = () => {

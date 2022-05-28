@@ -87,7 +87,6 @@ public class SessionFilter implements Filter {
 			  (uri.equals("/index") && method.equals(RequestMethod.GET)) ||
 			  (uri.equals("/auth/userinfo") && method.equals(RequestMethod.GET)) ||
 			  (uri.equals("/oauth/signin") && method.equals(RequestMethod.GET)) ||
-//			  (uri.equals("/auth/oauth/signin") && method.equals(RequestMethod.POST)) ||
 			  (uri.contains("signup") && (method.equals(RequestMethod.GET) || method.equals(RequestMethod.POST))) ) {
 			chain.doFilter(request, response);
 		} else if(uri.contains("/oauth/signin")) {
@@ -108,7 +107,7 @@ public class SessionFilter implements Filter {
 				System.out.println("after oauth signin 진입");
 				if(user == null) {
 					System.out.println("user == null");
-					resp.sendError(400, "wrong username or password");
+					resp.sendError(400, "oauth login failed");
 				} else {
 					System.out.println("user != null");
 					req.getSession().setAttribute("user_secret_key", user.getSecret_key());

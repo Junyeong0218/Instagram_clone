@@ -1,14 +1,18 @@
 package config;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URLEncoder;
+import java.time.LocalDate;
+import java.util.UUID;
 
 public class Test {
 
 	public static void main(String[] args) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
-		String num = "00001";
-		System.out.println(Integer.parseInt(num));
-//		System.out.println(URLEncoder.encode("NVAER_OAUTH_LOGIN", "UTF-8"));
+		System.out.println(URLEncoder.encode("http://localhost:8080/oauth/signin/kakao", "UTF-8"));
 //		String today = LocalDate.now().toString();
 //		File file = new File(today + ".txt",);
 //		if(!file.exists()) {

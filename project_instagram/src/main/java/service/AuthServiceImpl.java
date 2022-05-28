@@ -57,21 +57,21 @@ public class AuthServiceImpl implements AuthService {
 		int user_id = selectOauthUsernameCount(oauth_username);
 		if(user_id == 0) {
 			// select duplicate email
-			user_id = selectIdByOauthEmail(userData.get("email"));
-			if(user_id == 0) {
+//			user_id = selectIdByOauthEmail(userData.get("email"));
+//			if(user_id == 0) {
 				// insert userData
 				int result = userDao.oauthSignup(provider, userData);
 				if(result > 0) {
 					user = getUserByOauthUsername(oauth_username);
 				}
-			} else {
-				// update oauth_username && provider
-				int result = userDao.updateUserConnectOauth(user_id, oauth_username, provider);
-				System.out.println(result);
-				if(result > 0) {
-					user = getUserByOauthUsername(oauth_username);
-				}
-			}
+//			} else {
+//				// update oauth_username && provider
+//				int result = userDao.updateUserConnectOauth(user_id, oauth_username, provider);
+//				System.out.println(result);
+//				if(result > 0) {
+//					user = getUserByOauthUsername(oauth_username);
+//				}
+//			}
 		} else {
 			// select via oauth_userinfo
 			user = getUserByOauthUsername(oauth_username);

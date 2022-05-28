@@ -42,7 +42,7 @@ public class ArticleListController extends HttpServlet {
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append("[ ");
-		for(ArticleResDto dto :articleResDtoList) {
+		for(ArticleResDto dto : articleResDtoList) {
 			sb.append("{ \"id\": \""+ dto.getId() + "\"" + 
 					", \"user_id\": \"" + dto.getUser_id() + "\"" + 
 					", \"has_profile_image\": \"" + dto.isHas_profile_image() + "\"" + 
@@ -64,7 +64,7 @@ public class ArticleListController extends HttpServlet {
 						", \"total_commented_user_count\": \"" + dto.getTotal_commented_user_count() + "\" }, ");
 			
 		}
-		sb.replace(sb.lastIndexOf(","), sb.length(), "");
+		if(articleResDtoList.size() > 0) sb.replace(sb.lastIndexOf(","), sb.length(), "");
 		sb.append(" ]");
 		
 		System.out.println(sb.toString());

@@ -52,13 +52,13 @@
 					</div>
 					<div class="oauths">
 						<button type="button" class="google-signin">
-							<img src="/static/images/login_facebook.png" alt="구글 로그인 로고">
+							<img src="/static/images/oauth_signin_google_icon.png" alt="구글 로그인 로고">
 						</button>
 						<button type="button" class="naver-signin">
 							<img src="/static/images/oauth_signin_naver_icon.png" alt="네이버 로그인 로고">
 						</button>
 						<button type="button" class="kakao-signin">
-							<img src="/static/images/login_facebook.png" alt="카카오 로그인 로고">
+							<img src="/static/images/oauth_signin_kakao_icon.png" alt="카카오 로그인 로고">
 						</button>
 					</div>
 					<div class="forget-password">

@@ -54,4 +54,38 @@ public class OauthProfileController {
 		}
 		return null;
 	}
+	
+	public Map<String, String> getUserDataByKakao(String accessToken) throws IOException {
+		String kakaoTokenUrl = OauthProperties.KAKAO_USERINFO_URL;
+		System.out.println(kakaoTokenUrl);
+		if(setUrl(kakaoTokenUrl)) {
+			connection.setRequestProperty("Authorization", "Bearer " + accessToken);
+			connection.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+			int responseCode = connection.getResponseCode();
+			System.out.println(responseCode);
+			if(responseCode == 200) {
+				BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+				String line = br.readLine();
+				System.out.println(line);
+				Map<String, String> userData = new HashMap<String, String>();
+				String idClaim = line.substring(1, line.indexOf(","));
+				userData.put("id", idClaim.split(":")[1].replaceAll("\"", ""));
+				System.out.println("id : " + idClaim.split(":")[1].replaceAll("\"", ""));
+				
+				line = line.substring(line.indexOf("\"profile\"") + 10, line.length()).replaceAll("[\\{\\}]", "");
+				System.out.println(line);
+				String[] claims = line.split(",");
+				for(String claim : claims) {
+					String key = claim.substring(0, claim.indexOf(":")).replace("\"", "");
+					String value = claim.substring(claim.indexOf(":") + 1, claim.length()).replace("\"", "");
+					System.out.println(key + " : " + value);
+					userData.put(key, value);
+				}
+				br.close();
+				connection.disconnect();
+				return userData;
+			}
+		}
+		return null;
+	}
 }
