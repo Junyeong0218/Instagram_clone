@@ -100,6 +100,7 @@ main {
 }
 
 .contents > .row > a {
+	position: relative;
 	width: 293px;
 	height: 100%;
 }
@@ -111,4 +112,43 @@ main {
 .contents > .row > a > img {
 	width: 100%;
 	height: 100%;
+}
+
+.contents > .row > a > .summary {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.contents > .row > a:hover > .summary {
+	display: flex;
+}
+
+.summary > .like-info,
+.summary > .comment-info {
+	display: flex;
+	align-items: center;
+}
+
+.summary > .like-info > img,
+.summary > .comment-info > img {
+	margin-top: 2px;
+	margin-right: 7px;
+	width: 18px;
+	height: 18px;
+}
+
+.summary > .like-info > .like-count,
+.summary > .comment-info > .comment-count {
+	font-size: 16px;
+	font-weight: 600;
+	color: white;
+	line-height: 24px;
 }

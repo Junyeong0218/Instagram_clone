@@ -233,11 +233,15 @@ public class SearchDaoImpl implements SearchDao {
 						+ "media.media_type, "
 						+ "media.media_name, "
 						
-						+ "COUNT(distinct htl.id) AS related_article_count "
+						+ "COUNT(distinct htl.id) AS related_article_count, "
+						+ "COUNT(distinct ar.id) AS reaction_count, "
+						+ "COUNT(distinct ac.id) AS comment_count "
 					+ "FROM  "
 						+ "hash_tag_logs htl "
 						+ "LEFT OUTER JOIN article_mst am ON(am.id = htl.article_id) "
 						+ "LEFT OUTER JOIN article_media media ON(media.article_id = am.id AND media.media_name LIKE \"%01%\") "
+						+ "LEFT OUTER JOIN article_reaction ar on(ar.article_id = am.id) "
+						+ "LEFT OUTER JOIN article_comment ac on(ac.article_id = am.id) "
 					+ "WHERE  "
 						+ "htl.hash_tag_id = (SELECT id FROM hash_tag_mst WHERE tag_name = ?) "
 					+ "GROUP BY  "
@@ -254,6 +258,8 @@ public class SearchDaoImpl implements SearchDao {
 				detail.setMedia_type(rs.getString("media_type"));
 				detail.setMedia_name(rs.getString("media_name"));
 				detail.setRelated_article_count(rs.getInt("related_article_count"));
+				detail.setLike_user_count(rs.getInt("reaction_count"));
+				detail.setComment_count(rs.getInt("comment_count"));
 				
 				articleList.add(detail);
 			}

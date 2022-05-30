@@ -13,7 +13,11 @@ public interface ArticleDao {
 	
 	public int insertArticleMedias(List<ArticleMedia> media_list);
 
-	public List<ArticleDetail> selectArticleList(int user_id);
+	public int updateArticle(Article article);
+	
+	public int deleteArticle(Article article);
+	
+	public List<ArticleDetail> selectArticleList(int user_id, int page_indicator);
 	
 	public int insertLikeArtice(int article_id, int user_id);
 
@@ -22,6 +26,8 @@ public interface ArticleDao {
 	public int insertComment(int article_id, String contents, int user_id);
 	
 	public int insertRelatedComment(int article_id, String contents, int user_id, int related_comment_id);
+	
+	public int deleteComment(ArticleComment comment);
 	
 	public List<ArticleComment> selectRelatedComments(int related_comment_id, int user_id);
 	

@@ -4,3 +4,5 @@ window.onload = (event) => {
 	loadRecentStories();
 	loadArticleList();
 }
+
+window.onscroll = detectScroll;

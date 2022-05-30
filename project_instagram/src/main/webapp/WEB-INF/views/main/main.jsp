@@ -40,31 +40,9 @@
             </div>
         </main>
     </div>
-    <div class="pop-up">
-        <div class="article-control">
-            <button class="article-control-button">
-                <span class="red-text">신고</span>
-            </button>
-            <button class="article-control-button">
-                <span class="red-text">팔로우 취소</span>
-            </button>
-            <button class="article-control-button">
-                <span>게시물로 이동</span>
-            </button>
-            <button class="article-control-button">
-                <span>공유 대상...</span>
-            </button>
-            <button class="article-control-button">
-                <span>링크 복사</span>
-            </button>
-            <button class="article-control-button">
-                <span>퍼가기</span>
-            </button>
-            <button class="article-control-button">
-                <span>취소</span>
-            </button>
-        </div>
-    </div>
+    <jsp:include page="/WEB-INF/views/templates/article_menu_popup.jsp"></jsp:include>
+
+    <jsp:include page="/WEB-INF/views/templates/comment_menu_popup.jsp"></jsp:include>
     
     <script src="/static/js/main/searcher_control.js"></script>
     <script src="/static/js/main/profile_menu_control.js"></script>

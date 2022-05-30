@@ -320,7 +320,7 @@ public class FollowDaoImpl implements FollowDao {
 						+ "user_mst um "
 						+ "left outer join user_detail ud on(ud.user_id = um.id) "
 						+ "left outer join user_profile_image up on(up.user_id = um.id) "
-						+ "left outer join article_mst am on(am.user_id = um.id) "
+						+ "left outer join article_mst am on(am.user_id = um.id and am.deleted_flag = false) "
 						+ "left outer join article_media media on(media.article_id = am.id and media.media_name like \"%01%\") "
 						+ "left outer join article_reaction ar on(ar.article_id = am.id) "
 						+ "left outer join article_comment ac on(ac.article_id = am.id) "

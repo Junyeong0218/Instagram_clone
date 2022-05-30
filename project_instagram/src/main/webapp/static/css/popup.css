@@ -24,7 +24,8 @@
 }
 
 .article-control,
-.account-control {
+.account-control,
+.comment-control {
     margin: 20px;
     display: flex;
     flex-direction: column;
@@ -39,7 +40,8 @@
 }
 
 .article-control-button,
-.account-control-button {
+.account-control-button,
+.comment-control-button {
     padding: 4px 8px;
     display: flex;
     justify-content: center;
@@ -51,24 +53,33 @@
     cursor: pointer;
 }
 
+.article-control-button.red,
+.comment-control-button.red {
+	color: red;
+	font-weight:600; 
+}
+
 .article-control-button>span,
 .account-control-button>span {
     pointer-events: none;
 }
 
 .article-control-button:not(:first-child),
-.account-control-button:not(:first-child) {
+.account-control-button:not(:first-child),
+.comment-control-button:not(:first-child) {
     border-top: 1px solid rgb(219, 219, 219);
 }
 
 .article-control-button:first-child,
-.account-control-button:first-child {
+.account-control-button:first-child,
+.comment-control-button:first-child {
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
 }
 
 .article-control-button:last-child,
-.account-control-button:last-child {
+.account-control-button:last-child,
+.comment-control-button:last-child {
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
 }

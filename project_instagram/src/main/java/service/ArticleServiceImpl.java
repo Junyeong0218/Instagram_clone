@@ -53,10 +53,20 @@ public class ArticleServiceImpl implements ArticleService {
 		else					 return false;
 	}
 	
+	@Override
+	public boolean updateArticle(Article article) {
+		return false;
+	}
+	
+	@Override
+	public boolean deleteArticle(Article article) {
+		return articleDao.deleteArticle(article) > 0;
+	}
+	
 	@SuppressWarnings("unlikely-arg-type")
 	@Override
-	public List<ArticleResDto> selectArticles(int user_id) {
-		List<ArticleDetail> articleList = articleDao.selectArticleList(user_id);
+	public List<ArticleResDto> selectArticles(int user_id, int page_indicator) {
+		List<ArticleDetail> articleList = articleDao.selectArticleList(user_id, page_indicator);
 		Set<Integer> idForEvaluation = new HashSet<Integer>();
 		
 		List<ArticleResDto> compressedList = new ArrayList<ArticleResDto>();
@@ -158,6 +168,11 @@ public class ArticleServiceImpl implements ArticleService {
 			}
 		}
 		return result;
+	}
+	
+	@Override
+	public boolean deleteComment(ArticleComment comment) {
+		return articleDao.deleteComment(comment) > 0;
 	}
 	
 	@Override

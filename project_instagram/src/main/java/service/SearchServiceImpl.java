@@ -125,9 +125,15 @@ public class SearchServiceImpl implements SearchService {
 	public SearchResultResDto selectAboutHashTag(String tag_name) {
 		List<ArticleDetail> articleList = searchDao.selectArticlesAboutHashTag(tag_name);
 		SearchResultResDto dto = new SearchResultResDto();
-		
 		dto.setArticle_list(articleList);
-		dto.setRelated_article_count(articleList.get(0).getRelated_article_count());
+		if(articleList.size() > 0) {
+			dto.setRelated_article_count(articleList.get(0).getRelated_article_count());
+			for(ArticleDetail article : articleList) {
+				article.setMedia_name(FileUploadPathConfig.getArticleImagePath(article.getArticle_id(), article.getMedia_name()));
+			}
+		} else {
+			dto.setRelated_article_count(0);
+		}
 		
 		return dto;
 	}

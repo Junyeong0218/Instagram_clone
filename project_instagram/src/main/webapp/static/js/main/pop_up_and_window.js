@@ -1,4 +1,3 @@
-const pop_up = document.querySelector(".pop-up");
 const aside = document.querySelector("aside");
 
 window.onresize = resizeAsideLeft;

@@ -1,6 +1,8 @@
 package apiController.article_api;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import config.FileUploadPathConfig;
+import entity.Article;
+import entity.Article.ArticleBuilder;
 import entity.ArticleComment;
 import entity.ArticleMedia;
 import entity.User;
@@ -124,12 +128,51 @@ public class ArticleController extends HttpServlet {
 	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// 게시글 수정
+		User sessionUser = (User) request.getAttribute("sessionUser");
+		int article_id = (Integer) request.getAttribute("article_id");
 		
+		String articleData = new String(request.getInputStream().readAllBytes(), "UTF-8").replaceAll("[\\{\\}]", "");
+		ArticleBuilder ab = Article.builder();
+		Method[] methods = ab.getClass().getDeclaredMethods();
+		String[] data = articleData.split(",");
+		for(String claim : data) {
+			String key = claim.split(":")[0].replaceAll("\"", "");
+			for(Method method : methods) {
+				if(method.getName().equals(key)) {
+					try {
+						String value = claim.split(":")[1].replaceAll("\"", "");
+						ab = (ArticleBuilder) method.invoke(ab, value);
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					} catch (IllegalArgumentException e) {
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		Article article = ab.id(article_id)
+											.user_id(sessionUser.getId())
+											.build();
+		
+		boolean result = articleService.updateArticle(article);
+		
+		response.setContentType("text/plain; charset=UTF-8");
+		response.getWriter().print(result);
 	}
 	
 	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// 게시글 삭제
+		int article_id = (int) request.getAttribute("article_id");
+		User sessionUser = (User) request.getAttribute("sessionUser");
 		
+		Article article = Article.builder().id(article_id).user_id(sessionUser.getId()).build();
+		
+		boolean result = articleService.deleteArticle(article);
+		
+		response.setContentType("text/plain; charset=UTF-8");
+		response.getWriter().print(result);
 	}
 }

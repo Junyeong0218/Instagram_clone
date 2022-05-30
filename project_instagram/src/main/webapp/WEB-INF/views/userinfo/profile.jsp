@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="/static/css/main/header.css">
     <link rel="stylesheet" href="/static/css/short_footer.css">
     <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/main/article_detail.css">
+    <link rel="stylesheet" href="/static/css/main/main.css">
     <link rel="stylesheet" href="/static/css/userinfo/profile.css">
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script type="text/javascript" src="/static/js/principal.js"></script>
@@ -97,9 +99,26 @@
                 </div>
             </div>
         </main>
+        
+        <jsp:include page="/WEB-INF/views/templates/new_file_picker.jsp"></jsp:include>
+
+		<jsp:include page="/WEB-INF/views/templates/update_article_form.jsp"></jsp:include>
 
         <jsp:include page="/WEB-INF/views/templates/short_footer.jsp" />
 
+		<div id=article-menu-popup class="pop-up">
+			<div class="account-control">
+				<button id="change-article-content" class="article-control-button">
+                    <span>게시글 수정</span>
+                </button>
+                <button id="delete-article" class="article-control-button red">
+                    <span>게시글 삭제</span>
+                </button>
+                <button class="article-control-button red">
+                    <span>취소</span>
+                </button>
+			</div>
+		</div>
         <div id="account-menus" class="pop-up">
             <div class="account-control">
                 <button id="change-password" class="account-control-button">
@@ -142,6 +161,9 @@
     </div>
    	<script src="/static/js/main/searcher_control.js"></script>
 	<script src="/static/js/main/profile_menu_control.js"></script>
+    <script src="/static/js/main/activity_menu_control.js"></script>
+    <script src="/static/js/main/new_file_picker.js"></script>
+    <script src="/static/js/main/load_article_list.js"></script>
 	<script src="/static/js/userinfo/profile/profile.js"></script>
     <script src="/static/js/userinfo/profile/tab_control.js"></script>
     <script src="/static/js/userinfo/profile/pop_up_control.js"></script>

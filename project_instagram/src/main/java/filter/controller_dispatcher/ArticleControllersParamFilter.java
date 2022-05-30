@@ -46,8 +46,10 @@ public class ArticleControllersParamFilter implements Filter {
 			request.setAttribute("article_id", article_id);
 			
 			if(uris.length == 2) {
-				// /article/article-id allows only GET -> /article
-				if(method.equals(RequestMethod.GET)) {
+				// /article/article-id allows GET PUT DELETE -> /article
+				if(method.equals(RequestMethod.GET) ||
+					method.equals(RequestMethod.PUT) ||
+					method.equals(RequestMethod.DELETE)) {
 					req.getRequestDispatcher(ARTICLE).forward(request, response);
 				}
 			} else if(uris[2].equals("reaction")) {
@@ -58,7 +60,7 @@ public class ArticleControllersParamFilter implements Filter {
 				}
 			} else if(uris[2].equals("comment")) {
 				if(uris.length == 3) {
-					// /article/comment allows GET, POST, PUT, DELETE
+					// /article/comment allows GET, POST, DELETE
 					if(method.equals(RequestMethod.POST)) {
 						req.getRequestDispatcher(ARTICLE_COMMENT).forward(request, response);
 					} 
@@ -67,7 +69,6 @@ public class ArticleControllersParamFilter implements Filter {
 					request.setAttribute("comment_id", comment_id);
 					
 					if(method.equals(RequestMethod.GET) ||
-						method.equals(RequestMethod.PUT) ||
 						method.equals(RequestMethod.DELETE)) {
 						req.getRequestDispatcher(ARTICLE_COMMENT).forward(request, response);
 					}

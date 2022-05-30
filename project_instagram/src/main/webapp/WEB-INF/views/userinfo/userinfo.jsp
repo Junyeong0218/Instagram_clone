@@ -195,6 +195,9 @@
 		</main>
 	</div>
 	
+	
+    <jsp:include page="/WEB-INF/views/templates/new_file_picker.jsp"></jsp:include>
+	
 	<jsp:include page="/WEB-INF/views/templates/short_footer.jsp" />
 	
 	<div class="pop-up">
@@ -218,8 +221,10 @@
 			<button type="button">완료</button>
 		</div>
 	</div>
+   	<script src="/static/js/main/searcher_control.js"></script>
 	<script src="/static/js/main/profile_menu_control.js"></script>
-	<script src="/static/js/main/searcher_control.js"></script>
+    <script src="/static/js/main/activity_menu_control.js"></script>
+    <script src="/static/js/main/new_file_picker.js"></script>
 	<script src="/static/js/userinfo/userinfo.js"></script>
 	<script src="/static/js/userinfo/gender_popup.js"></script>
 </body>

@@ -48,6 +48,7 @@ public class ArticleDetail {
 	private String commented_user_file_name;
 	private String comment_contents;
 	private LocalDateTime comment_create_date;
+	private int comment_count;
 	
 	// ---------------------------------- is_session_user_like_this_comment?
 	private boolean comment_like_flag;

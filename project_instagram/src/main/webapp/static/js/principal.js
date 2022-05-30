@@ -7,7 +7,7 @@ let first_load_flag = true;
 getUUID();
 setInterval(() => {
 	getToken();
-}, 1000);
+}, 5000);
 
 function getUUID() {
 	$.ajax({

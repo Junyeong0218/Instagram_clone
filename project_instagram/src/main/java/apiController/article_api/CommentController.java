@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.stream.events.Comment;
 
 import entity.ArticleComment;
 import entity.User;
@@ -87,14 +88,20 @@ public class CommentController extends HttpServlet {
 	}
 	
 	@Override
-	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// 댓글 수정
-		
-	}
-	
-	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// 댓글 삭제
+		int article_id = (int) request.getAttribute("article_id");
+		int comment_id = (int) request.getAttribute("comment_id");
+		User sessionUser = (User) request.getAttribute("sessionUser");
 		
+		ArticleComment comment = ArticleComment.builder()
+																							 .article_id(article_id)
+																							 .id(comment_id)
+																							 .user_id(sessionUser.getId())
+																							 .build();
+		boolean result = articleService.deleteComment(comment);
+		
+		response.setContentType("text/plain; charset=UTF-8");
+		response.getWriter().print(result);
 	}
 }

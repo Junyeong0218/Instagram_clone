@@ -18,6 +18,7 @@ public class SearchControllersParamFilter implements Filter {
 	private final String SEARCH_LOG = "/search/log";
 	private final String SEARCH_USERS = "/search/users";
 	private final String SEARCH_KEYWORD = "/search/keyword";
+	private final String SEARCH_HASHTAG = "/search/hashtag";
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -27,7 +28,7 @@ public class SearchControllersParamFilter implements Filter {
 		String uri = req.getRequestURI();
 		String method = req.getMethod();
 		
-		if(uri.equals(SEARCH) || uri.equals(SEARCH_LOG) || uri.equals(SEARCH_USERS) || uri.equals(SEARCH_KEYWORD)) {
+		if(uri.equals(SEARCH) || uri.equals(SEARCH_LOG) || uri.equals(SEARCH_USERS) || uri.equals(SEARCH_KEYWORD) || uri.equals(SEARCH_HASHTAG)) {
 			chain.doFilter(request, response);
 			return;
 		}
@@ -40,6 +41,12 @@ public class SearchControllersParamFilter implements Filter {
 			request.setAttribute("tag_name", tag_name);
 			if(method.equals(RequestMethod.GET)) {
 				request.getRequestDispatcher(SEARCH).forward(request, response);
+			}
+		} else if(uris[1].equals("hashtag")) {
+			String tag_name = uris[2];
+			request.setAttribute("tag_name", tag_name);
+			if(method.equals(RequestMethod.GET)) {
+				request.getRequestDispatcher(SEARCH_HASHTAG).forward(request, response);
 			}
 		} else if(uris[1].equals("users")) {
 			String keyword = uris[2];

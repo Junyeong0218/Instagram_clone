@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import entity.ArticleMedia;
-import entity.JwtProperties;
-import entity.SecurityContext;
 import entity.User;
 import repository.ArticleDao;
 import response_dto.ArticleResDto;
@@ -38,10 +36,14 @@ public class ArticleListController extends HttpServlet {
 		User sessionUser = (User) request.getAttribute("sessionUser");
 		
 		int page_indicator = (Integer) request.getAttribute("page_indicator");
-		List<ArticleResDto> articleResDtoList = articleService.selectArticles(sessionUser.getId());
+		List<ArticleResDto> articleResDtoList = articleService.selectArticles(sessionUser.getId(), page_indicator);
+		boolean has_more_article = articleResDtoList.size() > 10;
+		if(has_more_article) {
+			articleResDtoList.remove(10);
+		}
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append("[ ");
+		sb.append(" { \"has_more_article\": \"" + has_more_article + "\", \"articles\": [ ");
 		for(ArticleResDto dto : articleResDtoList) {
 			sb.append("{ \"id\": \""+ dto.getId() + "\"" + 
 					", \"user_id\": \"" + dto.getUser_id() + "\"" + 
@@ -65,7 +67,7 @@ public class ArticleListController extends HttpServlet {
 			
 		}
 		if(articleResDtoList.size() > 0) sb.replace(sb.lastIndexOf(","), sb.length(), "");
-		sb.append(" ]");
+		sb.append(" ] }");
 		
 		System.out.println(sb.toString());
 		response.setContentType("text/plain; charset=UTF-8");

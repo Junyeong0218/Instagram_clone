@@ -1,12 +1,17 @@
 const container = document.querySelector(".container");
 const article_wrapper = document.querySelector(".articles");
+const article_pop_up = document.querySelector("#article-menu-popup");
+const comment_pop_up = document.querySelector("#comment-menu-popup");
+
 let origin_article_list = new Array();
 let origin_article_detail_data;
 
 let article_load_count = 0;
 let relate_comment_flag = false;
 let relate_comment_id;
-let article_pager = 1;
+let article_pager = 0;
+let article_loading_flag = false;
+let has_more_article = true;
 
 function loadArticleList() {
 	$.ajax({
@@ -16,10 +21,14 @@ function loadArticleList() {
 		dataType: "text",
 		success: function (data) {
 			data = JSON.parse(data);
-			if(data.length == 1 && data[0].id == 0) return;
-			for(let i = 0; i < data.length; i++) {
-				origin_article_list.push(data[i]);
-				const article_tag = makeArticleTag(data[i]);
+			has_more_article = data.has_more_article == "true" ? true : false;
+			const articles = data.articles;
+			console.log(has_more_article);
+			console.log(articles);
+			if(articles.length == 1 && articles[0].id == 0) return;
+			for(let i = 0; i < articles.length; i++) {
+				origin_article_list.push(articles[i]);
+				const article_tag = makeArticleTag(articles[i]);
 				article_wrapper.appendChild(article_tag);
 				
 				const article_menu = article_tag.querySelector(".article-menu");
@@ -47,6 +56,7 @@ function loadArticleList() {
 				}
 				
 			}
+			article_loading_flag = false;
 		},
 		error: function (xhr, status, error) {
 			console.log(xhr);
@@ -55,6 +65,22 @@ function loadArticleList() {
 		}
 	});
 	article_load_count++;
+}
+
+function detectScroll() {
+	if(has_more_article) {
+		if(! article_loading_flag) {
+			const total_height = document.body.scrollHeight - window.innerHeight;
+			const isOver = Math.floor((window.scrollY / total_height) * 100) > 79;
+			console.log(window.scrollY);
+			console.log("total_height : " + total_height);
+			console.log("% : " + Math.floor((window.scrollY / total_height) * 100) + "%");
+			if(isOver) {
+				article_loading_flag = true;
+				loadArticleList();
+			}
+		}
+	}
 }
 
 function makeArticleTag(articleData) {
@@ -319,21 +345,36 @@ function activeCurrentDot(ul, index) {
 	}
 }
 
-function showArticleMenu(event) {
+function showArticleMenu() {
 	const offset = window.pageYOffset;
-    pop_up.classList.remove("to-hidden");
-    pop_up.classList.add("to-show");
+    article_pop_up.classList.remove("to-hidden");
+    article_pop_up.classList.add("to-show");
     document.querySelector("body").style = "overflow: hidden;";
-    pop_up.style.top = offset + 'px';
+    article_pop_up.style.top = offset + 'px';
 
-    const buttons = pop_up.querySelectorAll(".article-control-button");
+    const buttons = article_pop_up.querySelectorAll(".article-control-button");
     buttons[buttons.length - 1].onclick = () => {
-        pop_up.classList.remove("to-show");
-        pop_up.classList.add("to-hidden");
-        pop_up.style.top = '0px';
-        if(event.composedPath()[4].className != "article-detail-wrapper") {
-            document.querySelector("body").style = "";
-		}
+        article_pop_up.classList.remove("to-show");
+        article_pop_up.classList.add("to-hidden");
+        article_pop_up.style.top = '0px';
+        document.querySelector("body").style = "";
+    }
+}
+
+function showCommentMenu(comment_id) {
+	const offset = window.pageYOffset;
+    comment_pop_up.classList.remove("to-hidden");
+    comment_pop_up.classList.add("to-show");
+    document.querySelector("body").style = "overflow: hidden;";
+    comment_pop_up.style.top = offset + 'px';
+
+    const buttons = comment_pop_up.querySelectorAll(".comment-control-button");
+    buttons[0].onclick = () => deleteComment(comment_id);
+    buttons[1].onclick = () => {
+        comment_pop_up.classList.remove("to-show");
+        comment_pop_up.classList.add("to-hidden");
+        comment_pop_up.style.top = '0px';
+        document.querySelector("body").style = "";
     }
 }
 
@@ -683,7 +724,27 @@ function removeArticleDetail(event) {
 	}
 }
 
+function deleteComment(comment_id) {
+	console.log("delete comment : " + comment_id + " !!!");
+	$.ajax({
+		type: "delete",
+		url: "/article/" + origin_article_detail_data.id + "/comment/" + comment_id,
+		headers: { "Authorization": token },
+		success: function (data) {
+			console.log(data);
+			if(data == "true") {
+				location.reload();
+			}
+		},
+		error: function (xhr, status) {
+			console.log(xhr);
+			console.log(status);
+		}
+	});
+}
+
 function makeArticleDetail(article_data) {
+	console.log(article_data);
 	const article_detail_wrapper = document.createElement("div");
 	article_detail_wrapper.className = "article-detail-wrapper";
 	
@@ -803,6 +864,7 @@ ${article_data.feature == "null" || article_data.feature == null ? '' : '<span c
 											                                    <span class="upload-time">${upload_time}</span>
 											                                    ${Number(comment.comment_like_user_count) > 0 ? '<button type="button" class="comment_like_count">좋아요 ' + comment.comment_like_user_count + '개</button>' : ''}
 											                                    <button type="button" class="reply">답글 달기</button>
+											                                    ${comment.user_id == principal.id ? "<button type='button' class='comment-modal-button'><img src='/static/images/article_detail_comment_modal_button.png'></button>" : ""}
 											                                </div>
 											                            </div>
 											                        </div>
@@ -811,6 +873,9 @@ ${article_data.feature == "null" || article_data.feature == null ? '' : '<span c
 											                        </button>`;
 											                        
 			comments_wrapper.appendChild(detail_contents);
+			detail_contents.querySelector(".comment-modal-button").onclick = () => {
+				showCommentMenu(comment.id);
+			}
 			
 			if(comment.related_comment_count > 0) {
 				const show_reply_comment = document.createElement("div");

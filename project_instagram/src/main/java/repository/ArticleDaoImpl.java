@@ -103,7 +103,55 @@ public class ArticleDaoImpl implements ArticleDao {
 	}
 	
 	@Override
-	public List<ArticleDetail> selectArticleList(int user_id) {
+	public int updateArticle(Article article) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String sql = null;
+		int result = 0;
+		
+		try {
+			conn = db.getConnection();
+			sql = "update article_mst set ";
+			
+		} catch(SQLDataException e1) {
+			System.out.println("no rows");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt);
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public int deleteArticle(Article article) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String sql = null;
+		int result = 0;
+		
+		try {
+			conn = db.getConnection();
+			sql = "update article_mst set deleted_flag = true, deleted_date = now() where id = ? and user_id = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, article.getId());
+			pstmt.setInt(2, article.getUser_id());
+			
+			result = pstmt.executeUpdate();
+		} catch(SQLDataException e1) {
+			System.out.println("no rows");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt);
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public List<ArticleDetail> selectArticleList(int user_id, int page_indicator) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -138,7 +186,7 @@ public class ArticleDaoImpl implements ArticleDao {
 					+ "left outer join article_media media on(am.id = media.article_id) "
 					+ "left outer join article_reaction ar on(am.id = ar.article_id) "
 					+ "left outer join article_reaction ar2 on(am.id = ar2.article_id and ar2.like_user_id = ?) "
-					+ "left outer join article_comment ac on(am.id = ac.article_id) "
+					+ "left outer join article_comment ac on(am.id = ac.article_id and ac.deleted_flag = false) "
 				+ "where "
 					+ "am.user_id != ? and "
 					+ "am.deleted_flag = false and "
@@ -147,12 +195,14 @@ public class ArticleDaoImpl implements ArticleDao {
 					+ "media.id "
 				+ "order by "
 					+ "am.create_date desc,"
-					+ "media.media_name asc;";
+					+ "media.media_name asc "
+				+ "limit ?, 11;";
 
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, user_id);
 			pstmt.setInt(2, user_id);
 			pstmt.setInt(3, user_id);
+			pstmt.setInt(4, page_indicator * 10);
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
@@ -299,6 +349,33 @@ public class ArticleDaoImpl implements ArticleDao {
 	}
 	
 	@Override
+	public int deleteComment(ArticleComment comment) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String sql = null;
+		int result = 0;
+		
+		try {
+			conn = db.getConnection();
+			sql = "update article_comment set deleted_flag = true, deleted_date = now() where commented_user_id = ? and article_id = ? and id = ?;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, comment.getUser_id());
+			pstmt.setInt(2, comment.getArticle_id());
+			pstmt.setInt(3, comment.getId());
+			
+			result = pstmt.executeUpdate();
+		} catch(SQLDataException e1) {
+			System.out.println("no rows");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt);
+		}
+		
+		return result;
+	}
+	
+	@Override
 	public List<ArticleComment> selectRelatedComments(int related_comment_id, int user_id) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -406,7 +483,7 @@ public class ArticleDaoImpl implements ArticleDao {
 						+ "left outer join article_media media on(am.id = media.article_id) "
 						+ "left outer join article_reaction ar on(am.id = ar.article_id) "
 						+ "left outer join article_reaction ar2 on(am.id = ar.article_id and ar.like_user_id = ?) "
-						+ "left outer join article_comment ac on(am.id = ac.article_id and ac.related_flag = 0) "
+						+ "left outer join article_comment ac on(am.id = ac.article_id and ac.related_flag = 0 and ac.deleted_flag = false) "
 						+ "left outer join user_mst um2 on(um2.id = ac.commented_user_id) "
 						+ "left outer join user_detail ud2 on(ud2.user_id = ac.commented_user_id) "
 						+ "left outer join user_profile_image up2 on(up2.user_id = ac.commented_user_id) "

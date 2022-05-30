@@ -143,6 +143,25 @@
     margin-right: 18px;
 }
 
+.detail-contents:hover .comment-modal-button {
+	display: flex;
+}
+
+.comment-modal-button {
+	display: none;
+	width: 24px;
+	height: 24px;
+	border: none;
+	background: none;
+	cursor: pointer;
+}
+
+.comment-modal-button > img {
+	width: 24px;
+	height: 24px;
+	pointer-events: none;
+}
+
 .detail-texts {
     display: flex;
     flex-direction: column;
