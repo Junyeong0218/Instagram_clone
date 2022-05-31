@@ -126,26 +126,45 @@ password_submit_button.onclick = () => {
 // functions
 
 function initUserData() {
-	if(principal.has_profile_image == "true") {
-		console.log("has_profile_image == true");
-		const userinfo_profile_images = document.querySelectorAll(".userinfo-profile-image");
-		userinfo_profile_images.forEach(e => {
-			e.querySelector("img").src = "/static/file_upload" + principal.file_name;
-		});
-	}
-	userinfo_form.querySelector(".username").innerText = principal.username;
-	password_form.querySelector(".username").innerText = principal.username;
-	userinfo_form.querySelector("input[name='username']").value = principal.username;
-	userinfo_form.querySelector("input[name='name']").value = principal.name;
-	userinfo_form.querySelector("input[name='website']").value = principal.website;
-	userinfo_form.querySelector("textarea[name='description']").value = principal.description;
-	userinfo_form.querySelector("input[name='email']").value = principal.email;
-	userinfo_form.querySelector("input[name='phone']").value = principal.phone;
-	const gender_value = principal.gender == "0" ? "남성" :
-											 principal.gender == "1" ? "여성" :
-											 principal.gender == "2" ? "맞춤 성별" :
-											 principal.gender == "3" ? "밝히고 싶지 않음" : "";
-	userinfo_form.querySelector("input[name='gender']").value = gender_value;
+	$.ajax({
+		type: "get",
+		url: "/auth/user/detail",
+		headers: { "Authorization": token },
+		dataType: "text",
+		success: function (data) {
+			data = JSON.parse(data);
+			console.log(data);
+			if(data.has_profile_image == "true") {
+				console.log("has_profile_image == true");
+				const userinfo_profile_images = document.querySelectorAll(".userinfo-profile-image");
+				userinfo_profile_images.forEach(e => {
+					e.querySelector("img").src = "/static/file_upload" + data.file_name;
+				});
+			}
+			userinfo_form.querySelector(".username").innerText = data.username;
+			password_form.querySelector(".username").innerText = data.username;
+			userinfo_form.querySelector("input[name='username']").value = data.username;
+			const last_username_update_date = new Date(data.last_username_update_date);
+			const now = new Date();
+			if(now - last_username_update_date < 1000 * 60 * 60 * 24 * 14) {
+				userinfo_form.querySelector("input[name='username']").readOnly = true;
+			} 
+			userinfo_form.querySelector("input[name='name']").value = data.name;
+			userinfo_form.querySelector("input[name='website']").value = data.website;
+			userinfo_form.querySelector("textarea[name='description']").value = data.description;
+			userinfo_form.querySelector("input[name='email']").value = data.email;
+			userinfo_form.querySelector("input[name='phone']").value = data.phone;
+			const gender_value = data.gender == "0" ? "남성" :
+													 data.gender == "1" ? "여성" :
+													 data.gender == "2" ? "맞춤 성별" :
+													 data.gender == "3" ? "밝히고 싶지 않음" : "";
+			userinfo_form.querySelector("input[name='gender']").value = gender_value;
+		},
+		error: function (xhr, status) {
+			console.log(xhr);
+			console.log(status);
+		}
+	});
 }
 
 function focusFormWithQueryString() {

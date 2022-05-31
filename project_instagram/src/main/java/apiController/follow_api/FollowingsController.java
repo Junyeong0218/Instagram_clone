@@ -50,7 +50,7 @@ public class FollowingsController extends HttpServlet {
 									"\"has_profile_image\": \"" + user.isHas_profile_image() + "\", " + 
 									"\"file_name\": \"" + user.getFile_name() + "\" }, ");
 		}
-		sb.delete(sb.length() - 2, sb.length());
+		if(followingUserList.size() > 0) sb.replace(sb.lastIndexOf(","), sb.length(), "");
 		sb.append("], \"has_more_users\": \"" + has_more_users + "\" }");
 		
 		response.setContentType("text/plain; charset=UTF-8");

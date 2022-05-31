@@ -25,6 +25,8 @@ public interface UserDao {
 	
 	public User getUserById(int user_id);
 	
+	public User getUserDetailById(int user_id);
+	
 	public int signup(User user);
 	
 	public int oauthSignup(String provider, Map<String, String> userData);

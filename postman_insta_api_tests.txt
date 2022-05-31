@@ -1,0 +1,52 @@
+/auth/userinfo - GET - OK
+/auth/userinfo - PUT - OK
+/auth/signup - POST - OK
+/auth/password - GET - OK
+/auth/password - PUT - OK
+/auth/signin - POST - OK
+/auth/logout - GET - OK
+/auth/principal - GET - OK
+/auth/user/detail - GET - OK
+/auth/profile/{username} - GET - OK
+
+/security/uuid - GET - OK
+{ af6b1946-1b9f-4410-a5e0-4c12ec762918 }
+/security/token - GET - OK
+{ Bearer.eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdXRoVXNlciIsIm5hbWUiOiLrsJXspIDsmIEiLCJpZCI6MSwiZXhwIjoxNjU0MDAxMzY3LCJ1c2VybmFtZSI6ImhpcHBvMjAwMyJ9.9UcmtULlPVtZeUiwj5E-_7sRdESjE1KNVrCDe81F2-Fz8hJbPpWRQo4touDyPCCmefYuOALOoSTDDLLpF17kpg
+}
+
+/alert/new-logs - GET - OK
+
+/story/recent - GET - OK
+
+/search/log - GET - OK
+/search/users/{keyword} - GET - OK
+/search/hashtag/{keyword} - GET - OK
+/search/keyword/{keyword} - GET - OK
+
+/article - POST - OK
+/article/{id} - GET - OK
+/article/{id} - PUT - OK
+/article/list/{page_indicator} - GET - OK
+/article/{id}/reaction - POST - OK
+/article/{id}/reaction - DELETE - OK
+/article/{id}/comment - POST - OK
+/article/{id}/comment/{id} - GET - OK
+/article/{id}/comment/{id} - DELETE - OK
+/article/{id}/comment/{id}/reaction - POST - OK
+/article/{id}/comment/{id}/reaction - DELETE - OK
+
+/follow/activities - GET - OK
+/follow/followers/{page_indicator} - GET - OK
+/follow/followings/{page_indicator} - GET - OK
+/follow/user/{id} - POST - OK
+/follow/user/{id} - DELETE - OK ( trigger added )
+/follow/hashtag/{page_indicator} - GET - OK
+/follow/hashtag/{id} - POST - OK
+/follow/hashtag/{id} - DELETE - OK
+/follow/recommendation - GET - OK
+
+
+
+
+

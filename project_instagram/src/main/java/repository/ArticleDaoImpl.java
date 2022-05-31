@@ -106,19 +106,33 @@ public class ArticleDaoImpl implements ArticleDao {
 	public int updateArticle(Article article) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		String sql = null;
 		int result = 0;
 		
 		try {
 			conn = db.getConnection();
-			sql = "update article_mst set ";
+			sql = "update "
+						+ "article_mst "
+					+ "set "
+						+ "contents = ?, "
+						+ "feature = ?, "
+						+ "update_date = now() "
+					+ "where "
+						+ "id = ? and user_id = ?;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, article.getContents());
+			pstmt.setString(2, article.getFeature());
+			pstmt.setInt(3, article.getId());
+			pstmt.setInt(4, article.getUser_id());
 			
+			result = pstmt.executeUpdate();
 		} catch(SQLDataException e1) {
 			System.out.println("no rows");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			db.freeConnection(conn, pstmt);
+			db.freeConnection(conn, pstmt, rs);
 		}
 		
 		return result;
@@ -493,10 +507,12 @@ public class ArticleDaoImpl implements ArticleDao {
 					+ "where "
 						+ "am.id = ? "
 					+ "group by "
-						+ "comment_id "
+						+ "comment_id, "
+						+ "media.media_name "
 					+ "order by "
 						+ "comment_like_user_count desc, "
-						+ "comment_create_date asc";
+						+ "comment_create_date asc, "
+						+ "media.media_name asc;";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, user_id);
 			pstmt.setInt(2, user_id);

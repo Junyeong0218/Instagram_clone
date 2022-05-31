@@ -355,6 +355,7 @@ public class SearchDaoImpl implements SearchDao {
 						+ "up.file_name "
 					+ "from "
 						+ "user_mst um "
+						+ "left outer join user_detail ud on(ud.user_id = um.id) "
 						+ "left outer join user_profile_image up on(up.user_id = um.id) "
 					+ "where "
 						+ "um.username like \"%" + keyword + "%\" and um.id != ?;";

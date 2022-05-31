@@ -225,6 +225,67 @@ public class UserDaoImpl implements UserDao {
 	}
 	
 	@Override
+	public User getUserDetailById(int user_id) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = null;
+		User user = null;
+		
+		try {
+			conn = db.getConnection();
+			sql = "select "
+						+ "um.id, "
+						+ "um.username, "
+						+ "um.`name`, "
+						+ "um.email, "
+						+ "um.phone, "
+						+ "um.oauth_username, "
+						+ "um.provider, "
+						+ "ud.website, "
+						+ "ud.description, "
+						+ "ud.gender, "
+						+ "ud.last_username_update_date, "
+						+ "ud.has_profile_image, "
+						+ "up.file_name "
+					+ "from "
+						+ "user_mst um "
+						+ "left outer join user_detail ud on(ud.user_id = um.id) "
+						+ "left outer join user_profile_image up on(up.user_id = um.id) "
+					+ "where "
+						+ "um.id = ?;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, user_id);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				user = new User();
+				user.setId(rs.getInt("id"));
+				user.setUsername(rs.getString("username"));
+				user.setName(rs.getString("name"));
+				user.setEmail(rs.getCharacterStream("email") == null ? "" : rs.getString("email"));
+				user.setPhone(rs.getCharacterStream("phone") == null ? "" : rs.getString("phone"));
+				user.setOauth_username(rs.getCharacterStream("oauth_username") == null ? "" : rs.getString("oauth_username"));
+				user.setProvider(rs.getCharacterStream("provider") == null ? "" : rs.getString("provider"));
+				user.setWebsite(rs.getCharacterStream("website") == null ? "" : rs.getString("website"));
+				user.setDescription(rs.getCharacterStream("description") == null ? "" : rs.getString("description"));
+				user.setGender(rs.getInt("gender"));
+				user.setLast_username_update_date(rs.getTimestamp("last_username_update_date").toLocalDateTime());
+				user.setHas_profile_image(rs.getBoolean("has_profile_image"));
+				user.setFile_name(rs.getCharacterStream("file_name") == null ? "" : rs.getString("file_name"));
+			}
+		} catch (SQLDataException e) {
+			System.out.println("no row");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.freeConnection(conn, pstmt, rs);
+		}
+		
+		return user;
+	}
+	
+	@Override
 	public int signup(User user) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;

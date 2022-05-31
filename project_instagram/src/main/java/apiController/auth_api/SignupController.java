@@ -43,7 +43,7 @@ public class SignupController extends HttpServlet {
 		int result = authService.signup(user);
 		
 		response.setContentType("text/plain; charset=UTF-8");
-		if(result == 1) {
+		if(result > 0) {
 			response.getWriter().print(true);
 		} else {
 			response.getWriter().print(false);

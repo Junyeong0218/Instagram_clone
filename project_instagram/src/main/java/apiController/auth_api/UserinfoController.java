@@ -101,10 +101,12 @@ public class UserinfoController extends HttpServlet{
 		if(result > 0) {
 			// user select by id
 			User updatedUser = authService.getUserByUsername(buildedUser.getUsername());
+			System.out.println(updatedUser);
+			System.out.println((String) request.getSession().getAttribute("user_secret_key"));
 			// user_id username name token 재발급
 			// principal setUser
 			try {
-				SecurityContext.getInstance().reIssueToken(updatedUser, (String) request.getSession().getAttribute("UUID"));
+				SecurityContext.getInstance().reIssueToken(updatedUser, (String) request.getSession().getAttribute("user_secret_key"));
 				// true
 				response.getWriter().print(true);
 			} catch (NullPointerException e) {

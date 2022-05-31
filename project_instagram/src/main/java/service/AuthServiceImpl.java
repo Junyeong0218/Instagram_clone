@@ -1,6 +1,7 @@
 package service;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 import org.mindrot.jbcrypt.BCrypt;
@@ -97,6 +98,11 @@ public class AuthServiceImpl implements AuthService {
 		}
 		return user;
 	}
+	
+	@Override
+	public User getUserDetailById(int user_id) {
+		return userDao.getUserDetailById(user_id);
+	}
 
 	@Override
 	public User signin(User user) {
@@ -122,6 +128,10 @@ public class AuthServiceImpl implements AuthService {
 			result += updateUserProfile(user);
 		}
 		else user.setHas_profile_image(false);
+		
+		if(! sessionUser.getUsername().equals(user.getUsername())) {
+			user.setLast_username_update_date(LocalDateTime.now());
+		}
 
 		try {
 			result += userDao.updateUserinfo(sessionUser, user);

@@ -1,8 +1,6 @@
 package apiController.article_api;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import config.FileUploadPathConfig;
 import entity.Article;
-import entity.Article.ArticleBuilder;
 import entity.ArticleComment;
 import entity.ArticleMedia;
 import entity.User;
@@ -114,6 +111,7 @@ public class ArticleController extends HttpServlet {
 		dto.setMedia_type_list(Arrays.asList(types));
 		
 		dto.setMedia_name_list(fileNames);
+		System.out.println(dto);
 		
 		boolean result = articleService.insertArticle(dto);
 		
@@ -131,30 +129,21 @@ public class ArticleController extends HttpServlet {
 		User sessionUser = (User) request.getAttribute("sessionUser");
 		int article_id = (Integer) request.getAttribute("article_id");
 		
+		Article article = new Article();
 		String articleData = new String(request.getInputStream().readAllBytes(), "UTF-8").replaceAll("[\\{\\}]", "");
-		ArticleBuilder ab = Article.builder();
-		Method[] methods = ab.getClass().getDeclaredMethods();
-		String[] data = articleData.split(",");
-		for(String claim : data) {
-			String key = claim.split(":")[0].replaceAll("\"", "");
-			for(Method method : methods) {
-				if(method.getName().equals(key)) {
-					try {
-						String value = claim.split(":")[1].replaceAll("\"", "");
-						ab = (ArticleBuilder) method.invoke(ab, value);
-					} catch (IllegalAccessException e) {
-						e.printStackTrace();
-					} catch (IllegalArgumentException e) {
-						e.printStackTrace();
-					} catch (InvocationTargetException e) {
-						e.printStackTrace();
-					}
-				}
+		String[] params = articleData.replaceAll("[\\{\\}]", "").split(",");
+		for(String param : params) {
+			String key = param.split(":")[0].replaceAll("\"", "");
+			String value = param.split(":")[1].replaceAll("\"", "");
+			if(key.equals("contents")) {
+				article.setContents(value);
+			} else if(key.equals("feature")) {
+				article.setFeature(value);
 			}
 		}
-		Article article = ab.id(article_id)
-											.user_id(sessionUser.getId())
-											.build();
+		article.setId(article_id);
+		article.setUser_id(sessionUser.getId());
+		System.out.println(article);
 		
 		boolean result = articleService.updateArticle(article);
 		

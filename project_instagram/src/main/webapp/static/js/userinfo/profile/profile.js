@@ -8,6 +8,7 @@ const to_update_article_button = document.querySelector("#change-article-content
 const delete_article_button = document.querySelector("#delete-article");
 const update_article_modal = document.querySelector(".update-article-modal");
 const update_article_contents = update_article_modal.querySelector("textarea");
+const update_article_feature = update_article_modal.querySelector("input[name='feature']");
 
 const articles = document.querySelector(".articles");
 
@@ -34,7 +35,7 @@ to_update_article_button.onclick = (event) => {
 		}
 	}
 	update_article_contents.value = origin_article_detail.contents;
-	update_article_modal.querySelector("input[name='feature']").value = origin_article_detail.feature;
+	update_article_feature.value = origin_article_detail.feature;
 	update_content_length.innerText = origin_article_detail.contents.length;
 	update_article_modal.classList.add("active");
 	
@@ -42,10 +43,23 @@ to_update_article_button.onclick = (event) => {
 		update_article_modal.classList.remove("active");
 	}
 	
-	update_article_modal.querySelector(".update_article").onclick = () => {
+	update_article_modal.querySelector(".update-article").onclick = () => {
 		$.ajax({
 			type: "put",
-			url: "/article/"
+			url: "/article/" + origin_article_detail.id,
+			headers: { "Authorization": token },
+			data: JSON.stringify({"contents":update_article_contents.value,"feature":update_article_feature.value}),
+			dataType: "text",
+			success: function (data) {
+				console.log(data);
+				if(data == "true") {
+					location.reload();
+				}
+			},
+			error: function (xhr, status) {
+				console.log(xhr);
+				console.log(status);
+			}
 		});
 	}
 }

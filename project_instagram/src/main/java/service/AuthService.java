@@ -23,6 +23,8 @@ public interface AuthService {
 	
 	public User getUserById(int user_id);
 	
+	public User getUserDetailById(int user_id);
+	
 	public User signin(User user);
 	
 	public int signup(User user);

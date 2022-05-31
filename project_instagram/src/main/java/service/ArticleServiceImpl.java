@@ -46,7 +46,7 @@ public class ArticleServiceImpl implements ArticleService {
 		insertArticleReqDto.setArticle_id(article_id);
 		
 		List<ArticleMedia> media_list = insertArticleReqDto.toArticleMediaList();
-		
+		System.out.println(media_list);
 		int result = articleDao.insertArticleMedias(media_list);
 		System.out.println(result);
 		if(result > 0) return true;
@@ -55,7 +55,7 @@ public class ArticleServiceImpl implements ArticleService {
 	
 	@Override
 	public boolean updateArticle(Article article) {
-		return false;
+		return articleDao.updateArticle(article) > 0;
 	}
 	
 	@Override

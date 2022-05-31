@@ -25,8 +25,8 @@ function loadRecommendUsers() {
 				recommend_users.appendChild(tag);
 				
 				const button = tag.querySelector("button");
-				button.onclick = (event) => {
-					followUser(event, i);
+				button.onclick = () => {
+					followUser(i);
 				}
 			}
 		},
@@ -38,12 +38,11 @@ function loadRecommendUsers() {
 	});
 }
 
-function followUser(event, index) {
+function followUser(index) {
 	$.ajax({
 		type: "post",
-		url: "/follow",
+		url: "/follow/user/" + recommend_user_data[index].id,
 		headers: { "Authorization" : token },
-		data: { "partner_user_id": recommend_user_data[index].id },
 		dataType: "text",
 		success: function (data) {
 			if(data == "1") {

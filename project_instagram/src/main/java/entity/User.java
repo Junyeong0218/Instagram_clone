@@ -20,6 +20,8 @@ public class User {
 	private int id;
 	private String username;
 	private String password;
+	private String oauth_username;
+	private String provider;
 	private String name;
 	private String email;
 	private String phone;

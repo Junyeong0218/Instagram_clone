@@ -58,29 +58,6 @@ google_button.onclick = () => {
 	location.href = "https://accounts.google.com/o/oauth2/auth?client_id=269750796517-dnobegf7dhkb93hpker91tpi1mmg9rpo.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Foauth%2Fsignin%2Fgoogle&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email";
 }
 
-/*facebook_button.onclick = () => {
-	$.ajax({
-		type: "get",
-		url: "",
-		dataType: "text",
-		success: function (data) {
-			console.log(data);
-			data = JSON.parse(data);
-			console.log(data);
-			let url = "https://www.facebook.com/v14.0/dialog/oauth?";
-			url += "client_id=" + data.client_id;
-			url += "&redirect_uri=/oauth/signin";
-			url += "&scope=email&response_type=code&auth_type=rerequest&display=popup";
-			console.log(url);
-			location.href = url;
-		},
-		error: function (xhr, status) {
-			console.log(xhr);
-			console.log(status);
-		}
-	});
-}*/
-
 function keyupEvent(event) {
     if (isLengthZero(event)) {
         event.target.className = "";

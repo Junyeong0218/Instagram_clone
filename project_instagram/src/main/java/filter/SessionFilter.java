@@ -87,41 +87,38 @@ public class SessionFilter implements Filter {
 			  (uri.equals("/index") && method.equals(RequestMethod.GET)) ||
 			  (uri.equals("/auth/userinfo") && method.equals(RequestMethod.GET)) ||
 			  (uri.equals("/oauth/signin") && method.equals(RequestMethod.GET)) ||
-			  (uri.contains("signup") && (method.equals(RequestMethod.GET) || method.equals(RequestMethod.POST))) ) {
+			  (uri.contains("signup") && method.equals(RequestMethod.POST)) ) {
 			chain.doFilter(request, response);
 		} else if(uri.contains("/oauth/signin")) {
 			System.out.println("요청 날아옴");
 			System.out.println(uri + " - " + method);
-			if(method.equals(RequestMethod.GET)) {
-				request.getRequestDispatcher("/oauth/signin").forward(request, response);
-			} else if(method.equals(RequestMethod.POST)) {
-				String provider = uri.replace("/oauth/signin/", "");
-				String code = request.getParameter("code");
-				System.out.println(provider);
-				request.setAttribute("provider", provider);
-				OauthController oauthController = new OauthController(
-																							new AuthServiceImpl(userDao), 
-																							new NewActivityServiceImpl(newActivityDao));
-				User user = oauthController.OauthSignin(provider, code);
-				// oauth 로그인 이후 토큰 발급
-				System.out.println("after oauth signin 진입");
-				if(user == null) {
-					System.out.println("user == null");
-					resp.sendError(400, "oauth login failed");
-				} else {
-					System.out.println("user != null");
-					req.getSession().setAttribute("user_secret_key", user.getSecret_key());
-					resp.setContentType("text/plain; charset=UTF-8");
-					try {
-						String token = security.issueToken(user, user.getSecret_key());
-						System.out.println("issueToken : " + token);
-						System.out.println("userSecretKey : " + user.getSecret_key());
-						System.out.println("true!");
-						resp.getWriter().print(true);
-					} catch (JWTRegisterException e) {
-						System.out.println("false!");
-						resp.getWriter().print(false);
-					}
+			String code = request.getParameter("code");
+			String provider = uri.replace("/oauth/signin/", "");
+			System.out.println("code : " + code);
+			System.out.println("provider : " + provider);
+			request.setAttribute("provider", provider);
+			OauthController oauthController = new OauthController(
+																						new AuthServiceImpl(userDao), 
+																						new NewActivityServiceImpl(newActivityDao));
+			User user = oauthController.OauthSignin(provider, code);
+			// oauth 로그인 이후 토큰 발급
+			System.out.println("after oauth signin 진입");
+			if(user == null) {
+				System.out.println("user == null");
+				resp.setContentType("text/html; charset=UTF-8");
+				resp.getWriter().print("<script>alert(\"" + provider + "로그인에 실패했습니다. 메인화면으로 이동합니다.\"); location.href=\"/index\";</script>");
+			} else {
+				System.out.println("user != null");
+				req.getSession().setAttribute("user_secret_key", user.getSecret_key());
+				try {
+					String token = security.issueToken(user, user.getSecret_key());
+					System.out.println("issueToken : " + token);
+					System.out.println("userSecretKey : " + user.getSecret_key());
+					System.out.println("true!");
+					resp.sendRedirect("/main");
+				} catch (JWTRegisterException e) {
+					resp.setContentType("text/html; charset=UTF-8");
+					resp.getWriter().print("<script>alert(\"" + provider + "로그인에 실패했습니다. 메인화면으로 이동합니다.\"); location.href=\"/index\";</script>");
 				}
 			}
 		} else if(uri.contains("signin")) {
